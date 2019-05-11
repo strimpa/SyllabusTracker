@@ -1,0 +1,16 @@
+<HTML>
+
+<body>
+<div id="oontent">
+{% if all_excercises %}
+    <ul>
+    {% for exc in all_excercises %}
+        <li>{{ exc.name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No excercises are available.</p>
+{% endif %}	
+</div>
+</body>
+</HTML>

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% if not tisMe %}
+{{ tisMe }}
+{% block follow_button %}<input id="followButton" userid="{{ user_controller.the_user.guid }}" type="button" value="Follow" />{% endblock %}
+{% endif %}
+
+{% block content %}
+{% if not user_controller.valid_user %}
+	<div>No user has been found for the user ID or username given.</div>
+{% else %}
+	<div id="userProfile" class="contentColours innerContentBorder">
+		<table>
+		<tr>
+		<td>User ID:</td><td>{{ user_controller.the_user.guid }}</td>
+		</tr>
+		<tr>
+		<td>Avatar image:</td><td><img src="{{ user_controller.get_pic }}" /></td>
+		</tr>
+		</table>
+	</div>
+	<p />
+	<p><H1>Connections</H1></p>
+	<div id="connection" class="contentColours innerContentBorder">
+		{% if not user_controller.the_user.connections.count %}
+			Not subscribed to any other users' feeds.
+		{% endif %}
+		{% for user in user_controller.the_user.connections.all %}
+			<p>{{ user.username }}</p>
+		{% endfor %}
+	</div>
+	<p />
+	<p><H1>Statistics</H1></p>
+	<div id="statistics" class="contentColours innerContentBorder">
+		Number of messages: {{ user_controller.get_stats.msg_count }}<br />
+		Of which are answers: {{ user_controller.get_stats.answer_count }}
+	</div>
+{% endif %}
+{% endblock %}

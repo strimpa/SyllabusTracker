@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %} {{ title }}&euro; {% endblock %}
+
+{% block content %}
+	<script type="text/javascript">
+		var urlMsgId = "{{ urlMsgId }}";
+	</script>
+	<div class="contentColours innerContentBorder" id="messages">
+	</div>
+{% endblock %}
