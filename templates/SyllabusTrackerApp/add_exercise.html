@@ -1,0 +1,103 @@
+{% extends "SyllabusTrackerApp/base_logged_in.html" %}
+
+{% block content %}
+    {% if successful_add %}
+        <div class="notification">Successfully added the exercise!</div>
+    {% endif %}
+
+    <h1>Edit Exercises</h1>
+        <form action="/edit_exercises/" method="POST">
+            {% csrf_token %}
+            {{ id }}
+            {{ exercise_formset.management_form }}
+            <table class="simple_table">
+                {% for form in exercise_formset %}
+                <tr class='form_row'>
+                    {% for field in form.visible_fields %}
+                        <td class="fieldWrapper">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                            {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            <button type="submit">Submit</button>
+        </form>
+
+            <!--        
+    {% if all_exercises %}
+                <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Groups</th>
+            <th></th>
+        </tr>
+        {% for exc, groups in all_exercises %}
+            <form action="/syllabus/">
+                <tr>
+                    <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
+                    <td>{{ exc.description }}</td>
+                    <td>
+                        <select multiple>
+                        {% for group in all_groups %}
+                           <option value="{{ group.name }}">{{ group.name }}</option>
+                        {% endfor %}
+                        </select> 
+                    </td>
+                    <td><input type="submit" value="Update" /></td>
+                </tr>
+            </form>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No exercises are available.</p>
+    {% endif %}	
+-->
+
+    <h1>Add Exercise</h1>
+    <form action="/add_exercise/">
+    <table class="simple_table">
+    {{ add_ex_form.as_table }}
+    </table>
+    <input type="submit" />
+    </form>
+
+    <p>
+    <FORM action="/add_exercise">
+        <table class="simple_table">
+            {{ exercise_csv_form.as_table }}
+        </table>
+        <input type="submit" />
+    </FORM>
+
+    <h1>All ExerciseGroups</h1>
+    <form>
+        <table>
+                {{ exercise_group_formset.management_form }}
+                {% for form in exercise_group_formset %}
+                {% for field in form.fields %}
+                    <div class="fieldWrapper">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                        {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </form>
+
+    <h1>Add ExerciseGroup</h1>
+        <form action="/add_exercise/">
+            <table class="simple_table">
+                {{ add_ex_group_form.as_table }}
+            </table>
+        <input type="submit" />
+    </form>
+</p>
+{% endblock %}

@@ -1,0 +1,181 @@
+import json
+import string
+
+from django.shortcuts import render_to_response, render
+from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu
+from SyllabusTrackerApp.forms import AccountForm, ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.forms import SetPasswordForm, UserChangeForm
+from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
+from .view_utils import *
+
+def login_request(request):
+
+    if request.method == "POST":
+        login_form = LoginForm(data=request.POST)
+        if login_form.is_valid():
+            username = login_form.cleaned_data['username']
+            password = login_form.cleaned_data['password']
+
+            try:
+                user = Jitsuka.objects.get(username=username)
+            except ObjectDoesNotExist:
+                return render(request, "SyllabusTrackerApp/deadend.html", {
+                                'login_form':LoginForm(),
+                                'warning_text':"No user with that name."
+                                })
+
+            authenticated_user = authenticate(username=username, password=password)
+            if authenticated_user is None:
+                # no user with that name
+                warning_text = "Wrong password."
+                return render(request, "SyllabusTrackerApp/deadend.html", {
+                                'login_form':LoginForm(),
+                                'warning_text':warning_text
+                                })
+
+            #user isn't activated yet
+            if not authenticated_user.is_active:
+                #user isn't activated yet
+                return render(request, "SyllabusTrackerApp/deadend.html", {
+                                'login_form':LoginForm(),
+                                'warning_text':"User hasn't been activated yet. Please check your email."
+                                })
+
+            # SUCCESS!
+            login(request, authenticated_user)
+            target_url = '/user_home/'
+            if 'target_url' in request.POST:
+                target_url = request.POST['target_url']
+            return HttpResponseRedirect(target_url) # Redirect after POST
+
+    return render(request, "/", {
+        'login_form':LoginForm(),
+        })
+
+@login_required
+def forgot_password(request):
+    return render(request, "SyllabusTrackerApp/login.html", {
+        'login_form':LoginForm(),
+        })
+
+@login_required
+def logout_request(request):
+    logout(request)
+    return HttpResponseRedirect("/")
+
+    
+def register(request):
+	register_form = RegisterForm()
+	
+	if request.method == "POST":
+		register_form = RegisterForm(request.POST, request.FILES)
+		if register_form.is_valid():
+			the_user = Jitsuka.objects.create_user(
+				register_form.cleaned_data['username'], 
+				register_form.cleaned_data['email'])
+			register_form = RegisterForm(request.POST, request.FILES, instance=the_user)
+			register_form.save()
+
+			from django.core.mail import send_mail
+			send_mail('Please confirm your registration', lang('REG_CONFIRMATION_MAIL', the_user.username, the_user.guid), 'dont_reply@tuets.com', [the_user.email])
+			return HttpResponseRedirect('/') # Redirect after POST
+
+	return render(request, "SyllabusTrackerApp/register.html", {
+		'register_form'		: register_form,
+		'login_form'		: LoginForm(),
+		'title'				: "Register"
+		})
+
+
+def registerConfirm(request, userId=''):
+    confirmation_text = lang('REG_CONFIRMATION')
+    if ''!=userId:
+        try:
+            usr = Jitsuka.objects.get(guid=userId)
+            usr.is_active = True
+            usr.save()
+            confirmation_text = lang('REG_CONFIRMATION_SUBMITTED', usr.username)
+        except ObjectDoesNotExist:
+            confirmation_text = lang('REG_CONFIRMATION_FAILED')
+
+    return render(request, "SyllabusTrackerApp/register.html", {
+        'confirmation':True,
+        'confirmation_text':confirmation_text,
+        'login_form':LoginForm(),
+        'title':"Register"
+        })
+
+@login_required
+def profile(request, username=None):
+    membership = check_membership(request.user)
+#    if isinstance(membership, HttpResponse):
+#       return membership
+
+    tisMe = True
+    theUser = request.user
+    membership_form = MembershipForm()
+    found_membership = False
+
+    try:
+        if (None!=username) and \
+            "me"!=username and \
+            (None!=username and username!=request.user.username):
+                theUser = Jitsuka.objects.get(username=username)
+                tisMe = False
+
+        if tisMe:
+            membership = Membership.objects.get(user = request.user)
+            membership_form = MembershipForm(instance = membership)
+            found_membership = True
+    except ObjectDoesNotExist:
+        pass
+
+    if request.method == 'GET':
+        if 'username' in request.GET:
+            user_form = ProfileForm(request.GET, instance=request.user)
+            if user_form.is_valid():
+                username = user_form.data['username']
+                first_name = user_form.data['first_name']
+                last_name = user_form.data['last_name']
+                theUser.username = username
+                theUser.first_name = first_name
+                theUser.last_name = last_name
+                theUser.save()
+            else:
+                return HttpResponse("errors:"+user_form.errors.as_text())
+        elif 'memberID' in request.GET:
+            membership_form = MembershipForm(request.GET)
+            if membership_form.is_valid():
+                memberID = membership_form.cleaned_data['memberID']
+                kyu = membership_form.cleaned_data['kyu']
+                instructor = membership_form.cleaned_data['instructor']
+
+                m = Membership()
+                try:
+                    m = Membership.objects.get(user=theUser)
+                except:
+                    pass
+                m.user = theUser
+                m.memberID = memberID
+                m.kyu = kyu
+                if instructor!='':
+                    m.instructor = instructor
+                m.save()
+                m = Membership.objects.get(user=theUser)
+                membership_form = MembershipForm(instance = m)
+            else:
+                return HttpResponse("errors:"+membership_form.errors.as_text())
+
+    return render(request, "SyllabusTrackerApp/profile.html", {
+        'user_controller':Jitsuka.objects,
+        'tisMe':tisMe,
+        'membership_form':membership_form,
+        'login_form':ProfileForm(instance=theUser),
+        'title': ("Public profile of "+theUser.username),
+        'found_membership':found_membership
+        })

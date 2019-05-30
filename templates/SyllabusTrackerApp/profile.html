@@ -1,39 +1,23 @@
-{% extends "base.html" %}
-
-{% if not tisMe %}
-{{ tisMe }}
-{% block follow_button %}<input id="followButton" userid="{{ user_controller.the_user.guid }}" type="button" value="Follow" />{% endblock %}
-{% endif %}
+{% extends "SyllabusTrackerApp/base_logged_in.html" %}
 
 {% block content %}
-{% if not user_controller.valid_user %}
-	<div>No user has been found for the user ID or username given.</div>
-{% else %}
 	<div id="userProfile" class="contentColours innerContentBorder">
+		<form action="/profile/">
 		<table>
-		<tr>
-		<td>User ID:</td><td>{{ user_controller.the_user.guid }}</td>
-		</tr>
-		<tr>
-		<td>Avatar image:</td><td><img src="{{ user_controller.get_pic }}" /></td>
-		</tr>
+		{{ login_form.as_table }}
 		</table>
-	</div>
-	<p />
-	<p><H1>Connections</H1></p>
-	<div id="connection" class="contentColours innerContentBorder">
-		{% if not user_controller.the_user.connections.count %}
-			Not subscribed to any other users' feeds.
+		<input type="submit" value="Update" />
+		</form>
+		<p />
+		{% if not found_membership %}
+			<div clas="warning">No membership data has been found - Fill in your details before continuing!</div>
 		{% endif %}
-		{% for user in user_controller.the_user.connections.all %}
-			<p>{{ user.username }}</p>
-		{% endfor %}
+		<form action="/profile/">
+			<table>
+			{{ membership_form.as_table }}
+			</table>
+			<input type="submit" value="Update" />
+		</form>
 	</div>
 	<p />
-	<p><H1>Statistics</H1></p>
-	<div id="statistics" class="contentColours innerContentBorder">
-		Number of messages: {{ user_controller.get_stats.msg_count }}<br />
-		Of which are answers: {{ user_controller.get_stats.answer_count }}
-	</div>
-{% endif %}
 {% endblock %}

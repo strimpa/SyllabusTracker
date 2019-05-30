@@ -1,0 +1,508 @@
+﻿/*----------------------------------------------------------
+The base color for this template is #01723b. If you'd like
+to use a different color start by replacing all instances of
+#01723b with your new color.
+----------------------------------------------------------*/
+body {
+    background-image:url("images/BGDot.gif");
+    font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
+    margin: 0;
+    padding: 0;
+    color: #9B7;
+    font-size: 12px;
+}
+
+@font-face {
+    font-family: '616';
+    src: url('./616.eot');
+    src: local('616'), url('./616.woff') format('woff'), url('./616.ttf') format('truetype');
+}
+/* use this class to attach this font to any element i.e. <p class="fontsforweb_fontid_6898">Text with this font applied</p> */
+.fontsforweb_fontid_6898 {
+    font-family: '616' !important;
+}
+
+a:link, #answerActions a:link {
+    color:#6a4;
+    text-decoration: none;
+}
+
+a:visited {
+    color:#9B7;
+    text-decoration: none;
+}
+
+menu a:visited {
+    color:#bd9;
+    text-decoration: none;
+}
+
+a:hover, #answerActions a:hover {
+    color: #bd9;
+    text-decoration: none;
+}
+
+a:active, #answerActions a:active{
+    color: #fff;
+}
+
+#answerActions a
+{
+    color:#9B7;
+    cursor:pointer;
+}
+
+header,
+footer,
+nav,
+section {
+    display: block;
+}
+
+table
+{
+    font-size: inherit;
+    text-align: left;
+}
+
+th
+{
+    font-weight: normal;
+}
+
+table label
+{
+/*
+    display: none;
+*/
+}
+
+
+.errorMsg
+{
+    color:#811;
+}
+/* HEADINGS   
+----------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Verdana';
+    font-size: 1.5em;
+ }
+
+h1 {
+    font-size: 1.5em;
+    padding: 3px;
+    margin: 0;
+}
+
+#main h1
+{
+    margin-left: 5px;
+    margin-bottom: -4px;
+}
+
+h2 {
+    padding: 0 0 10px 0;
+}
+
+h3 {
+    font-size: 1.2em;
+}
+
+h4 {
+    font-size: 1.1em;
+}
+
+h5, h6 {
+    font-size: 1em;
+}
+
+/* PRIMARY LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+/* you can specify a greater or lesser percentage for the 
+page width. Or, you can specify an exact pixel width. */
+.page {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+header, #header {
+    position: relative;
+    margin-bottom: 0px;
+    padding: 0;
+}
+
+header h1, #header h1 {
+    font-weight: bold;
+    padding: 5px 0;
+    margin: 0;
+    color: #fff;
+    border: none;
+    line-height: 2em;
+    font-size: 32px !important;
+    text-shadow: 1px 1px 2px #111;
+}
+
+.headerField {
+    border-radius: 5px 0px 0px 5px;
+    -webkit-border-radius: 5px 0 0 5px;
+    -moz-border-radius: 5px 0 0 5px;
+    border-color:#9B7;
+    background-color: #01723B;
+    padding: 10px;
+    font-family: '616';
+}
+
+.contentColours
+{
+    background-color: #e3eee3;
+    color: #131;
+}
+
+.innerContentBorder{
+    border-width: 0px 0px 0px 1px;;
+    border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-style: solid;
+}
+
+.messageDimensions
+{
+    max-width: 400px;
+    min-width: 300px;
+    border-width: 0px 0px 0px 1px;
+    border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+/*    border-style: solid;
+*/    overflow:auto;
+}
+
+.innerMessageDiv
+{
+    background-color: #F3FEF3;
+    border-width: 0px;
+    border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-style: solid;
+    padding:2px;
+    margin:3px;
+}
+
+.innerMessageDiv p
+{
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+.answerBox
+{
+    display: inline-block;
+    margin-left: 30px;
+}
+
+.answerDiv
+{
+    background-color: #084;
+    padding-left: 5px;
+    padding-top: 2px;
+    margin: 1px;
+}
+
+.menuBlock
+{
+    display: block;
+}
+
+#main {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+footer, 
+#footer {
+    color: #999;
+    text-align: center;
+    line-height: normal;
+    margin: 10px 0px 10px 10px;
+    font-size: .9em;
+    height: 50px;
+
+}
+
+#messages
+{
+    overflow: hidden;
+    padding-left: 10px;
+}
+
+#createMessage
+{
+    overflow: hidden;
+}
+
+#toolBar
+{
+    background-color: #01723b;
+    padding:10px;
+}
+
+#createMessage input, 
+#createMessage textarea{
+    width: 300px;
+    max-height: 100px;
+}
+
+#answerActions
+{
+    clear: both;
+}
+
+#createMessageExpand
+{
+    cursor: pointer;
+}
+
+/* Particular  control elements */
+#loadbutton
+{
+    margin:5px;
+}
+
+/* Message   
+----------------------------------------------------------*/
+#createMessage form p
+{
+    margin-top: 1px;
+    margin-bottom: 1px;
+    margin:3px;
+}
+
+.msgPic
+{
+    width:25px;
+    padding:2px;
+}
+
+.msgText
+{
+    margin-left: 6px;
+}
+
+.msgUserInfoGroup
+{
+    text-align: center;
+    vertical-align: bottom;
+    float:right;
+    margin:2px;
+    padding:2px;
+    height:62px;
+}
+
+.evaluationGroup
+{
+    text-align: center;
+    float:right;
+    padding:2px;
+    margin:2px;
+    height:62px;
+}
+
+.evalLabel
+{
+    position:absolute;
+    background-color: #E3EEE3;
+    border-width: 1px;
+    border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-style: solid;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+#msgHolder
+{
+    margin-bottom: 5px;
+    overflow: auto;
+}
+
+/* TAB MENU   
+----------------------------------------------------------*/
+ul#menu li {
+    display: inline;
+    list-style: none;
+}
+
+#menu
+{
+    margin: 0px;
+    padding: 0px;
+}
+
+/* FORM LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+fieldset {
+    border: 1px solid #ddd;
+    padding: 0 1.4em 1.4em 1.4em;
+    margin: 0 0 1.5em 0;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+textarea {
+    min-height: 75px;
+}
+
+input[type="text"], 
+input[type="password"],
+input[type="file"],
+input[type="number"],
+input[type="email"] {
+    border: 1px solid #ccc;
+    height:15px;
+    font-size: 0.8em;
+    color: #444;
+    width: 150px;
+}
+
+input.watermark
+{
+    color : #999;
+}
+
+select {
+    border: 1px solid #ccc;
+    font-size: 0.8em;
+    color: #444;
+}
+
+input[type="submit"] {
+    font-size: 1em;
+}
+
+.fieldWrapper
+{
+    float: left;
+}
+
+/* TABLE
+----------------------------------------------------------*/
+
+table {
+    border: solid 1px #e8eef4;
+    border-collapse: collapse;
+}
+
+table td {
+    padding: 5px;
+    border: solid 1px #01723B;
+}
+
+table th {
+    text-align: left;
+    background-color: #e8eef4;
+    padding: 5px;
+    border: solid 1px #01723B;
+}
+
+/* Rating  
+----------------------------------------------------------*/
+.seen
+{
+    background-color: red;
+}
+.attempted
+{
+    background-color: orange;
+}
+.understood
+{
+    background-color: yellow;
+}
+.proficient
+{
+    background-color: green;
+}
+
+/* MISC  
+----------------------------------------------------------*/
+.clear {
+    clear: both;
+}
+
+.errorlist {
+    color: Red;
+}
+
+div#title {
+    display: block;
+    float: left;
+    text-align: left;
+    margin:10px;
+}
+
+#logindisplay {
+    float:right;
+    background-color: #01723b;
+    display: block;
+    text-align: right;
+    padding: 10px;
+    margin: 0px;
+}
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error {
+    color: #ff0000;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors {
+    font-weight: bold;
+    color: #ff0000;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+/* Styles for editor and display helpers
+----------------------------------------------------------*/
+.display-label, 
+.editor-label {
+    margin: 1em 0 0 0;
+}
+
+.display-field, 
+.editor-field {
+    margin: 0.5em 0 0 0;
+}
+
+.text-box {
+    width: 30em;
+}
+
+.text-box.multi-line {
+    height: 6.5em;
+}
+
+.tri-state {
+    width: 6em;
+}

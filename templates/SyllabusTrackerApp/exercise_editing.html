@@ -1,0 +1,35 @@
+{% extends "SyllabusTrackerApp/base_logged_in.html" %}
+
+{% block content %}
+    {% include "SyllabusTrackerApp/formset_snippet.html" with title="Edit Exercises" formset=exercise_formset target="edit_exercises" %}
+
+    <h1>Add Exercise</h1>
+    <form action="/add_exercise/" method="POST">
+        {% csrf_token %}
+        <table class="simple_table">
+            {{ add_ex_form.as_table }}
+        </table>
+        <input type="submit" />
+    </form>
+
+    <p>
+    <FORM action="/add_exercises/" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <table class="simple_table">
+            {{ exercise_csv_form.as_table }}
+        </table>
+        <input type="submit" />
+    </FORM>
+
+    {% include "SyllabusTrackerApp/formset_snippet.html" with title="All ExerciseGroups" formset=exercise_group_formset target="edit_exercises_groups" %}
+
+    <h1>Add ExerciseGroup</h1>
+    <form action="/add_exercise_group/" method="POST">
+        {% csrf_token %}
+        <table class="simple_table">
+            {{ add_ex_group_form.as_table }}
+        </table>
+        <input type="submit" />
+    </form>
+</p>
+{% endblock %}

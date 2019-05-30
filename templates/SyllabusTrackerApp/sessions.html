@@ -1,5 +1,7 @@
 {% extends "SyllabusTrackerApp/base_logged_in.html" %}
 
 {% block content %}
-<div>Notifications</div>
+<table>
+    {{ exercise_form.as_table }}
+</table>s
 {% endblock %}

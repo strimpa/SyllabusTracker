@@ -1,0 +1,29 @@
+{% extends "SyllabusTrackerApp/base.html" %}
+
+{% block title %} {{ title }}&euro; {% endblock %}
+
+{% block navi %}
+<nav>
+    <ul id="menu">
+        <li><a href="/">Home</a></li>
+        {% if user.is_authenticated %} 
+        <li> | <a href="/syllabus/">Syllabus</a></li>
+        <li> | <a href="/profile/">Profile</a></li>
+        {% endif %}
+        {% if entermsg_form %} | 
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}
+
+{% block notification %}
+    <div class="notification">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+{% endblock %}
