@@ -1,5 +1,6 @@
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
 from . import views, account_views, add_data_views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -7,6 +8,38 @@ urlpatterns = [
     path('login/', account_views.login_request, name='login'),
     path('profile/', account_views.profile, name='profile'),
     path('register/', account_views.register, name='register'),
+    path(
+        'password_change/',
+        auth_views.PasswordChangeView.as_view(template_name='SyllabusTrackerApp/change-password.html'),
+        name="password_change"
+    ),
+    path(
+        'password_change/done/',
+        auth_views.PasswordChangeDoneView.as_view(template_name='SyllabusTrackerApp/change-password-done.html'),
+        name="password_change_done"
+    ),
+    path(
+        'password_reset/done/',
+        auth_views.PasswordResetDoneView.as_view(template_name='SyllabusTrackerApp/reset-password-done.html'),
+        name="password_reset_done"
+    ),
+    path(
+        'password_reset/confirm/<uidb64>/<token>/',
+        auth_views.PasswordResetConfirmView.as_view(template_name='SyllabusTrackerApp/reset-password-confirm.html'),
+        name="password_reset_confirm"
+    ),
+    path(
+        'password_reset/complete/',
+        auth_views.PasswordResetCompleteView.as_view(template_name='SyllabusTrackerApp/reset-password-complete.html'),
+        name="password_reset_complete"
+    ),
+    path(
+        'password_reset/',
+        auth_views.PasswordResetView.as_view(template_name='SyllabusTrackerApp/reset-password.html'),
+        name="password_reset"
+    ),
+
+    path('register_confirm/', account_views.register_confirm, name='register_confirm'),
     path('forgot_password/', account_views.forgot_password, name='forgot_password'),
     path('user_home/', views.home, name='user_home'),
     path('syllabus/', views.syllabus, name='syllabus'),

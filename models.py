@@ -90,6 +90,14 @@ class Membership(models.Model):
     def __str__(self):
        return (self.user.full_name + ":" +str(memberID))
 
+class RegistrationRequest(models.Model):
+    user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
+    guid = models.CharField(max_length=64)
+    request_date = models.DateField(auto_now_add=True)
+    
+    def __str__(self):
+       return (self.user.full_name + ":" +str(request_date) + ":" +guid)
+
 class Session(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     attendants = models.ManyToManyField(Jitsuka, related_name="%(class)s_session_attendants")

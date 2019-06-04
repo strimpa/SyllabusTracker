@@ -14,8 +14,8 @@
 	        <header>
 	            <div id="title">
 	                <a href="/"><img width="100px" src="{% static 'images/logo.png' %}"></a>
-	            </div>
-				{% include "SyllabusTrackerApp/logOnDisplay.html" %}
+				</div>
+				{% block login_display %}{% endblock %}
 	            <br style="clear:both;" />
 	        </header>
 			<section id="main">
@@ -23,7 +23,7 @@
 				<div id="toolBar" class="headerField">
 						{% block navi %}{% endblock %}
 				</div>
-				<div id="content">
+				<div id="content" class="contentColours">
 					{% block notification %}{% endblock %}
 					{% block content %}{% endblock %}
 				</div>

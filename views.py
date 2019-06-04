@@ -7,6 +7,7 @@ from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .view_utils import *
 
 def index(request):
     if request.user.is_authenticated:
@@ -16,25 +17,20 @@ def index(request):
         next = request.GET['next']
     return render(request, 'SyllabusTrackerApp/index.html', 
         {
+            'title':"Start",
             'login_form':LoginForm(),
             'target_url':next
         })
 
-def check_membership(user):
-    if not user.is_authenticated:
-        return HttpResponseRedirect('/')
-    else:
-        try:
-            return Membership.objects.get(user = user)
-        except:
-            return HttpResponseRedirect('/profile/') # Redirect after POST
-
 @login_required
 def home(request):
-    check_membership(request.user)  
+    membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     latest_session_list = Session.objects.all()[:5]
     context = {
+        'title':"Home",
         'latest_session_list': latest_session_list,
         'login_form':LoginForm()
     }
@@ -101,7 +97,9 @@ def find_or_create_leaf(group, group_root, curr_depth):
 # Shoowing the syllabus with the user's ratings
 def syllabus(request):
     membership = check_membership(request.user)
- 
+    if isinstance(membership, HttpResponse):
+       return membership
+
     all_exercises = []
     my_ratings = membership.ratings.all()
     groups = ExerciseGroup.objects.all()
@@ -140,6 +138,7 @@ def syllabus(request):
     print_hier(display_root, 0)
             
     context = {
+        'title':"Syllabus",
         'display_root': display_root,
         'depth':5
     }
@@ -148,6 +147,8 @@ def syllabus(request):
 @login_required
 def exercise_editing(request, successful_add=False):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     all_groups = ExerciseGroup.objects.all()
     ExerciseGroupFormSet = modelformset_factory(ExerciseGroup, form=ExerciseGroupForm, can_delete=True, exclude=(), extra=0)
@@ -157,6 +158,7 @@ def exercise_editing(request, successful_add=False):
     exercise_csv_form = UploadFileForm()
     ex_edit_form = ExerciseFormSet(initial=Exercise.objects.all().values())
     context = {
+        'title':"Exercise Editing",
         'exercise_formset':ex_edit_form,
         'all_groups':all_groups,
         'add_ex_form':add_ex_form,
@@ -176,6 +178,8 @@ def sessions(request):
 @login_required
 def add_kyus(request):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     kyu_form = KyuForm(request.GET)
     if kyu_form.is_valid():

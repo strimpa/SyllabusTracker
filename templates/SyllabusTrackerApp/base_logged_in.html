@@ -2,13 +2,16 @@
 
 {% block title %} {{ title }}&euro; {% endblock %}
 
+{% block login_display %}
+{% include "SyllabusTrackerApp/logOnDisplay.html" %}
+{% endblock %}
+
 {% block navi %}
 <nav>
     <ul id="menu">
         <li><a href="/">Home</a></li>
         {% if user.is_authenticated %} 
         <li> | <a href="/syllabus/">Syllabus</a></li>
-        <li> | <a href="/profile/">Profile</a></li>
         {% endif %}
         {% if entermsg_form %} | 
         {% endif %}

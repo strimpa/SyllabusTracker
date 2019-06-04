@@ -1,33 +1,12 @@
-{% load staticfiles %}
+{% extends "SyllabusTrackerApp/base.html" %}
 
-<html>
-	<head>
-		<title>-- SyllabusTracker / {{title}} --</title>
-		<link rel="stylesheet" type="text/css" href="{% static 'Site.css' %}" />
-		<link rel="stylesheet" type="text/css" href="{% static 'scripts/lib/jquery-ui.min.css' %}" />
-		<link rel="stylesheet" type="text/css" href="{% static 'scripts/lib/jquery.tagit.css' %}" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
-		<script data-main="{% static 'scripts/main' %}" src="{% static 'scripts/require.js' %}"></script>
-	</head>
-	<body>
-	    <div class="page">
-	        <header>
-	            <div id="title">
-	                <a href="/"><img width="100px" src="{% static 'images/logo.png' %}"></a>
-	            </div>
-				{% include "SyllabusTrackerApp/logOnDisplay.html" %}
-	            <br style="clear:both;" />
-	        </header>
-			<section id="main">
-				<H1>{{title}}</H1>
-				<div id="toolBar" class="headerField">
-				</div>
-				<div id="content">SyllabusTracker is a web application to track progress per user over a set of exercises and sessions.<br />
-					Please log in to start tracking!
-				</div>
-			</section>
-        <footer class="headerField">
-	        </footer>
-	    </div>
-	</body>
-</html>
+{% block content %}
+<div class="contentColours initial">
+	<p>SyllabusTracker is a web application to track progress per user over a set of exercises and sessions.<br />
+	Please log in to start tracking!
+	</p>
+	<div id="initial_login">
+		{% include "SyllabusTrackerApp/login_form.html" %}
+	</div>
+</div>
+{% endblock %}

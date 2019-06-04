@@ -19,6 +19,8 @@ def back_to_editing(request, notification, isError=False):
 @login_required
 def rate(request):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     #processing incoming rating
     if request.method == "POST":
@@ -37,6 +39,8 @@ def rate(request):
 @login_required
 def edit_exercises(request):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     if request.method == 'POST':
         data = request.POST
@@ -60,6 +64,8 @@ def edit_exercises(request):
 @login_required
 def add_exercise(request):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     #processing incoming chnges
     if request.method == 'POST':
@@ -81,6 +87,8 @@ def add_exercise(request):
 @login_required
 def add_exercises(request):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     #processing incoming chnges
     notification = 'Successfully added!'
@@ -107,6 +115,8 @@ def add_exercises(request):
 @login_required
 def edit_exercises_groups(request):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     if request.method == 'POST':
         data = request.POST
@@ -138,6 +148,8 @@ def edit_exercises_groups(request):
 @login_required
 def add_exercise_group(request):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     #processing incoming chnges
     if request.method == 'POST':
@@ -160,6 +172,8 @@ def add_exercise_group(request):
 @login_required
 def add_kyus(request):
     membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
     kyu_form = KyuForm(request.GET)
     if kyu_form.is_valid():

@@ -1,8 +1,9 @@
 import json
 import string
+import uuid
 
 from django.shortcuts import render_to_response, render
-from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu
+from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest
 from SyllabusTrackerApp.forms import AccountForm, ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,6 +11,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.forms import SetPasswordForm, UserChangeForm
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .view_utils import *
 
@@ -70,45 +73,55 @@ def logout_request(request):
 
     
 def register(request):
-	register_form = RegisterForm()
-	
-	if request.method == "POST":
-		register_form = RegisterForm(request.POST, request.FILES)
-		if register_form.is_valid():
-			the_user = Jitsuka.objects.create_user(
-				register_form.cleaned_data['username'], 
-				register_form.cleaned_data['email'])
-			register_form = RegisterForm(request.POST, request.FILES, instance=the_user)
-			register_form.save()
+    register_form = RegisterForm()
 
-			from django.core.mail import send_mail
-			send_mail('Please confirm your registration', lang('REG_CONFIRMATION_MAIL', the_user.username, the_user.guid), 'dont_reply@tuets.com', [the_user.email])
-			return HttpResponseRedirect('/') # Redirect after POST
+    if request.method == "POST":
+        register_form = RegisterForm(request.POST, request.FILES)
+    if register_form.is_valid():
+        the_user = Jitsuka.objects.create_user(
+            register_form.cleaned_data['username'], 
+            register_form.cleaned_data['email'])
+        register_form = RegisterForm(request.POST, request.FILES, instance=the_user)
+        register_form.save()
 
-	return render(request, "SyllabusTrackerApp/register.html", {
-		'register_form'		: register_form,
-		'login_form'		: LoginForm(),
-		'title'				: "Register"
-		})
+        reg_id = uuid.uuid4()
+        reg = RegistrationRequest(user=the_user, guid=reg_id)
+        reg.save()
 
-
-def registerConfirm(request, userId=''):
-    confirmation_text = lang('REG_CONFIRMATION')
-    if ''!=userId:
-        try:
-            usr = Jitsuka.objects.get(guid=userId)
-            usr.is_active = True
-            usr.save()
-            confirmation_text = lang('REG_CONFIRMATION_SUBMITTED', usr.username)
-        except ObjectDoesNotExist:
-            confirmation_text = lang('REG_CONFIRMATION_FAILED')
+        from django.core.mail import send_mail
+        #send_mail('Please confirm your registration', lang('REG_CONFIRMATION_MAIL', the_user.username, the_user.guid), 'dont_reply@tuets.com', [the_user.email])
+        return HttpResponse("<a href=\"/register_confirm/?name=the_user.username&id="+str(reg_id)+"\">Click</a>") # Redirect after POST
 
     return render(request, "SyllabusTrackerApp/register.html", {
-        'confirmation':True,
-        'confirmation_text':confirmation_text,
-        'login_form':LoginForm(),
-        'title':"Register"
+            'register_form'		: register_form,
+            'login_form'		: LoginForm(),
+            'title'				: "Register"
         })
+
+
+def register_confirm(request):
+    if request.method == "GET":
+        regId = request.GET['id']
+        if ''!=regId:
+            try:
+                reg = RegistrationRequest.objects.get(guid=regId)
+                usr = reg.user
+                usr.is_active = True
+                usr.save()
+                messages.info(request, "Welcome\""+usr.username+"\"! Please log in to fill in your membership data!")
+                return redirect("/profile/")
+            except ObjectDoesNotExist:
+                pass
+
+    confirmation_text = "registration failed"
+    return render(request, "SyllabusTrackerApp/register.html", {
+        'confirmation':False,
+        'confirmation_text':confirmation_text,
+        'register_form': RegisterForm(),
+        'login_form':LoginForm(),
+        'title':"Register again, please!"
+        })
+        
 
 @login_required
 def profile(request, username=None):
@@ -176,6 +189,6 @@ def profile(request, username=None):
         'tisMe':tisMe,
         'membership_form':membership_form,
         'login_form':ProfileForm(instance=theUser),
-        'title': ("Public profile of "+theUser.username),
+        'title': ("Profile of "+theUser.username),
         'found_membership':found_membership
         })

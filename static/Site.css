@@ -59,29 +59,24 @@ section {
     display: block;
 }
 
-table
-{
-    font-size: inherit;
-    text-align: left;
-}
-
-th
-{
-    font-weight: normal;
-}
-
-table label
-{
-/*
-    display: none;
-*/
-}
-
-
 .errorMsg
 {
     color:#811;
 }
+
+.initial
+{
+    text-align: center;
+    margin: auto;
+}
+
+#initial_login
+{
+    margin:auto;
+    width:min-content;
+/*    text-align: left; */
+}
+
 /* HEADINGS   
 ----------------------------------------------------------*/
 h1, h2, h3, h4, h5, h6 {
@@ -155,64 +150,19 @@ header h1, #header h1 {
     font-family: '616';
 }
 
+#content
+{
+    padding:10px;
+    border-radius: 5px 0px 0px 5px;
+    -webkit-border-radius: 5px 0 0 5px;
+    -moz-border-radius: 5px 0 0 5px;
+    color: #01723b;
+}
+
 .contentColours
 {
     background-color: #e3eee3;
-    color: #131;
 }
-
-.innerContentBorder{
-    border-width: 0px 0px 0px 1px;;
-    border-radius: 5px 5px 5px 5px;
-    -webkit-border-radius: 5px 5px 5px 5px;
-    -moz-border-radius: 5px 5px 5px 5px;
-    border-style: solid;
-}
-
-.messageDimensions
-{
-    max-width: 400px;
-    min-width: 300px;
-    border-width: 0px 0px 0px 1px;
-    border-radius: 5px 5px 5px 5px;
-    -webkit-border-radius: 5px 5px 5px 5px;
-    -moz-border-radius: 5px 5px 5px 5px;
-/*    border-style: solid;
-*/    overflow:auto;
-}
-
-.innerMessageDiv
-{
-    background-color: #F3FEF3;
-    border-width: 0px;
-    border-radius: 5px 5px 5px 5px;
-    -webkit-border-radius: 5px 5px 5px 5px;
-    -moz-border-radius: 5px 5px 5px 5px;
-    border-style: solid;
-    padding:2px;
-    margin:3px;
-}
-
-.innerMessageDiv p
-{
-    margin-top:0px;
-    margin-bottom:0px;
-}
-
-.answerBox
-{
-    display: inline-block;
-    margin-left: 30px;
-}
-
-.answerDiv
-{
-    background-color: #084;
-    padding-left: 5px;
-    padding-top: 2px;
-    margin: 1px;
-}
-
 .menuBlock
 {
     display: block;
@@ -228,107 +178,16 @@ footer,
     color: #999;
     text-align: center;
     line-height: normal;
-    margin: 10px 0px 10px 10px;
+    margin: 0px 0px 10px 10px;
     font-size: .9em;
     height: 50px;
 
-}
-
-#messages
-{
-    overflow: hidden;
-    padding-left: 10px;
-}
-
-#createMessage
-{
-    overflow: hidden;
 }
 
 #toolBar
 {
     background-color: #01723b;
     padding:10px;
-}
-
-#createMessage input, 
-#createMessage textarea{
-    width: 300px;
-    max-height: 100px;
-}
-
-#answerActions
-{
-    clear: both;
-}
-
-#createMessageExpand
-{
-    cursor: pointer;
-}
-
-/* Particular  control elements */
-#loadbutton
-{
-    margin:5px;
-}
-
-/* Message   
-----------------------------------------------------------*/
-#createMessage form p
-{
-    margin-top: 1px;
-    margin-bottom: 1px;
-    margin:3px;
-}
-
-.msgPic
-{
-    width:25px;
-    padding:2px;
-}
-
-.msgText
-{
-    margin-left: 6px;
-}
-
-.msgUserInfoGroup
-{
-    text-align: center;
-    vertical-align: bottom;
-    float:right;
-    margin:2px;
-    padding:2px;
-    height:62px;
-}
-
-.evaluationGroup
-{
-    text-align: center;
-    float:right;
-    padding:2px;
-    margin:2px;
-    height:62px;
-}
-
-.evalLabel
-{
-    position:absolute;
-    background-color: #E3EEE3;
-    border-width: 1px;
-    border-radius: 5px 5px 5px 5px;
-    -webkit-border-radius: 5px 5px 5px 5px;
-    -moz-border-radius: 5px 5px 5px 5px;
-    border-style: solid;
-    overflow: hidden;
-    visibility: hidden;
-}
-
-#msgHolder
-{
-    margin-bottom: 5px;
-    overflow: auto;
 }
 
 /* TAB MENU   
@@ -397,9 +256,25 @@ input[type="submit"] {
 /* TABLE
 ----------------------------------------------------------*/
 
-table {
+table
+{
+    font-size: inherit;
+    text-align: left;
     border: solid 1px #e8eef4;
     border-collapse: collapse;
+    margin: 5px;
+}
+
+th
+{
+    font-weight: normal;
+}
+
+table label
+{
+/*
+    display: none;
+*/
 }
 
 table td {
