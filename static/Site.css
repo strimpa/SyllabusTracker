@@ -81,23 +81,21 @@ section {
 ----------------------------------------------------------*/
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Verdana';
-    font-size: 1.5em;
+    font-weight: normal;
  }
 
 h1 {
     font-size: 1.5em;
-    padding: 3px;
     margin: 0;
 }
 
 #main h1
 {
-    margin-left: 5px;
     margin-bottom: -4px;
 }
 
 h2 {
-    padding: 0 0 10px 0;
+    font-size: 1.2em;
 }
 
 h3 {
@@ -287,6 +285,11 @@ table th {
     background-color: #e8eef4;
     padding: 5px;
     border: solid 1px #01723B;
+}
+
+table.syllabus td
+{
+    border-width: 0px;
 }
 
 /* Rating  

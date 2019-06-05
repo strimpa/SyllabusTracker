@@ -47,7 +47,7 @@ class DisplayLeaf():
         self.depth = depth
     
     def __str__(self):
-        return "DisplayLeaf:"+self.name
+        return "DisplayLeaf:"+self.name+": "+str(self.depth)
 
 def find_leaf(leaf_name, root):
     if root.name == leaf_name:
@@ -74,15 +74,18 @@ def print_hier(leaf, depth):
         for c, r in leaf.exercises:
             print_hier(c, depth+1)
 
-def find_or_create_leaf(group, group_root, curr_depth):
+def find_or_create_leaf(group, group_root, root_depth):
     display_leaf = find_leaf(group.name, group_root)
     if display_leaf == None:
-        display_leaf = DisplayLeaf(group.name, group.show_in_hierarchy, group.list_order_index, curr_depth)
+        display_leaf = DisplayLeaf(group.name, group.show_in_hierarchy, group.list_order_index, root_depth)
 
     root_leaf = group_root
     parent_leaf = group_root
     if group.parent_group != None:
-        parent_leaf = find_or_create_leaf(group.parent_group, group_root, curr_depth+1)
+        parent_leaf = find_or_create_leaf(group.parent_group, group_root, root_depth)
+        #only increase the depth if the leaf is shown in hierarchy
+        if parent_leaf.show_in_hierarchy:
+            display_leaf.depth = parent_leaf.depth+1
     
     if not display_leaf in parent_leaf.children:
         curr_index = 0
@@ -106,7 +109,7 @@ def syllabus(request):
     #find groups per order
     root_group_names = ['Kyu', 'Waza']  
 
-    display_root = DisplayLeaf("Display root", False, 0, 1)
+    display_root = DisplayLeaf("Display root", False, 0, 0)
     depth = 0
     for ex in Exercise.objects.order_by("list_order_index"):
         rating = None
@@ -128,7 +131,7 @@ def syllabus(request):
         for ex_group in ordered_groups:
             print ("exercise:"+ex.name+" ex_group.name:"+ex_group.name+" current_root:"+str(current_root))
             # create copies for child groups
-            group_leaf = find_or_create_leaf(ex_group, current_root, current_root.depth)
+            group_leaf = find_or_create_leaf(ex_group, current_root, current_root.depth+1)
             print("found or created root leaf "+group_leaf.name)
             current_root = group_leaf
             append_exercise = ex_group == ordered_groups[-1]
