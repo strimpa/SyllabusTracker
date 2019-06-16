@@ -90,7 +90,7 @@ def register(request):
         reg.save()
 
         from django.core.mail import send_mail
-        send_mail('Please confirm your registration', "<a href=\"/register_confirm/?name=the_user.username&id="+str(reg_id)+"\">Click</a>", 'dont_reply@tuets.com', [the_user.email])
+        send_mail('Please confirm your registration', "<a href=\"/register_confirm/?name=the_user.username&id="+str(reg_id)+"\">Click</a>", 'dont_reply@SyllabusTracker.club', [the_user.email])
         #return HttpResponse("<a href=\"/register_confirm/?name=the_user.username&id="+str(reg_id)+"\">Click</a>") # Redirect after POST
         messages.info(request, "Check your email '"+the_user.email+"' for your activation link!")
         return HttpResponseRedirect("/")
