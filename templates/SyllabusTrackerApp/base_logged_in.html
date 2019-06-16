@@ -9,11 +9,14 @@
 {% block navi %}
 <nav>
     <ul id="menu">
-        <li><a href="/">Home</a></li>
-        {% if user.is_authenticated %} 
-        <li> | <a href="/syllabus/">Syllabus</a></li>
-        {% endif %}
-        {% if entermsg_form %} | 
+        <div class="menu_column"><a href="/">Home</a></div>
+        {% if user.is_assistent_instructor_or_instructor %} 
+        <div class="menu_column">| Syllabus <br />
+            <li><a href="{% url 'syllabus' %}">My Rating</a></li>
+            <li><a href="{% url 'syllabus_summary' whose='my_students' %}">Summary</a></li>
+        </div>
+        {% else %}
+        <div class="menu_column">| <a href="/syllabus/">Syllabus</a></div>
         {% endif %}
     </ul>
 </nav>

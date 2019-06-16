@@ -1,7 +1,9 @@
 from django.urls import path, include, reverse_lazy
 from . import views, account_views, add_data_views
 from django.contrib.auth import views as auth_views
+from .class_views.syllabus import SyllabusView
 
+#
 urlpatterns = [
     path('', views.index, name='index'),
     path('logout/', account_views.logout_request, name='logout'),
@@ -42,7 +44,8 @@ urlpatterns = [
     path('register_confirm/', account_views.register_confirm, name='register_confirm'),
     path('forgot_password/', account_views.forgot_password, name='forgot_password'),
     path('user_home/', views.home, name='user_home'),
-    path('syllabus/', views.syllabus, name='syllabus'),
+    path('syllabus/', SyllabusView.as_view(), name='syllabus'),
+    path('syllabus/<whose>/', SyllabusView.as_view(), name='syllabus_summary'),
     path('add_exercise/', add_data_views.add_exercise, name='add_exercise'),
     path('add_exercises/', add_data_views.add_exercises, name='add_exercises'),
     path('add_exercise_group/', add_data_views.add_exercise_group, name='add_exercise_group'),

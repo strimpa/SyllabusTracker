@@ -1,5 +1,17 @@
 {% extends "SyllabusTrackerApp/base.html" %}
 
+{% block notification %}
+    <div class="notification">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+{% endblock %}
+
 {% block content %}
 <div class="contentColours initial">
 	<p>SyllabusTracker is a web application to track progress per user over a set of exercises and sessions.<br />

@@ -3,18 +3,18 @@
 {% block content %}
 	<div id="userProfile" class="contentColours innerContentBorder">
 		<form action="/profile/">
-		<table>
+		<table>//
 		{{ login_form.as_table }}
 		</table>
 		<input type="submit" value="Update" />
-		</form>
+		</form>/
 		<p />
 		{% if not found_membership %}
 			<div clas="warning">No membership data has been found - Fill in your details before continuing!</div>
 		{% endif %}
 		<form action="/profile/">
 			<table>
-			{{ membership_form.as_table }}
+			{{ membership_form.as_table }}/
 			</table>
 			<input type="submit" value="Update" />
 		</form>

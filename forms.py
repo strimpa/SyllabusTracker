@@ -61,7 +61,8 @@ class ExerciseEditForm(forms.ModelForm):
 class MembershipForm(ModelForm):
     class Meta:
         model = Membership
-        fields = ['memberID', 'kyu' , 'instructor']
+        exclude = ['user', 'ratings']
+#        fields = ['memberID', 'kyu' , 'instructor']
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()

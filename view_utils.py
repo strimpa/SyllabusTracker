@@ -6,6 +6,9 @@ def check_membership(user):
         return redirect('/')
     else:
         try:
-            return Membership.objects.get(user = user)
-        except:
+            res = Membership.objects.get(user = user)
+            #print(str(res))
+            return res
+        except Exception as e: 
+            print(e)
             return redirect('/profile/') # Redirect after POST

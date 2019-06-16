@@ -46,32 +46,21 @@ class Club(models.Model):
     def __str__(self):
        return self.name
 
-class Rating(models.Model):
-    PROFICIENCY_LEVEL = (
-        ('S', 'seen'),
-        ('A', 'attempted'),
-        ('U', 'understood'),
-        ('P', 'proficient')
-    )
-    exercise = models.ForeignKey(Exercise, on_delete=models.SET_NULL, blank=True, null=True)
-    comment = models.CharField(max_length=60)
-    proficiency = models.CharField(max_length=1, choices=PROFICIENCY_LEVEL)
-    rate_date = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-       return (self.exercise.name + ":" + self.proficiency)
-
 class Jitsuka(AbstractUser):
-    user_name = models.CharField(max_length=200)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    email = models.EmailField(max_length=256)
-    
     def __str__(self):
        return self.username 
 
     def full_name(self):
         return (first_name + " " + last_name)
+
+    def is_instructor(self):
+        return self.groups.filter(name="Instructors").exists()
+
+    def is_assistent_instructor(self):
+        return self.groups.filter(name="Assistent Instructors").exists()
+
+    def is_assistent_instructor_or_instructor(self):
+        return self.groups.filter(name__endswith="Instructors").exists()
 
 class Membership(models.Model):
     user = models.ForeignKey(Jitsuka, null=True, on_delete=models.CASCADE, related_name="%(class)s_membership_user")
@@ -79,16 +68,13 @@ class Membership(models.Model):
     pic = models.ImageField(height_field=1000, width_field=1000, max_length=256, null=True)
     kyu = models.ForeignKey(Kyu, on_delete=models.SET_NULL, blank=True, null=True)
     club = models.ForeignKey(Club, on_delete=models.SET_NULL, blank=True, null=True)
-    is_senior = models.BooleanField(default=False)
-    is_instructor = models.BooleanField(default=False)
     instructor = models.ForeignKey('Jitsuka', models.SET_NULL, blank=True, null=True)   
     sign_up_date = models.DateField(auto_now_add=True)
     leaving_date = models.DateField(auto_now_add=False, null=True)
     insurance_expiry_date = models.DateField(auto_now_add=False, null=True)
-    ratings = models.ManyToManyField(Rating)
     
     def __str__(self):
-       return (self.user.full_name + ":" +str(memberID))
+       return (self.user.username + ":" + str(self.memberID))
 
 class RegistrationRequest(models.Model):
     user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
@@ -96,7 +82,28 @@ class RegistrationRequest(models.Model):
     request_date = models.DateField(auto_now_add=True)
     
     def __str__(self):
-       return (self.user.full_name + ":" +str(request_date) + ":" +guid)
+        return (self.user.full_name + ":" +str(request_date) + ":" +guid)
+
+class Rating(models.Model):
+    PROFICIENCY_LEVEL = (
+        ('S', 'seen'),
+        ('A', 'attempted'),
+        ('U', 'understood'),
+        ('P', 'proficient')
+    )
+    PROFICIENCY_TOKENS = (
+        'S', 'A', 'U', 'P'
+    )
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=60)
+    proficiency = models.CharField(max_length=1, choices=PROFICIENCY_LEVEL)
+    rate_date = models.DateTimeField(auto_now_add=True)
+    rater = models.ForeignKey(Membership, related_name="ratings", on_delete=models.CASCADE)
+    
+    def __str__(self):
+        if self.exercise == None:
+            return "Invalid rating!"
+        return (self.exercise.name + ":" + self.proficiency)
 
 class Session(models.Model):
     date = models.DateTimeField(auto_now_add=True)

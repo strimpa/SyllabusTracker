@@ -4,8 +4,8 @@
     {% if successful_add %}
         <div class="notification">Successfully added the exercise!</div>
     {% endif %}
-
-    <h1>Edit Exercises</h1>
+    <h1>Exercises</h1>
+    <h2>Edit Exercises</h2>
         <form action="/edit_exercises/" method="POST">
             {% csrf_token %}
             {{ id }}
@@ -28,37 +28,7 @@
             <button type="submit">Submit</button>
         </form>
 
-            <!--        
-    {% if all_exercises %}
-                <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Groups</th>
-            <th></th>
-        </tr>
-        {% for exc, groups in all_exercises %}
-            <form action="/syllabus/">
-                <tr>
-                    <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
-                    <td>{{ exc.description }}</td>
-                    <td>
-                        <select multiple>
-                        {% for group in all_groups %}
-                           <option value="{{ group.name }}">{{ group.name }}</option>
-                        {% endfor %}
-                        </select> 
-                    </td>
-                    <td><input type="submit" value="Update" /></td>
-                </tr>
-            </form>
-        {% endfor %}
-        </table>
-    {% else %}
-        <p>No exercises are available.</p>
-    {% endif %}	
--->
-
-    <h1>Add Exercise</h1>
+    <h2>Add Exercise</h2>
     <form action="/add_exercise/">
     <table class="simple_table">
     {{ add_ex_form.as_table }}
@@ -66,6 +36,7 @@
     <input type="submit" />
     </form>
 
+    <h2>Upload Syllabus .csv file</h2>
     <p>
     <FORM action="/add_exercise">
         <table class="simple_table">
@@ -74,7 +45,9 @@
         <input type="submit" />
     </FORM>
 
-    <h1>All ExerciseGroups</h1>
+    <hr />
+    <h1>Exercise Groups</h1>
+    <h2>All ExerciseGroups</h2>
     <form>
         <table>
                 {{ exercise_group_formset.management_form }}
@@ -92,7 +65,7 @@
         </table>
     </form>
 
-    <h1>Add ExerciseGroup</h1>
+    <h2>Add ExerciseGroup</h>
         <form action="/add_exercise/">
             <table class="simple_table">
                 {{ add_ex_group_form.as_table }}

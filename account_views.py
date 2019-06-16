@@ -1,6 +1,7 @@
 import json
 import string
 import uuid
+from datetime import date, datetime
 
 from django.shortcuts import render_to_response, render
 from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest
@@ -89,8 +90,10 @@ def register(request):
         reg.save()
 
         from django.core.mail import send_mail
-        #send_mail('Please confirm your registration', lang('REG_CONFIRMATION_MAIL', the_user.username, the_user.guid), 'dont_reply@tuets.com', [the_user.email])
-        return HttpResponse("<a href=\"/register_confirm/?name=the_user.username&id="+str(reg_id)+"\">Click</a>") # Redirect after POST
+        send_mail('Please confirm your registration', "<a href=\"/register_confirm/?name=the_user.username&id="+str(reg_id)+"\">Click</a>", 'dont_reply@tuets.com', [the_user.email])
+        #return HttpResponse("<a href=\"/register_confirm/?name=the_user.username&id="+str(reg_id)+"\">Click</a>") # Redirect after POST
+        messages.info(request, "Check your email '"+the_user.email+"' for your activation link!")
+        return HttpResponseRedirect("/")
 
     return render(request, "SyllabusTrackerApp/register.html", {
             'register_form'		: register_form,
@@ -106,10 +109,19 @@ def register_confirm(request):
             try:
                 reg = RegistrationRequest.objects.get(guid=regId)
                 usr = reg.user
-                usr.is_active = True
-                usr.save()
-                messages.info(request, "Welcome\""+usr.username+"\"! Please log in to fill in your membership data!")
-                return redirect("/profile/")
+                day_delta = datetime.today().date() - reg.request_date    
+
+                returnObject = redirect("/profile/")
+                if day_delta.days<14:
+                    usr.is_active = True
+                    usr.save()
+                    messages.info(request, "Welcome\""+usr.username+"\"! Please log in to fill in your membership data!")
+                else:
+                    messages.Error(request, "Sorry\""+usr.username+"\", you made this request more than 14 days ago, please register again!")
+                    returnObject = redirect("/register/")
+
+                reg.delete()
+                return returnObject
             except ObjectDoesNotExist:
                 pass
 
@@ -126,8 +138,8 @@ def register_confirm(request):
 @login_required
 def profile(request, username=None):
     membership = check_membership(request.user)
-#    if isinstance(membership, HttpResponse):
-#       return membership
+    if isinstance(membership, HttpResponse):
+       return membership
 
     tisMe = True
     theUser = request.user

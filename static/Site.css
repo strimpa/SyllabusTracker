@@ -9,7 +9,7 @@ body {
     margin: 0;
     padding: 0;
     color: #9B7;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 @font-face {
@@ -190,9 +190,9 @@ footer,
 
 /* TAB MENU   
 ----------------------------------------------------------*/
-ul#menu li {
-    display: inline;
-    list-style: none;
+.menu_column 
+{
+    display: inline-table;
 }
 
 #menu
@@ -263,11 +263,6 @@ table
     margin: 5px;
 }
 
-th
-{
-    font-weight: normal;
-}
-
 table label
 {
 /*
@@ -276,14 +271,14 @@ table label
 }
 
 table td {
-    padding: 5px;
+    padding: 0px;
     border: solid 1px #01723B;
 }
 
 table th {
     text-align: left;
     background-color: #e8eef4;
-    padding: 5px;
+    padding:2px;
     border: solid 1px #01723B;
 }
 
