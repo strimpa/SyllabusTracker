@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from SyllabusTrackerApp.models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup)
+from .models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup)
 
 MAX_USERNAME_LENGTH = 100
 
