@@ -105,7 +105,6 @@ class SyllabusView(View):
                     rating_index = Rating.PROFICIENCY_TOKENS.index(student_rating)
                     rating.rating_average += rating_index
                 number_ratings = len(rating.students_ratings)
-                print(rating.name+":"+str(rating.students_ratings))
                 rating.rating_average /= number_ratings
         else:
             my_ratings = membership.ratings.all().order_by("-rate_date")
