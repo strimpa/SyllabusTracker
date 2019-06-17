@@ -41,7 +41,7 @@ urlpatterns = [
         name="password_reset"
     ),
 
-    path('register_confirm/', account_views.register_confirm, name='register_confirm'),
+    path('register_confirm/<name>/<id>', account_views.register_confirm, name='register_confirm'),
     path('forgot_password/', account_views.forgot_password, name='forgot_password'),
     path('user_home/', views.home, name='user_home'),
     path('syllabus/', SyllabusView.as_view(), name='syllabus'),

@@ -16,6 +16,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .view_utils import *
+from django.urls import reverse
 
 def login_request(request):
 
@@ -90,7 +91,9 @@ def register(request):
         reg.save()
 
         from django.core.mail import send_mail
-        send_mail('Please confirm your registration', "<a href=\"/register_confirm/?name=the_user.username&id="+str(reg_id)+"\">Click</a>", 'dont_reply@SyllabusTracker.club', [the_user.email])
+        target_url = reverse('register_confirm', kwargs={'name':the_user.username, 'id':reg_id})
+        msg = "<html><body>Click on this link to confirm you membership:<a href=\""+target_url+"\">"+target_url+"</a></body></html>"
+        send_mail('SyllabusTracker: Confirm your registration', msg, 'dont_reply@SyllabusTracker.club', [the_user.email])
         messages.info(request, "Check your email '"+the_user.email+"' for your activation link!")
         return HttpResponseRedirect("/")
 
@@ -101,28 +104,30 @@ def register(request):
         })
 
 
-def register_confirm(request):
-    if request.method == "GET":
-        regId = request.GET['id']
-        if ''!=regId:
-            try:
-                reg = RegistrationRequest.objects.get(guid=regId)
-                usr = reg.user
-                day_delta = datetime.today().date() - reg.request_date    
+def register_confirm(request, name, id):
+    if ''!=id:
+        try:
+            reg = RegistrationRequest.objects.get(guid=id)
+            usr = reg.user
 
-                returnObject = redirect("/profile/")
+            returnObject = redirect("/profile/")
+            if(usr.username != name):
+                messages.Error(request, "Sorry, \""+name+"\", this request seems to have come from a different user - please register again!")
+                returnObject = redirect("/register/")
+            else:
+                day_delta = datetime.today().date() - reg.request_date    
                 if day_delta.days<14:
                     usr.is_active = True
                     usr.save()
-                    messages.info(request, "Welcome\""+usr.username+"\"! Please log in to fill in your membership data!")
+                    messages.info(request, "Welcome \""+usr.username+"\"! Please log in to fill in your membership data!")
                 else:
-                    messages.Error(request, "Sorry\""+usr.username+"\", you made this request more than 14 days ago, please register again!")
+                    messages.Error(request, "Sorry, \""+usr.username+"\", you made this request more than 14 days ago, please register again!")
                     returnObject = redirect("/register/")
 
-                reg.delete()
-                return returnObject
-            except ObjectDoesNotExist:
-                pass
+            reg.delete()
+            return returnObject
+        except ObjectDoesNotExist:
+            pass
 
     confirmation_text = "registration failed"
     return render(request, "SyllabusTrackerApp/register.html", {

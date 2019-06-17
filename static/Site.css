@@ -1,14 +1,14 @@
 ﻿/*----------------------------------------------------------
-The base color for this template is #01723b. If you'd like
+The base color for this template is #544545. If you'd like
 to use a different color start by replacing all instances of
-#01723b with your new color.
+#544545 with your new color.
 ----------------------------------------------------------*/
 body {
     background-image:url("images/BGDot.gif");
     font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
     margin: 0;
     padding: 0;
-    color: #9B7;
+    color: #000;
     font-size: 10px;
 }
 
@@ -23,27 +23,25 @@ body {
 }
 
 a:link, #answerActions a:link {
-    color:#6a4;
     text-decoration: none;
 }
 
 a:visited {
-    color:#9B7;
+    color:#555;
     text-decoration: none;
 }
 
 menu a:visited {
-    color:#bd9;
     text-decoration: none;
 }
 
 a:hover, #answerActions a:hover {
-    color: #bd9;
+    color: #A55;
     text-decoration: none;
 }
 
 a:active, #answerActions a:active{
-    color: #fff;
+    color: #A55;
 }
 
 #answerActions a
@@ -82,6 +80,7 @@ section {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Verdana';
     font-weight: normal;
+    color:#544;
  }
 
 h1 {
@@ -91,7 +90,7 @@ h1 {
 
 #main h1
 {
-    margin-bottom: -4px;
+    margin-left: 8px;
 }
 
 h2 {
@@ -139,27 +138,31 @@ header h1, #header h1 {
 }
 
 .headerField {
+    padding: 10px;
+    font-family: '616';
+}
+
+.headerfooter
+{
     border-radius: 5px 0px 0px 5px;
     -webkit-border-radius: 5px 0 0 5px;
     -moz-border-radius: 5px 0 0 5px;
-    border-color:#9B7;
-    background-color: #01723B;
-    padding: 10px;
-    font-family: '616';
+    background-color: #A00606;
 }
 
 #content
 {
     padding:10px;
+    margin: 3px;
     border-radius: 5px 0px 0px 5px;
     -webkit-border-radius: 5px 0 0 5px;
     -moz-border-radius: 5px 0 0 5px;
-    color: #01723b;
 }
 
 .contentColours
 {
-    background-color: #e3eee3;
+    background-color: #f0f8f6;
+    border: 1px solid #A00606;
 }
 .menuBlock
 {
@@ -173,7 +176,6 @@ header h1, #header h1 {
 
 footer, 
 #footer {
-    color: #999;
     text-align: center;
     line-height: normal;
     margin: 0px 0px 10px 10px;
@@ -184,7 +186,6 @@ footer,
 
 #toolBar
 {
-    background-color: #01723b;
     padding:10px;
 }
 
@@ -272,14 +273,15 @@ table label
 
 table td {
     padding: 0px;
-    border: solid 1px #01723B;
+    border: solid 1px #544545;
 }
 
 table th {
     text-align: left;
     background-color: #e8eef4;
     padding:2px;
-    border: solid 1px #01723B;
+    border: solid 1px #544545;
+    color:#544;
 }
 
 table.syllabus td
@@ -320,12 +322,11 @@ div#title {
     display: block;
     float: left;
     text-align: left;
-    margin:10px;
 }
 
 #logindisplay {
     float:right;
-    background-color: #01723b;
+    background-color: #544545;
     display: block;
     text-align: right;
     padding: 10px;

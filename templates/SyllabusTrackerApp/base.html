@@ -4,23 +4,23 @@
 	<head>
 		<title>-- SyllabusTracker / {{title}} --</title>
 		<link rel="stylesheet" type="text/css" href="{% static 'Site.css' %}" />
-		<link rel="stylesheet" type="text/css" href="{% static 'scripts/lib/jquery-ui.min.css' %}" />
+<!--		<link rel="stylesheet" type="text/css" href="{% static 'scripts/lib/jquery-ui.min.css' %}" />
 		<link rel="stylesheet" type="text/css" href="{% static 'scripts/lib/jquery.tagit.css' %}" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
-		<script data-main="{% static 'scripts/main' %}" src="{% static 'scripts/require.js' %}"></script>
+		<script data-main="{% static 'scripts/main' %}" src="{% static 'scripts/require.js' %}"></script>   -->
 	</head>
 	<body>
 	    <div class="page">
 	        <header>
 	            <div id="title">
-	                <a href="/"><img width="100px" src="{% static 'images/logo.png' %}"></a>
+	                <a href="/"><img width="250px" src="{% static 'images/logo.png' %}"></a>
 				</div>
 				{% block login_display %}{% endblock %}
 	            <br style="clear:both;" />
 	        </header>
 			<section id="main">
 				<H1>{{title}}</H1>
-				<div id="toolBar" class="headerField">
+				<div id="toolBar" class="headerField headerfooter">
 						{% block navi %}{% endblock %}
 				</div>
 				<div id="content" class="contentColours">
@@ -28,7 +28,7 @@
 					{% block content %}{% endblock %}
 				</div>
 			</section>
-	        <footer class="headerField">
+	        <footer class="headerfooter">
 	        </footer>
 	    </div>
 	</body>
