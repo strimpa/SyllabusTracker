@@ -17,38 +17,56 @@ body {
     src: url('./616.eot');
     src: local('616'), url('./616.woff') format('woff'), url('./616.ttf') format('truetype');
 }
-/* use this class to attach this font to any element i.e. <p class="fontsforweb_fontid_6898">Text with this font applied</p> */
+/* use this class to attach this font to any element i.e. <p class="fontsforweb_fontid_6898">Text with this font applied</p>
 .fontsforweb_fontid_6898 {
     font-family: '616' !important;
 }
-
-a:link, #answerActions a:link {
+ */
+a:link 
+{
     text-decoration: none;
 }
 
-a:visited {
+a:visited 
+{
     color:#555;
     text-decoration: none;
 }
 
-menu a:visited {
-    text-decoration: none;
-}
-
-a:hover, #answerActions a:hover {
-    color: #A55;
-    text-decoration: none;
-}
-
-a:active, #answerActions a:active{
-    color: #A55;
-}
-
-#answerActions a
+a:hover 
 {
-    color:#9B7;
-    cursor:pointer;
+    color: #A55;
+    text-decoration: none;
 }
+
+a:active
+{
+    color: #A55;
+}
+
+.headerfooter a:link
+{
+    color:#FFF;
+    text-decoration: none;
+}
+
+.headerfooter a:visited 
+{
+    color:#DDD;
+    text-decoration: none;
+}
+
+.headerfooter a:hover 
+{
+    color: #A55;
+    text-decoration: none;
+}
+
+.headerfooter a:active
+{
+    color: #A55;
+}
+
 
 header,
 footer,
@@ -139,7 +157,6 @@ header h1, #header h1 {
 
 .headerField {
     padding: 10px;
-    font-family: '616';
 }
 
 .headerfooter
@@ -148,6 +165,7 @@ header h1, #header h1 {
     -webkit-border-radius: 5px 0 0 5px;
     -moz-border-radius: 5px 0 0 5px;
     background-color: #A00606;
+    color:#FEE;
 }
 
 #content
@@ -194,6 +212,10 @@ footer,
 .menu_column 
 {
     display: inline-table;
+}
+.menu_column li
+{
+    margin-left: 15px;
 }
 
 #menu
@@ -326,7 +348,6 @@ div#title {
 
 #logindisplay {
     float:right;
-    background-color: #544545;
     display: block;
     text-align: right;
     padding: 10px;
