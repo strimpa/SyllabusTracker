@@ -65,13 +65,13 @@ class Jitsuka(AbstractUser):
 class Membership(models.Model):
     user = models.ForeignKey(Jitsuka, null=True, on_delete=models.CASCADE, related_name="%(class)s_membership_user")
     memberID = models.IntegerField()
-    pic = models.ImageField(height_field=1000, width_field=1000, max_length=256, null=True)
+    pic = models.ImageField(height_field=1000, width_field=1000, max_length=256, null=True, blank=True)
     kyu = models.ForeignKey(Kyu, on_delete=models.SET_NULL, blank=True, null=True)
     club = models.ForeignKey(Club, on_delete=models.SET_NULL, blank=True, null=True)
     instructor = models.ForeignKey('Jitsuka', models.SET_NULL, blank=True, null=True)   
     sign_up_date = models.DateField(auto_now_add=True)
-    leaving_date = models.DateField(auto_now_add=False, null=True)
-    insurance_expiry_date = models.DateField(auto_now_add=False, null=True)
+    leaving_date = models.DateField(auto_now_add=False, null=True, blank=True)
+    insurance_expiry_date = models.DateField(auto_now_add=False, null=True, blank=True)
     
     def __str__(self):
        return (self.user.username + ":" + str(self.memberID))
