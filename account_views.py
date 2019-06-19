@@ -158,8 +158,12 @@ def membership_update(request):
         membership = Membership.objects.get(id=request.POST['membership_id'])
         membership_form = MembershipForm(request.POST, request.FILES, instance=membership)
 
+    # This alwyays needs to be forwarded
+    the_user = Jitsuka.objects.get(id=request.POST['user_id'])
     if(membership_form.is_valid()):
-        membership_form.save()
+        instance = membership_form.save()
+        instance.user = the_user
+        instance.save()
         messages.info(request, "Membership data successfully updated!")
     else:
         for value in membership_form.errors.items():
@@ -171,11 +175,11 @@ def membership_update(request):
 def profile(request, username=None):
     tisMe = True
     theUser = request.user
-    membership_form = MembershipForm()
+    membership_form = MembershipForm(initial={'user_id':theUser.id})
     found_membership = False
 
-    '''
     try:
+        '''
         if (None!=username) and \
             "me"!=username and \
             (None!=username and username!=request.user.username):
@@ -183,13 +187,17 @@ def profile(request, username=None):
                 tisMe = False
  
         if tisMe:
+        '''
+        membership = Membership.objects.get(user = request.user)
+        membership_form = MembershipForm(instance = membership, initial={
+            'membership_id':membership.id,
+            'user_id':theUser.id, 
+            'insurance_expiry':membership.insurance_expiry_date
+            })
+        membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
+        found_membership = True
     except ObjectDoesNotExist:
         pass
-    '''
-    membership = Membership.objects.get(user = request.user)
-    membership_form = MembershipForm(instance = membership, initial={'membership_id':membership.id, 'insurance_expiry':membership.insurance_expiry_date})
-    membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
-    found_membership = True
  
     profile_form = ProfileForm(instance=theUser, initial={'username' : theUser.username})
     return render(request, "SyllabusTrackerApp/profile.html", {

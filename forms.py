@@ -54,6 +54,7 @@ class MembershipForm(ModelForm):
         model = Membership
         exclude = ['user', 'ratings', 'leaving_date', 'insurance_expiry_date']
     membership_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    user_id = forms.IntegerField(widget=forms.HiddenInput)
     insurance_expiry = forms.DateField(disabled=True, required=False)
 
 class UploadFileForm(forms.Form):
