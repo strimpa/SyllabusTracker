@@ -153,8 +153,11 @@ def user_update(request):
 
 @login_required
 def membership_update(request):
-    membership = Membership.objects.get(id=request.POST['membership_id'])
-    membership_form = MembershipForm(request.POST, request.FILES, instance=membership)
+    membership_form = MembershipForm(request.POST, request.FILES)
+    if 'membership_id' in request.POST and request.POST['membership_id'] != '':
+        membership = Membership.objects.get(id=request.POST['membership_id'])
+        membership_form = MembershipForm(request.POST, request.FILES, instance=membership)
+
     if(membership_form.is_valid()):
         membership_form.save()
         messages.info(request, "Membership data successfully updated!")
