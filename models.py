@@ -51,7 +51,7 @@ class Jitsuka(AbstractUser):
        return self.username 
 
     def full_name(self):
-        return (first_name + " " + last_name)
+        return (self.first_name + " " + self.last_name)
 
     def is_instructor(self):
         return self.groups.filter(name="Instructors").exists()
@@ -63,15 +63,15 @@ class Jitsuka(AbstractUser):
         return self.groups.filter(name__endswith="Instructors").exists()
 
 class Membership(models.Model):
-    user = models.ForeignKey(Jitsuka, null=True, on_delete=models.CASCADE, related_name="%(class)s_membership_user")
+    user = models.ForeignKey(Jitsuka, null=True, on_delete=models.CASCADE, related_name="membership")
     memberID = models.IntegerField()
-    pic = models.ImageField(height_field=1000, width_field=1000, max_length=256, null=True)
+    pic = models.ImageField(height_field=1000, width_field=1000, max_length=256, null=True, blank=True)
     kyu = models.ForeignKey(Kyu, on_delete=models.SET_NULL, blank=True, null=True)
     club = models.ForeignKey(Club, on_delete=models.SET_NULL, blank=True, null=True)
-    instructor = models.ForeignKey('Jitsuka', models.SET_NULL, blank=True, null=True)   
+    instructor = models.ForeignKey('Jitsuka', models.SET_NULL, blank=True, null=True, related_name="student")
     sign_up_date = models.DateField(auto_now_add=True)
-    leaving_date = models.DateField(auto_now_add=False, null=True)
-    insurance_expiry_date = models.DateField(auto_now_add=False, null=True)
+    leaving_date = models.DateField(auto_now_add=False, null=True, blank=True)
+    insurance_expiry_date = models.DateField(auto_now_add=False, null=True, blank=True)
     
     def __str__(self):
        return (self.user.username + ":" + str(self.memberID))
@@ -82,7 +82,7 @@ class RegistrationRequest(models.Model):
     request_date = models.DateField(auto_now_add=True)
     
     def __str__(self):
-        return (self.user.full_name + ":" +str(request_date) + ":" +guid)
+        return (self.user.full_name() + ":" +str(self.request_date) + ":" +self.guid)
 
 class Rating(models.Model):
     PROFICIENCY_LEVEL = (
@@ -107,7 +107,7 @@ class Rating(models.Model):
 
 class Session(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    attendants = models.ManyToManyField(Jitsuka, related_name="%(class)s_session_attendants")
+    attendants = models.ManyToManyField(Jitsuka, related_name="attended_sessions")
     exercises = models.ManyToManyField(ExerciseGroup)
     instructor = models.ForeignKey(Jitsuka, on_delete=models.SET_NULL, blank=True, null=True)
     
