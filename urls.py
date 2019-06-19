@@ -55,7 +55,7 @@ urlpatterns = [
     path('rate/', add_data_views.rate, name='rate'),
     path('edit_exercises_groups/', add_data_views.edit_exercises_groups, name='edit_exercises_groups'),
     path('exercise_editing/', views.exercise_editing, name='exercise_editing'),
-    path('add_kyus/', views.add_kyus, name='add_kyus'),
+    path('add_kyus/', add_data_views.add_kyus, name='add_kyus'),
 
 #    path('accounts/', include('django.contrib.auth.urls')),
 ]   
