@@ -5,7 +5,7 @@ from datetime import date, datetime
 
 from django.shortcuts import render_to_response, render
 from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest
-from SyllabusTrackerApp.forms import AccountForm, ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm
+from SyllabusTrackerApp.forms import ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse
@@ -112,7 +112,7 @@ def register_confirm(request, name, id):
 
             returnObject = redirect("/profile/")
             if(usr.username != name):
-                messages.Error(request, "Sorry, \""+name+"\", this request seems to have come from a different user - please register again!")
+                messages.error(request, "Sorry, \""+name+"\", this request seems to have come from a different user - please register again!")
                 returnObject = redirect("/register/")
             else:
                 day_delta = datetime.today().date() - reg.request_date    
@@ -121,7 +121,7 @@ def register_confirm(request, name, id):
                     usr.save()
                     messages.info(request, "Welcome \""+usr.username+"\"! Please log in to fill in your membership data!")
                 else:
-                    messages.Error(request, "Sorry, \""+usr.username+"\", you made this request more than 14 days ago, please register again!")
+                    messages.error(request, "Sorry, \""+usr.username+"\", you made this request more than 14 days ago, please register again!")
                     returnObject = redirect("/register/")
 
             reg.delete()
@@ -138,6 +138,31 @@ def register_confirm(request, name, id):
         'title':"Register again, please!"
         })
         
+@login_required
+def user_update(request):
+    existing_user = Jitsuka.objects.get(username=request.POST['username'])
+    profile_form = ProfileForm(request.POST, instance=existing_user)
+    if(profile_form.is_valid()):
+        profile_form.save()
+        messages.info(request, "User data successfully updated!")
+    else:
+        for value in profile_form.errors.items():
+            messages.error(request, value)
+
+    return redirect('/profile/')
+
+@login_required
+def membership_update(request):
+    membership = Membership.objects.get(id=request.POST['membership_id'])
+    membership_form = MembershipForm(request.POST, request.FILES, instance=membership)
+    if(membership_form.is_valid()):
+        membership_form.save()
+        messages.info(request, "Membership data successfully updated!")
+    else:
+        for value in membership_form.errors.items():
+            messages.error(request, value)
+
+    return redirect('/profile/')
 
 @login_required
 def profile(request, username=None):
@@ -155,52 +180,18 @@ def profile(request, username=None):
 
         if tisMe:
             membership = Membership.objects.get(user = request.user)
-            membership_form = MembershipForm(instance = membership)
+            membership_form = MembershipForm(instance = membership, initial={'membership_id':membership.id, 'insurance_expiry':membership.insurance_expiry_date})
+            membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
             found_membership = True
     except ObjectDoesNotExist:
         pass
-
-    if request.method == 'GET':
-        if 'username' in request.GET:
-            user_form = ProfileForm(request.GET, instance=request.user)
-            if user_form.is_valid():
-                username = user_form.data['username']
-                first_name = user_form.data['first_name']
-                last_name = user_form.data['last_name']
-                theUser.username = username
-                theUser.first_name = first_name
-                theUser.last_name = last_name
-                theUser.save()
-            else:
-                return HttpResponse("errors:"+user_form.errors.as_text())
-        elif 'memberID' in request.GET:
-            membership_form = MembershipForm(request.GET)
-            if membership_form.is_valid():
-                memberID = membership_form.cleaned_data['memberID']
-                kyu = membership_form.cleaned_data['kyu']
-                instructor = membership_form.cleaned_data['instructor']
-
-                m = Membership()
-                try:
-                    m = Membership.objects.get(user=theUser)
-                except:
-                    pass
-                m.user = theUser
-                m.memberID = memberID
-                m.kyu = kyu
-                if instructor!='':
-                    m.instructor = instructor
-                m.save()
-                m = Membership.objects.get(user=theUser)
-                membership_form = MembershipForm(instance = m)
-            else:
-                return HttpResponse("errors:"+membership_form.errors.as_text())
-
+ 
+    profile_form = ProfileForm(instance=theUser, initial={'username' : theUser.username})
     return render(request, "SyllabusTrackerApp/profile.html", {
         'user_controller':Jitsuka.objects,
         'tisMe':tisMe,
         'membership_form':membership_form,
-        'login_form':ProfileForm(instance=theUser),
+        'login_form':profile_form,
         'title': ("Profile of "+theUser.username),
         'found_membership':found_membership
         })

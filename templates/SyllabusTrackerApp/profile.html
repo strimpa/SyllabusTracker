@@ -1,20 +1,22 @@
 {% extends "SyllabusTrackerApp/base_logged_in.html" %}
 
 {% block content %}
-	<div id="userProfile" class="contentColours innerContentBorder">
-		<form action="/profile/">
-		<table>//
+	<div id="userProfile" class="innerContentBorder">
+		<form action="{% url 'user_update' %}" method="POST">
+		{% csrf_token %}
+		<table>
 		{{ login_form.as_table }}
 		</table>
 		<input type="submit" value="Update" />
-		</form>/
+		</form>
 		<p />
 		{% if not found_membership %}
 			<div clas="warning">No membership data has been found - Fill in your details before continuing!</div>
 		{% endif %}
-		<form action="/profile/">
+		<form action="{% url 'membership_update' %}" method="POST">
+			{% csrf_token %}
 			<table>
-			{{ membership_form.as_table }}/
+			{{ membership_form.as_table }}
 			</table>
 			<input type="submit" value="Update" />
 		</form>

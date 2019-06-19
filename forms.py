@@ -8,20 +8,11 @@ class LoginForm(forms.Form):
     username = forms.CharField(max_length=MAX_USERNAME_LENGTH)
     password = forms.CharField(widget=forms.PasswordInput(render_value=True))
 
-class AccountForm(ModelForm):
-    class Meta:
-        model = Jitsuka
-        fields = ['first_name', 'last_name', 'email']
-    account_form = forms.BooleanField(widget=forms.HiddenInput, required=False)
-
-       
 class ProfileForm(ModelForm):
     class Meta:
         model = Jitsuka
-        fields = ['username', 'first_name', 'last_name']
-
-    def clean_username(self):
-        return self.initial['username']
+        fields = ['first_name', 'last_name', 'email']
+    username = forms.CharField(widget=forms.HiddenInput, required=False)
 
 class RegisterForm(ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
@@ -61,8 +52,9 @@ class ExerciseEditForm(forms.ModelForm):
 class MembershipForm(ModelForm):
     class Meta:
         model = Membership
-        exclude = ['user', 'ratings']
-#        fields = ['memberID', 'kyu' , 'instructor']
+        exclude = ['user', 'ratings', 'leaving_date', 'insurance_expiry_date']
+    membership_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    insurance_expiry = forms.DateField(disabled=True, required=False)
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
