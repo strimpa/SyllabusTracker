@@ -174,20 +174,22 @@ def profile(request, username=None):
     membership_form = MembershipForm()
     found_membership = False
 
+    '''
     try:
         if (None!=username) and \
             "me"!=username and \
             (None!=username and username!=request.user.username):
                 theUser = Jitsuka.objects.get(username=username)
                 tisMe = False
-
+ 
         if tisMe:
-            membership = Membership.objects.get(user = request.user)
-            membership_form = MembershipForm(instance = membership, initial={'membership_id':membership.id, 'insurance_expiry':membership.insurance_expiry_date})
-            membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
-            found_membership = True
     except ObjectDoesNotExist:
         pass
+    '''
+    membership = Membership.objects.get(user = request.user)
+    membership_form = MembershipForm(instance = membership, initial={'membership_id':membership.id, 'insurance_expiry':membership.insurance_expiry_date})
+    membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
+    found_membership = True
  
     profile_form = ProfileForm(instance=theUser, initial={'username' : theUser.username})
     return render(request, "SyllabusTrackerApp/profile.html", {
