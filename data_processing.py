@@ -16,7 +16,8 @@ def handle_uploaded_file(f):
     lines = file_data.split("\n")
     for line in lines:
         csvalues = str(line).split(',')
-        if len(csvalues) < 2:
+        num_cols = len(csvalues)
+        if num_cols < 2:
             return ("Line contains less comma-separated values than 2 or more than maximum:"+line)
         #try:
         ex, created = Exercise.objects.get_or_create(name=csvalues[0].strip())
@@ -24,15 +25,28 @@ def handle_uploaded_file(f):
             ex.description = csvalues[1].strip()
             ex.save()
 
-        if len(csvalues)>2:
-            gradeGroup, created = ExerciseGroup.objects.get_or_create(name=csvalues[2].strip())
-            gradeGroup.exercises.add(ex)
-            gradeGroup.save()
-
-        if len(csvalues)>3:
-            wazaGroup, created = ExerciseGroup.objects.get_or_create(name=csvalues[3].strip())
-            wazaGroup.exercises.add(ex)
-            wazaGroup.save()
+        last_group = None
+        if num_cols>2:
+            for group_name_index in range(2, num_cols):
+                group_string = csvalues[group_name_index].strip()
+                group_name = group_string
+                group_description = ""
+                if(":" in group_name):
+                    group_values = group_name.split(":")
+                    group_name = group_values[0]
+                    group_description = group_values[1]
+                is_last_group = group_name == "<end>"
+                if(is_last_group and last_group!=None):
+                    last_group.exercises.add(ex)
+                    last_group.save()
+                    last_group = None
+                else:
+                    wazaGroup, created = ExerciseGroup.objects.get_or_create(name=group_name)
+                    wazaGroup.description = group_description
+                    if last_group!=None:
+                        wazaGroup.parent_group = last_group
+                    wazaGroup.save()
+                    last_group = wazaGroup
 
         #except:
         #    return traceback.format_exc()

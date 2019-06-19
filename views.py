@@ -34,7 +34,7 @@ def home(request):
     return render(request, 'SyllabusTrackerApp/home.html', context)
 
 @login_required
-@permission_required('SyllabusTrackerApp.can_change_exercise')
+@permission_required('SyllabusTrackerApp.change_exercise')
 def exercise_editing(request, successful_add=False):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
@@ -66,7 +66,7 @@ def sessions(request):
     return HttpResponse("Showing the sessions table")
     
 @login_required
-@permission_required('SyllabusTrackerApp.can_change_kyu')
+@permission_required('SyllabusTrackerApp.change_kyu')
 def add_kyus(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):

@@ -37,7 +37,7 @@ def rate(request):
 
 
 @login_required
-@permission_required('SyllabusTrackerApp.can_change_exercise', raise_exception=True)
+@permission_required('SyllabusTrackerApp.change_exercise', raise_exception=True)
 def edit_exercises(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
@@ -52,6 +52,7 @@ def edit_exercises(request):
         if ex_edit_form.is_valid():
             instances = ex_edit_form.save(commit=False)
             for obj in instances:
+                messages.info(obj.name+" parent group:"+str(obj.parent_group))
                 obj.save()
             for obj in ex_edit_form.deleted_objects:
                 obj.delete()
@@ -65,7 +66,7 @@ def edit_exercises(request):
     return HttpResponseRedirect('/exercise_editing/') # Redirect after POST
 
 @login_required
-@permission_required('SyllabusTrackerApp.can_add_exercise', raise_exception=True)
+@permission_required('SyllabusTrackerApp.add_exercise', raise_exception=True)
 def add_exercise(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
@@ -89,7 +90,7 @@ def add_exercise(request):
     return back_to_editing(request, 'Successfully added!')
 
 @login_required
-@permission_required('SyllabusTrackerApp.can_add_exercise', raise_exception=True)
+@permission_required('SyllabusTrackerApp.add_exercise', raise_exception=True)
 def add_exercises(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
@@ -118,7 +119,7 @@ def add_exercises(request):
 
 
 @login_required
-@permission_required('SyllabusTrackerApp.can_change_exercise_group', raise_exception=True)
+@permission_required('SyllabusTrackerApp.change_exercisegroup', raise_exception=True)
 def edit_exercises_groups(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
@@ -152,7 +153,7 @@ def edit_exercises_groups(request):
     return back_to_editing(request, 'Successfully edited!')
 
 @login_required
-@permission_required('SyllabusTrackerApp.can_add_exercise_group', raise_exception=True)
+@permission_required('SyllabusTrackerApp.add_exercisegroup', raise_exception=True)
 def add_exercise_group(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
@@ -177,7 +178,7 @@ def add_exercise_group(request):
     return back_to_editing(request, 'Successfully added!')
 
 @login_required
-@permission_required('SyllabusTrackerApp.can_change_kyu', raise_exception=True)
+@permission_required('SyllabusTrackerApp.change_kyu', raise_exception=True)
 def add_kyus(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):

@@ -14,6 +14,7 @@
         <div class="menu_column">| Syllabus <br />
             <li><a href="{% url 'syllabus' %}">My Rating</a></li>
             <li><a href="{% url 'syllabus_summary' whose='my_students' %}">Summary</a></li>
+            <li><a href="{% url 'exercise_editing' %}">Edit Exercises</a></li>
         </div>
         {% else %}
         <div class="menu_column">| <a href="/syllabus/">Syllabus</a></div>
