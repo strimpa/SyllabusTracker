@@ -281,8 +281,7 @@ table
 {
     font-size: inherit;
     text-align: left;
-    border: solid 1px #e8eef4;
-    border-collapse: collapse;
+/*    border-collapse: collapse; */
     margin: 5px;
 }
 
@@ -297,6 +296,7 @@ table td {
     padding: 0px;
 }
 
+
 table th {
     text-align: left;
     background-color: #e8eef4;
@@ -310,6 +310,10 @@ table.syllabus td
     border-width: 0px;
 }
 
+table.syllabus td.rating
+{
+    border:1px solid #c9a1a1;
+}
 /* Rating  
 ----------------------------------------------------------*/
 .seen

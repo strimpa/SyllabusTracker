@@ -46,13 +46,13 @@
                     {% endif %}
                 {% else %}
                     <td><input type="text" name="comment" width="10" value="{{ rating.comment }}"></input></td>
-                    <td class="seen" title="seen"><input type="radio" name="proficiency" value="S" 
+                    <td class="seen rating" title="seen"><input type="radio" name="proficiency" value="S" 
                         {% if rating.proficiency == "S" %} checked {% endif %} /></td>
-                    <td class="attempted" title="attempted"><input type="radio" name="proficiency" value="A" 
+                    <td class="attempted rating" title="attempted"><input type="radio" name="proficiency" value="A" 
                         {% if rating.proficiency == "A" %} checked {% endif %} /></td>
-                    <td class="understood" title="understood"><input type="radio" name="proficiency" value="U" 
+                    <td class="understood rating" title="understood"><input type="radio" name="proficiency" value="U" 
                         {% if rating.proficiency == "U" %} checked {% endif %} /></td>
-                    <td class="proficient" title="proficient"><input type="radio" name="proficiency" value="P" 
+                    <td class="proficient rating" title="proficient"><input type="radio" name="proficiency" value="P" 
                         {% if rating.proficiency == "P" %} checked {% endif %} /></td>
                     <td><input type="submit" value="Rate" /></td>
                 {% endif %}
