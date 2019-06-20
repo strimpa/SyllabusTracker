@@ -68,4 +68,6 @@ class KyuForm(ModelForm):
 class ExerciseGroupForm(ModelForm):
     class Meta:
         model = ExerciseGroup
-        fields = '__all__'
+        #fields = '__all__'
+        exclude = ['exercises']
+

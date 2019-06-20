@@ -140,10 +140,10 @@ class SyllabusView(View):
                 pass
             
             # for each groups this exercise is in, create the tree of sub groups
-            this_groups = ex.exercisegroup_set.all()
+            this_groups = ex.groups.all()
             ordered_groups = []
             for name in root_group_names:
-                for group in ex.exercisegroup_set.all():
+                for group in ex.groups.all():
                     my_root_group = group.get_group_root()
                     if my_root_group.name == name:
                         ordered_groups.append(group)

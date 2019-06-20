@@ -1,19 +1,14 @@
 {% if group.show_in_hierarchy %}
-    <tr>
-    {% include "SyllabusTrackerApp/table_row_snippet.html" with depth=group.depth %}
-    <td colspan="5">
     <h{{group.depth}}>{{ group.name }}</h{{group.depth}}>
-    </td>
-</tr>
+    <div class="syllabus_section">
 {% endif %}
     {% for child in group.children %}
     {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=child %}
     {% endfor %}
 {% if group.show_in_hierarchy %}
     {% if group.exercises|length > 0 %}
+        <table class="syllabus"> 
         <tr>
-            {% include "SyllabusTrackerApp/table_row_snippet.html" with depth=group.depth %}
-            <td>&nbsp;</td>
             <th>Name</th>
             <th>Description</th>
             <th>Average rating</th>
@@ -22,8 +17,6 @@
         <form action="/rate/" method="POST">
             {% csrf_token %}
             <tr>
-                {% include "SyllabusTrackerApp/table_row_snippet.html" with depth=group.depth %}
-                <td>&nbsp;</td>
                 <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
                 <td>{{ exc.description }}</td>
                 {% if rating == None %}
@@ -44,5 +37,7 @@
             </tr>
         </form>
         {% endfor %}
+    </table>
     {% endif %}
+    </div>
 {% endif %}

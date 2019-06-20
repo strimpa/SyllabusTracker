@@ -2,13 +2,11 @@
 
 {% block content %}
 {% if display_root %}
-<table class="syllabus">
     {% if is_summary %}
     {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=display_root depth=depth %}
     {% else %}
     {% include "SyllabusTrackerApp/syllabus_snippet.html" with group=display_root depth=depth %}
     {% endif %}	
-</table>
 {% else %}
     <p>No exercises are available.</p>
 {% endif %}	

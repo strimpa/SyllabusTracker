@@ -106,11 +106,6 @@ h1 {
     margin: 0;
 }
 
-#main h1
-{
-    margin-left: 8px;
-}
-
 h2 {
     font-size: 1.2em;
 }
@@ -168,6 +163,11 @@ header h1, #header h1 {
     color:#FEE;
 }
 
+.headerTitle
+{
+    margin-left: 8px;
+}
+
 #content
 {
     padding:10px;
@@ -205,6 +205,12 @@ footer,
 #toolBar
 {
     padding:10px;
+}
+
+.syllabus_section
+{
+    border:0px solid black;
+    padding-left: 15px;
 }
 
 /* TAB MENU   
@@ -282,7 +288,6 @@ table
     font-size: inherit;
     text-align: left;
 /*    border-collapse: collapse; */
-    margin: 5px;
 }
 
 table label

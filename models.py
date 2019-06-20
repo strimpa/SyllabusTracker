@@ -18,7 +18,7 @@ class Exercise(models.Model):
 class ExerciseGroup(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1024)
-    exercises = models.ManyToManyField(Exercise, blank=True)
+    exercises = models.ManyToManyField(Exercise, blank=True, related_name="groups")
     parent_group = models.ForeignKey("ExerciseGroup", on_delete=models.SET_NULL, blank=True, null=True)
     show_in_hierarchy = models.BooleanField(default=True)
     list_order_index = models.IntegerField(default=0)
