@@ -35,7 +35,7 @@ def handle_uploaded_file(f):
                     group_values = group_name.split(":")
                     group_name = group_values[0]
                     group_description = group_values[1]
-                is_last_group = group_name == "<end>"
+                is_last_group = (group_name == "" or group_name == "<end>" or group_name_index == num_cols-1)
                 if(is_last_group and last_group!=None):
                     last_group.exercises.add(ex)
                     last_group.save()
