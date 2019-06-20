@@ -195,3 +195,22 @@ def add_kyus(request):
         'add_kyu_form':KyuForm()
     }
     return render(request, 'SyllabusTrackerApp/add_kyus.html', context)
+
+@login_required
+@permission_required('SyllabusTrackerApp.add_session', raise_exception=True)
+def edit_sessions(request):
+    membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
+
+    kyu_form = KyuForm(request.GET)
+    if kyu_form.is_valid():
+        kyu = Kyu(grade=kyu_form.cleaned_data['grade'], colour=kyu_form.cleaned_data['colour'])
+        kyu.save()
+    
+    KyuFormSet = formset_factory(KyuForm)
+    context = {
+        'existing_kyu_form':KyuFormSet(initial=Kyu.objects.all().values()),
+        'add_kyu_form':KyuForm()
+    }
+    return render(request, 'SyllabusTrackerApp/add_kyus.html', context)
