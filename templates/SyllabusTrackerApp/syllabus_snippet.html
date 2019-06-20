@@ -28,34 +28,16 @@
                 <td>&nbsp;</td>
                 <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
                 <td>{{ exc.description }}</td>
-                {% if group.is_summary %}
-                    {% if rating == None %}
-                    <td><input type="text" class="seen" name="rating_average" width="10" value="No ratings received yet!"></input></td>
-                    {% else %}
-                    <td><input type="text" class="
-                        {% if rating.rating_average >= 3 %}
-                        proficient
-                        {% elif rating.rating_average >= 2 %}
-                        understood
-                        {% elif rating.rating_average >= 1 %}
-                        attempted
-                        {% else %}
-                        seen
-                        {% endif %}
-                        "name="rating_average" width="10" value="{{ rating.rating_average }}" title="{% for user, user_rating in rating.students_ratings.items %}{{ user }}:{{ user_rating}} | {% endfor %}"></input></td>
-                    {% endif %}
-                {% else %}
-                    <td><input type="text" name="comment" width="10" value="{{ rating.comment }}"></input></td>
-                    <td class="seen rating" title="seen"><input type="radio" name="proficiency" value="S" 
-                        {% if rating.proficiency == "S" %} checked {% endif %} /></td>
-                    <td class="attempted rating" title="attempted"><input type="radio" name="proficiency" value="A" 
-                        {% if rating.proficiency == "A" %} checked {% endif %} /></td>
-                    <td class="understood rating" title="understood"><input type="radio" name="proficiency" value="U" 
-                        {% if rating.proficiency == "U" %} checked {% endif %} /></td>
-                    <td class="proficient rating" title="proficient"><input type="radio" name="proficiency" value="P" 
-                        {% if rating.proficiency == "P" %} checked {% endif %} /></td>
-                    <td><input type="submit" value="Rate" /></td>
-                {% endif %}
+                <td><input type="text" name="comment" width="10" value="{{ rating.comment }}"></input></td>
+                <td class="seen rating" title="seen"><input type="radio" name="proficiency" value="S" 
+                    {% if rating.proficiency == "S" or rating.proficiency == None %} checked {% endif %} /></td>
+                <td class="attempted rating" title="attempted"><input type="radio" name="proficiency" value="A" 
+                    {% if rating.proficiency == "A" %} checked {% endif %} /></td>
+                <td class="understood rating" title="understood"><input type="radio" name="proficiency" value="U" 
+                    {% if rating.proficiency == "U" %} checked {% endif %} /></td>
+                <td class="proficient rating" title="proficient"><input type="radio" name="proficiency" value="P" 
+                    {% if rating.proficiency == "P" %} checked {% endif %} /></td>
+                <td><input type="submit" value="Rate" /></td>
             </tr>
         </form>
         {% endfor %}

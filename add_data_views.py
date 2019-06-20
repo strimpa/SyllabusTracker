@@ -26,7 +26,7 @@ def rate(request):
     if request.method == "POST":
         data = request.POST
         exercise = Exercise.objects.get(name=data['exercise_name'])
-        rating = Rating(exercise=exercise, comment=data['comment'], proficiency=data['proficiency'])
+        rating = Rating(rater=membership, exercise=exercise, comment=data['comment'], proficiency=data['proficiency'])
         rating.save()
 
         membership.ratings.add(rating)

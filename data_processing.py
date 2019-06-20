@@ -25,6 +25,8 @@ def handle_uploaded_file(f):
             ex.description = csvalues[1].strip()
             ex.save()
 
+        # Afterwards go over each column in the row and add and/or link the group until <end> is reached
+        # group cells can have a colon to add a description
         last_group = None
         if num_cols>2:
             for group_name_index in range(2, num_cols):

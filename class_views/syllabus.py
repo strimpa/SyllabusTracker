@@ -14,7 +14,6 @@ class DisplayLeaf():
         self.name = name
         self.children = []
         self.exercises = []
-        self.is_summary = False
         self.parent_leaf = None
         self.show_in_hierarchy = show_in_hierarchy
         self.list_order_index = list_order_index
@@ -80,11 +79,10 @@ class ExerciseStudentSummary():
 
 class SyllabusView(View):
 
-    def get_ratings(self, membership, is_summary):
+    def get_ratings(self, membership, memberships):
         ratings_by_exercise = {}
-        if is_summary:
-            my_club = membership.club
-            all_ratings = Rating.objects.select_related().filter(rater__club = my_club)
+        if len(memberships)>1:
+            all_ratings = Rating.objects.select_related().filter(rater__in = memberships)
             print("all_ratings:"+str(len(all_ratings)))
             for r in all_ratings:
                 if r.exercise != None:
@@ -107,7 +105,7 @@ class SyllabusView(View):
                 number_ratings = len(rating.students_ratings)
                 rating.rating_average /= number_ratings
         else:
-            my_ratings = membership.ratings.all().order_by("-rate_date")
+            my_ratings = memberships[0].ratings.all().order_by("-rate_date")
             for r in my_ratings:
                 if r.exercise != None: 
                     if r.exercise.name not in ratings_by_exercise:
@@ -121,8 +119,13 @@ class SyllabusView(View):
         if isinstance(membership, HttpResponse):
             return membership
         
-        is_summary = 'whose' in kwargs and kwargs['whose'] == "my_students" and request.user.is_instructor()
-        ratings_by_exercise = self.get_ratings(membership, is_summary)
+        is_summary = 'whose' in kwargs and kwargs['whose'] == "my_students" and request.user.is_assistent_instructor_or_instructor()
+        memberships = [membership]
+        if is_summary:
+            my_club = membership.club
+            memberships = Membership.objects.filter(club = my_club)
+
+        ratings_by_exercise = self.get_ratings(membership, memberships)
         groups = ExerciseGroup.objects.all()
         #find groups per order
         root_group_names = ['Kyu', 'Waza']  
@@ -152,7 +155,6 @@ class SyllabusView(View):
                 current_root = group_leaf
                 append_exercise = ex_group == ordered_groups[-1]
                 if append_exercise:
-                    group_leaf.is_summary = is_summary
                     group_leaf.exercises.append((ex, rating))  
             
  #       print_hier(display_root, 0)
@@ -160,6 +162,7 @@ class SyllabusView(View):
         context = {
             'title':"Syllabus",
             'display_root': display_root,
-            'depth':5
+            'depth':5,
+            'is_summary':is_summary
         }
         return render(request, 'SyllabusTrackerApp/syllabus.html', context)
