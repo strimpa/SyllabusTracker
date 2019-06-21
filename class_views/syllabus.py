@@ -35,8 +35,8 @@ def find_leaf(leaf_name, root):
 def print_hier(leaf, depth):
     output = ""
     for i in range(depth):
-        output += ("\t")
-    output += leaf.name
+        output += ("   ")
+    output += "'"+leaf.name+"'"
     if hasattr(leaf, "depth"):
         output += ", "+str(leaf.depth)
     print(output)
@@ -67,6 +67,8 @@ def find_or_create_leaf(group, group_root, root_depth):
                 break
             curr_index+=1
         parent_leaf.children.insert(curr_index, display_leaf)
+        #parent_leaf.children.append(display_leaf)
+        #print ("adding "+display_leaf.name+" to "+parent_leaf.name)
     return display_leaf
 
 class ExerciseStudentSummary():
@@ -139,7 +141,7 @@ class SyllabusView(View):
             except:
                 pass
             
-            # for each groups this exercise is in, create the tree of sub groups
+            # for each group this exercise is in, 
             this_groups = ex.groups.all()
             ordered_groups = []
             for name in root_group_names:
@@ -148,16 +150,19 @@ class SyllabusView(View):
                     if my_root_group.name == name:
                         ordered_groups.append(group)
 
+            #create the tree of sub groups
             current_root = display_root
+#            print ("Exercise "+ex.name+" has groups: "+str(len(ordered_groups)))
             for ex_group in ordered_groups:
                 # create copies for child groups
+#                print ("root for finding "+ex_group.name+" is "+current_root.name)
                 group_leaf = find_or_create_leaf(ex_group, current_root, current_root.depth+1)
                 current_root = group_leaf
                 append_exercise = ex_group == ordered_groups[-1]
                 if append_exercise:
                     group_leaf.exercises.append((ex, rating))  
             
- #       print_hier(display_root, 0)
+#        print_hier(display_root, 0)
                 
         context = {
             'title':"Syllabus",
