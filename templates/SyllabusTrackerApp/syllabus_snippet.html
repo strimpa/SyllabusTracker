@@ -21,7 +21,8 @@
         <form action="/rate/" method="POST">
             {% csrf_token %}
             <tr>
-                <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
+                <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input>
+                    <input type="hidden" name="exercise_group_name" value="{{ group.name }}"></input></td>
                 <td>{{ exc.description }}</td>
                 <td><input type="text" name="comment" width="10" value="{{ rating.comment }}"></input></td>
                 <td class="seen rating" title="seen"><input type="radio" name="proficiency" value="S" 
