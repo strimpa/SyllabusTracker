@@ -1,5 +1,7 @@
 {% if group.show_in_hierarchy %}
     <h{{group.depth}}>{{ group.name }}</h{{group.depth}}>
+    <a href="{% url 'syllabus' order=group.name %}">Filter to this group</a>
+    | <a class="add_to_filter" id="{{group.name}}">Add to filter chain</a>
     <div class="syllabus_section">
 {% endif %}
     {% for child in group.children %}

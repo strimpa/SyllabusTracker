@@ -1,13 +1,14 @@
-from ..models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
-from ..forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
-from ..view_utils import *
 
+from ..models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
+from ..forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm
+from ..view_utils import *
 
 class DisplayLeaf():
     def __init__(self, name, show_in_hierarchy, list_order_index, depth):
@@ -130,11 +131,32 @@ class SyllabusView(View):
         ratings_by_exercise = self.get_ratings(membership, memberships)
         groups = ExerciseGroup.objects.all()
         #find groups per order
-        root_group_names = ['Kyu', 'Waza']  
+        root_group_names = ['Kyu', 'Waza']
+        print("args"+str(args))
+        print("kwargs"+str(kwargs))
+        if 'order' in kwargs and kwargs['order']!=None:
+            root_group_names = kwargs['order'].split(',')
+            
+        #prefetch leaves
+        root_group_leaves = {}
+        former_root_groups = []
+        for name in root_group_names:
+            try:
+                group = ExerciseGroup.objects.select_related().get(name=name)
+                root_group = group.get_group_root()
+                if root_group in former_root_groups:
+                    messages.info(request, "Exercise Group "+name+" has the same root as the former passed group!")
+                    continue
+                root_group_leaves[name] = group.collect_leaves()
+                former_root_groups.append(root_group)
+            except:
+                messages.info(request, "Exercise Group not found:"+name)
+                return redirect('/syllabus/')
+                pass
 
         display_root = DisplayLeaf("Display root", False, 0, 0)
         depth = 0
-        for ex in Exercise.objects.order_by("list_order_index"):
+        for ex in Exercise.objects.order_by("-list_order_index"):
             rating = None
             try:
                 rating = ratings_by_exercise[ex.name]
@@ -144,23 +166,24 @@ class SyllabusView(View):
             # for each group this exercise is in, 
             this_groups = ex.groups.all()
             ordered_groups = []
+#            print (str(ex))
             for name in root_group_names:
+                leaves = root_group_leaves[name]
                 for group in ex.groups.all():
-                    my_root_group = group.get_group_root()
-                    if my_root_group.name == name:
+                    if group in leaves:
+#                        print("appending "+str(group))
                         ordered_groups.append(group)
 
-            #create the tree of sub groups
-            current_root = display_root
-#            print ("Exercise "+ex.name+" has groups: "+str(len(ordered_groups)))
-            for ex_group in ordered_groups:
-                # create copies for child groups
-#                print ("root for finding "+ex_group.name+" is "+current_root.name)
-                group_leaf = find_or_create_leaf(ex_group, current_root, current_root.depth+1)
-                current_root = group_leaf
-                append_exercise = ex_group == ordered_groups[-1]
-                if append_exercise:
-                    group_leaf.exercises.append((ex, rating))  
+            if len(ordered_groups) == len(root_group_names):
+                #create the tree of sub groups
+                current_root = display_root
+                for ex_group in ordered_groups:
+                    # create copies for child groups
+                    group_leaf = find_or_create_leaf(ex_group, current_root, current_root.depth+1)
+                    current_root = group_leaf
+                    append_exercise = ex_group == ordered_groups[-1]
+                    if append_exercise:
+                        group_leaf.exercises.append((ex, rating))  
             
 #        print_hier(display_root, 0)
                 

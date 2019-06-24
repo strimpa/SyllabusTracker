@@ -19,7 +19,7 @@ class ExerciseGroup(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1024)
     exercises = models.ManyToManyField(Exercise, blank=True, related_name="groups")
-    parent_group = models.ForeignKey("ExerciseGroup", on_delete=models.SET_NULL, blank=True, null=True)
+    parent_group = models.ForeignKey("ExerciseGroup", on_delete=models.SET_NULL, blank=True, null=True, related_name="child_groups")
     show_in_hierarchy = models.BooleanField(default=True)
     list_order_index = models.IntegerField(default=0)
     
@@ -31,6 +31,14 @@ class ExerciseGroup(models.Model):
             return self.parent_group.get_group_root()
         else:
             return self
+
+    def collect_leaves(self):
+        these_leaves = []
+        if len(list(self.exercises.all()))>0:
+            these_leaves.append(self)
+        for child in list(self.child_groups.all()):
+            these_leaves += child.collect_leaves()
+        return these_leaves
 
 class Kyu(models.Model):
     grade = models.IntegerField()

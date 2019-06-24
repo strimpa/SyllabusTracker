@@ -2,15 +2,6 @@ import csv
 from .models import Exercise, ExerciseGroup
 import sys, traceback
 
-import io  # python 3 only
-
-def handle_csv_data(csv_file):
-    csv_file = io.TextIOWrapper(csv_file)  # python 3 only
-    dialect = csv.Sniffer().sniff(csv_file.read(1024), delimiters=";,")
-    csv_file.seek(0)
-    reader = csv.reader(csv_file, dialect)
-    return list(reader)
-    
 def handle_uploaded_file(f):
     file_data = f.read().decode("utf-8")		
     lines = file_data.split("\n")
@@ -58,10 +49,3 @@ def handle_uploaded_file(f):
                     wazaGroup.save()
                     last_group = wazaGroup
     return None
-
-def handle_uploaded_file_csv(f):
-    #with open(f.read(), 'rb') as csvfile:
-    spamreader = csv.reader(f, delimiter=' ', quotechar='|')
-    print(str(spamreader))
-    for row in spamreader:
-        print (', '.join(row))
