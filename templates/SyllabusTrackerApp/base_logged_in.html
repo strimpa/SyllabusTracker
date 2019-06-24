@@ -13,7 +13,7 @@
         {% if user.is_assistent_instructor_or_instructor %} 
         <div class="menu_column">| Syllabus <br />
             <li><a href="{% url 'syllabus' %}">My Rating</a></li>
-            <li><a href="{% url 'syllabus_summary' whose='my_students' %}">Summary</a></li>
+            <li><a href="{% url 'syllabus' whose='my_club' %}">Summary</a></li>
             <li><a href="{% url 'exercise_editing' %}">Edit Exercises</a></li>
         </div>
         {% else %}

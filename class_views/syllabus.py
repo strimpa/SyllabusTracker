@@ -82,9 +82,9 @@ class ExerciseStudentSummary():
 
 class SyllabusView(View):
 
-    def get_ratings(self, membership, memberships):
+    def get_ratings(self, membership, is_summary, memberships):
         ratings_by_exercise = {}
-        if len(memberships)>1:
+        if is_summary:
             all_ratings = Rating.objects.select_related().filter(rater__in = memberships)
             print("all_ratings:"+str(len(all_ratings)))
             for r in all_ratings:
@@ -122,20 +122,35 @@ class SyllabusView(View):
         if isinstance(membership, HttpResponse):
             return membership
         
-        is_summary = 'whose' in kwargs and kwargs['whose'] == "my_students" and request.user.is_assistent_instructor_or_instructor()
-        memberships = [membership]
+        #analyse for participating ratings
+        whose = None
+        if 'whose' in kwargs and kwargs['whose']!="" and kwargs['whose']!="None":
+            whose = kwargs['whose']
+
+        if 'user_select_whose' in request.GET:
+            whose = ','.join(request.GET.getlist('user_select_whose'))
+            
+        is_summary =  whose != None and request.user.is_assistent_instructor_or_instructor()
+        selected_memberships = [membership]
+        all_memberships = []
         if is_summary:
             my_club = membership.club
-            memberships = Membership.objects.filter(club = my_club)
+            all_memberships = Membership.objects.filter(club = my_club)
+            if whose=="my_club":
+                selected_memberships = all_memberships
+            else:
+                name_list = whose.split(',')
+                selected_memberships = Membership.objects.filter(user__username__in = name_list)
 
-        ratings_by_exercise = self.get_ratings(membership, memberships)
-        groups = ExerciseGroup.objects.all()
+    
         #find groups per order
+        ratings_by_exercise = self.get_ratings(membership, is_summary, selected_memberships)
+        groups = ExerciseGroup.objects.all()
         root_group_names = ['Kyu', 'Waza']
-        print("args"+str(args))
-        print("kwargs"+str(kwargs))
+        order = None
         if 'order' in kwargs and kwargs['order']!=None:
-            root_group_names = kwargs['order'].split(',')
+            order = kwargs['order']
+            root_group_names = order.split(',')
             
         #prefetch leaves
         root_group_leaves = {}
@@ -191,6 +206,10 @@ class SyllabusView(View):
             'title':"Syllabus",
             'display_root': display_root,
             'depth':5,
-            'is_summary':is_summary
+            'is_summary':is_summary,
+            'whose':whose,
+            'selected_memberships':selected_memberships,
+            'all_memberships':all_memberships,
+            'order':order
         }
         return render(request, 'SyllabusTrackerApp/syllabus.html', context)

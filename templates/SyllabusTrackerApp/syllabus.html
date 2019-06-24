@@ -2,10 +2,27 @@
 
 {% block content %}
 {% if display_root %}
+
     {% if is_summary %}
-    {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=display_root depth=depth %}
+    <h1>Select jitsuka to review</h1>
+    <form action="{% url 'syllabus' order=order %}" >
+    <select name="user_select_whose" multiple="multiple">
+    {% for membership in all_memberships %}
+        <option value="{{ membership.user.username }}"
+        {% if membership in selected_memberships %}
+            selected="true"
+        {% endif %}
+        >{{ membership.user.full_name }}</option>
+    {% endfor %}
+    </select>
+    <input type="submit" />
+    </form>
+    {% endif %}
+
+    {% if is_summary %}
+    {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=display_root depth=depth whose=whose %}
     {% else %}
-    {% include "SyllabusTrackerApp/syllabus_snippet.html" with group=display_root depth=depth %}
+    {% include "SyllabusTrackerApp/syllabus_snippet.html" with group=display_root depth=depth whose=whose %}
     {% endif %}	
 {% else %}
     <p>No exercises are available.</p>

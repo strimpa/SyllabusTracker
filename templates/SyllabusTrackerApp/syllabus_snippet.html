@@ -1,12 +1,10 @@
 {% if group.show_in_hierarchy %}
-    <h{{group.depth}}>{{ group.name }}</h{{group.depth}}>
-    <a href="{% url 'syllabus' order=group.name %}">Filter to this group</a>
-    | <a class="add_to_filter" id="{{group.name}}">Add to filter chain</a>
+    {% include "SyllabusTrackerApp/group_header_snippet.html" with group=group %}
     <div class="syllabus_section">
 {% endif %}
-    {% for child in group.children %}
-    {% include "SyllabusTrackerApp/syllabus_snippet.html" with group=child %}
-    {% endfor %}
+{% for child in group.children %}
+    {% include "SyllabusTrackerApp/syllabus_snippet.html" with group=child whose=whose %}
+{% endfor %}
 {% if group.show_in_hierarchy %}
     {% if group.exercises|length > 0 %}
         <table class="syllabus"> 
@@ -18,7 +16,7 @@
             <th></th>
         </tr>
         {% for exc, rating in group.exercises %}
-        <form action="/rate/" method="POST">
+        <form action="{% url 'rate' %}" method="POST">
             {% csrf_token %}
             <tr>
                 <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input>

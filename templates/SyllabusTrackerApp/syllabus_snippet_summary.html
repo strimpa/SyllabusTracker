@@ -1,10 +1,10 @@
 {% if group.show_in_hierarchy %}
-    <h{{group.depth}}>{{ group.name }}</h{{group.depth}}>
-    <div class="syllabus_section">
+{% include "SyllabusTrackerApp/group_header_snippet.html" with group=group %}
+<div class="syllabus_section">
 {% endif %}
-    {% for child in group.children %}
-    {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=child %}
-    {% endfor %}
+{% for child in group.children %}
+    {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=child whose=whose %}
+{% endfor %}
 {% if group.show_in_hierarchy %}
     {% if group.exercises|length > 0 %}
         <table class="syllabus"> 
@@ -20,17 +20,17 @@
                 <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
                 <td>{{ exc.description }}</td>
                 {% if rating == None %}
-                <td><input type="text" class="seen" name="rating_average" width="10" value="No ratings received yet!"></input></td>
+                <td><input type="text" name="rating_average" width="10" value="No ratings received yet!"></input></td>
                 {% else %}
                 <td><input type="text" class="
                     {% if rating.rating_average >= 3 %}
-                    proficient
+                    proficient summary_average
                     {% elif rating.rating_average >= 2 %}
                     understood
                     {% elif rating.rating_average >= 1 %}
                     attempted
                     {% else %}
-                    seen
+                    seen summary_average
                     {% endif %}
                     "name="rating_average" width="10" value="{{ rating.rating_average }}" title="{% for user, user_rating in rating.students_ratings.items %}{{ user }}:{{ user_rating}} | {% endfor %}"></input></td>
                 {% endif %}

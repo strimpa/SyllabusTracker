@@ -93,6 +93,11 @@ section {
 /*    text-align: left; */
 }
 
+.summary_average
+{
+    color: #f0f8f6;
+}
+
 /* HEADINGS   
 ----------------------------------------------------------*/
 h1, h2, h3, h4, h5, h6 {
@@ -257,7 +262,6 @@ input[type="email"] {
     border: 1px solid #ccc;
     height:15px;
     font-size: 0.8em;
-    color: #444;
     width: 150px;
 }
 

@@ -1,0 +1,3 @@
+<h{{group.depth}}>{{ group.name }}</h{{group.depth}}>
+<a href="{% url 'syllabus' order=group.name whose=whose %}">Filter to this group</a>
+| <a class="add_to_filter" id="{{group.name}}">Add to filter chain</a>
