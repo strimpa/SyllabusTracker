@@ -1,4 +1,5 @@
 from urllib.parse import unquote
+import time
 
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
@@ -157,6 +158,7 @@ class SyllabusView(View):
             root_group_names = order.split(',')
             
         #prefetch leaves
+        start = time.time()
         root_group_leaves = {}
         former_root_groups = []
         for name in root_group_names:
@@ -173,9 +175,13 @@ class SyllabusView(View):
                 return redirect('/syllabus/')
                 pass
 
+        end = time.time()
+        print("time for group prefretch:"+str(end - start))
+
         display_root = DisplayLeaf("Display root", False, 0, 0)
         depth = 0
-        for ex in Exercise.objects.order_by("-list_order_index"):
+        for ex in Exercise.objects.select_related().order_by("-list_order_index"):
+            ex1 = time.time()
             rating = None
             try:
                 rating = ratings_by_exercise[ex.name]
@@ -185,13 +191,16 @@ class SyllabusView(View):
             # for each group this exercise is in, 
             this_groups = ex.groups.all()
             ordered_groups = []
-#            print (str(ex))
+            print (str(ex))
             for name in root_group_names:
                 leaves = root_group_leaves[name]
                 for group in ex.groups.all():
                     if group in leaves:
 #                        print("appending "+str(group))
                         ordered_groups.append(group)
+
+            ex2 = time.time()
+            print("time 1:"+str(ex2 - ex1))
 
             if len(ordered_groups) == len(root_group_names):
                 #create the tree of sub groups
@@ -203,7 +212,13 @@ class SyllabusView(View):
                     append_exercise = ex_group == ordered_groups[-1]
                     if append_exercise:
                         group_leaf.exercises.append((ex, rating))  
-            
+            ex3 = time.time()
+            print("time 2:"+str(ex3 - ex2))
+
+
+        end2 = time.time()
+        print("time for exercise processing:"+str(end2 - end))
+
 #        print_hier(display_root, 0)
                 
         context = {
