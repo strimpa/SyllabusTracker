@@ -1,3 +1,5 @@
+from urllib.parse import unquote
+
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
@@ -5,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
+from django.utils.safestring import mark_safe
 
 from ..models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
 from ..forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm
@@ -150,6 +153,7 @@ class SyllabusView(View):
         order = None
         if 'order' in kwargs and kwargs['order']!=None:
             order = kwargs['order']
+            order = unquote(order)
             root_group_names = order.split(',')
             
         #prefetch leaves
