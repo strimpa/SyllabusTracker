@@ -56,24 +56,21 @@ def find_or_create_leaf(group, group_root, root_depth):
     display_leaf = find_leaf(group.name, group_root)
     if display_leaf == None:
         display_leaf = DisplayLeaf(group.name, group.show_in_hierarchy, group.list_order_index, root_depth)
+        if group.parent_group != None:
+            display_leaf.parent_leaf = find_or_create_leaf(group.parent_group, group_root, root_depth)
+            #only increase the depth if the leaf is shown in hierarchy
+            if display_leaf.parent_leaf.show_in_hierarchy:
+                display_leaf.depth = display_leaf.parent_leaf.depth+1
+        else:
+            display_leaf.parent_leaf = group_root
 
-    root_leaf = group_root
-    parent_leaf = group_root
-    if group.parent_group != None:
-        parent_leaf = find_or_create_leaf(group.parent_group, group_root, root_depth)
-        #only increase the depth if the leaf is shown in hierarchy
-        if parent_leaf.show_in_hierarchy:
-            display_leaf.depth = parent_leaf.depth+1
-    
-    if not display_leaf in parent_leaf.children:
+    if not display_leaf in display_leaf.parent_leaf.children:
         curr_index = 0
-        for c in parent_leaf.children:
+        for c in display_leaf.parent_leaf.children:
             if c.list_order_index>=curr_index:
                 break
             curr_index+=1
-        parent_leaf.children.insert(curr_index, display_leaf)
-        #parent_leaf.children.append(display_leaf)
-        #print ("adding "+display_leaf.name+" to "+parent_leaf.name)
+        display_leaf.parent_leaf.children.insert(curr_index, display_leaf)
     return display_leaf
 
 class ExerciseStudentSummary():
@@ -90,7 +87,7 @@ class SyllabusView(View):
         ratings_by_exercise = {}
         if is_summary:
             all_ratings = Rating.objects.select_related().filter(rater__in = memberships)
-            print("all_ratings:"+str(len(all_ratings)))
+#            print("all_ratings:"+str(len(all_ratings)))
             for r in all_ratings:
                 if r.exercise != None:
                     # Initialise exercise summary
@@ -158,7 +155,7 @@ class SyllabusView(View):
             root_group_names = order.split(',')
             
         #prefetch leaves
-        start = time.time()
+#        start = time.time()
         root_group_leaves = {}
         former_root_groups = []
         for name in root_group_names:
@@ -175,8 +172,8 @@ class SyllabusView(View):
                 return redirect('/syllabus/')
                 pass
 
-        end = time.time()
-        print("time for group prefretch:"+str(end - start))
+#        end = time.time()
+ #       print("time for group prefretch:"+str(end - start))
 
         display_root = DisplayLeaf("Display root", False, 0, 0)
         depth = 0
@@ -191,7 +188,7 @@ class SyllabusView(View):
             # for each group this exercise is in, 
             this_groups = ex.groups.all()
             ordered_groups = []
-            print (str(ex))
+#            print (str(ex))
             for name in root_group_names:
                 leaves = root_group_leaves[name]
                 for group in ex.groups.all():
@@ -199,8 +196,8 @@ class SyllabusView(View):
 #                        print("appending "+str(group))
                         ordered_groups.append(group)
 
-            ex2 = time.time()
-            print("time 1:"+str(ex2 - ex1))
+#            ex2 = time.time()
+#            print("time 1:"+str(ex2 - ex1))
 
             if len(ordered_groups) == len(root_group_names):
                 #create the tree of sub groups
@@ -212,12 +209,12 @@ class SyllabusView(View):
                     append_exercise = ex_group == ordered_groups[-1]
                     if append_exercise:
                         group_leaf.exercises.append((ex, rating))  
-            ex3 = time.time()
-            print("time 2:"+str(ex3 - ex2))
+#            ex3 = time.time()
+#            print("time 2:"+str(ex3 - ex2))
 
 
-        end2 = time.time()
-        print("time for exercise processing:"+str(end2 - end))
+#        end2 = time.time()
+#        print("time for exercise processing:"+str(end2 - end))
 
 #        print_hier(display_root, 0)
                 
