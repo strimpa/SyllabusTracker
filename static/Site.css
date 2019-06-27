@@ -1,4 +1,4 @@
-﻿/*----------------------------------------------------------
+/*----------------------------------------------------------
 The base color for this template is #544545. If you'd like
 to use a different color start by replacing all instances of
 #544545 with your new color.
@@ -165,7 +165,7 @@ header h1, #header h1 {
     border-radius: 5px 0px 0px 5px;
     -webkit-border-radius: 5px 0 0 5px;
     -moz-border-radius: 5px 0 0 5px;
-    background-color: #A00606;
+    background: #A00606 url(/static/images/samurai_tinted.jpg) no-repeat fixed;
     color:#FEE;
 }
 
@@ -185,8 +185,9 @@ header h1, #header h1 {
 
 .contentColours
 {
-    background-color: #f0f8f6;
+    background: #f0f8f6 url(/static/images/samurai_tinted_blue.jpg) no-repeat fixed;
     border: 1px solid #A00606;
+    height: 100%;
 }
 .menuBlock
 {
