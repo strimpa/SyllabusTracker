@@ -1,15 +1,12 @@
 {% extends "SyllabusTrackerApp/base_logged_in.html" %}
 
 {% block content %}
-    {% if successful_add %}
-        <div class="notification">Successfully added the kyu!</div>
-    {% endif %}
+<form action="{% url 'edit_session' %}">
     <table class="simple_table">
         {% for form in existing_kyu_form %}
             {{ form.as_table }}
         {% endfor %}
     </table>
-    <form action="/add_kyus/">
     <table class="simple_table">
         {{ add_kyu_form.as_table }}
     </table>

@@ -149,11 +149,11 @@ class SyllabusView(View):
         ratings_by_exercise = self.get_ratings(membership, is_summary, selected_memberships)
         groups = ExerciseGroup.objects.all()
         root_group_names = ['Kyu', 'Waza']
-        order = None
-        if 'order' in kwargs and kwargs['order']!=None:
-            order = kwargs['order']
-            order = unquote(order)
-            root_group_names = order.split(',')
+        filter = None
+        if 'filter' in kwargs and kwargs['filter']!=None:
+            filter = kwargs['filter']
+            filter = unquote(filter)
+            root_group_names = filter.split(',')
             
         #prefetch leaves
 #        start = time.time()
@@ -227,6 +227,6 @@ class SyllabusView(View):
             'whose':whose,
             'selected_memberships':selected_memberships,
             'all_memberships':all_memberships,
-            'order':order
+            'order':filter
         }
         return render(request, 'SyllabusTrackerApp/syllabus.html', context)

@@ -205,7 +205,7 @@ def add_kyus(request):
 
 @login_required
 @permission_required('SyllabusTrackerApp.add_session', raise_exception=True)
-def edit_sessions(request):
+def edit_session(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
