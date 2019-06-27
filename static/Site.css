@@ -216,7 +216,36 @@ footer,
 .syllabus_section
 {
     border:0px solid black;
-    padding-left: 15px;
+    padding-left: 0px;
+}
+
+.group_header_0
+{
+    margin-left:00px;
+}
+.group_header_1
+{
+    margin-left:10px;
+}
+.group_header_2
+{
+    margin-left:20px;
+}
+.group_header_3
+{
+    margin-left:30px;
+}
+.group_header_4
+{
+    margin-left:40px;
+}
+.group_header_5
+{
+    margin-left:50px;
+}
+.group_header_6
+{
+    margin-left:60px;
 }
 
 /* TAB MENU   
@@ -323,6 +352,11 @@ table.syllabus td
 table.syllabus td.rating
 {
     border:1px solid #c9a1a1;
+}
+
+.ex_description
+{
+    width: 120px;
 }
 /* Rating  
 ----------------------------------------------------------*/

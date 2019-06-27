@@ -25,13 +25,20 @@ def rate(request):
     #processing incoming rating
     if request.method == "POST":
         data = request.POST
-        exercise = Exercise.objects.get(name=data['exercise_name'], groups__name__contains=data['exercise_group_name'])
-        rating = Rating(rater=membership, exercise=exercise, comment=data['comment'], proficiency=data['proficiency'])
-        rating.save()
+        group_id = data['exercise_group_id']
+        for field in data:
+            if 'comment_' in field:
+                ex_id = field.split('_')[1]
+                ex_comment = data[field]
+                ex_name = data["exercise_name_"+str(ex_id)]
+                ex_proficiency = data["proficiency_"+str(ex_id)]
+                exercise = Exercise.objects.get(id=ex_id, groups__id__contains=group_id)
+                rating = Rating(rater=membership, exercise=exercise, comment=ex_comment, proficiency=ex_proficiency)
+                rating.save()
+                messages.info(request, "Successfully rated exercise \""+ex_name+"\"")
 
         membership.ratings.add(rating)
         membership.save()
-        messages.info(request, "Successfully rated exercise \""+exercise.name+"\"")
 
     return HttpResponseRedirect('/syllabus/') # Redirect after POST
 

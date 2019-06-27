@@ -15,8 +15,9 @@ from ..forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, K
 from ..view_utils import *
 
 class DisplayLeaf():
-    def __init__(self, name, show_in_hierarchy, list_order_index, depth):
+    def __init__(self, name, id, show_in_hierarchy, list_order_index, depth):
         self.name = name
+        self.id = id
         self.children = []
         self.exercises = []
         self.parent_leaf = None
@@ -55,7 +56,7 @@ def print_hier(leaf, depth):
 def find_or_create_leaf(group, group_root, root_depth):
     display_leaf = find_leaf(group.name, group_root)
     if display_leaf == None:
-        display_leaf = DisplayLeaf(group.name, group.show_in_hierarchy, group.list_order_index, root_depth)
+        display_leaf = DisplayLeaf(group.name, group.id, group.show_in_hierarchy, group.list_order_index, root_depth)
         if group.parent_group != None:
             display_leaf.parent_leaf = find_or_create_leaf(group.parent_group, group_root, root_depth)
             #only increase the depth if the leaf is shown in hierarchy
@@ -175,7 +176,7 @@ class SyllabusView(View):
 #        end = time.time()
  #       print("time for group prefretch:"+str(end - start))
 
-        display_root = DisplayLeaf("Display root", False, 0, 0)
+        display_root = DisplayLeaf("Display root", 0, False, 0, 0)
         depth = 0
         for ex in Exercise.objects.select_related().order_by("-list_order_index"):
             ex1 = time.time()

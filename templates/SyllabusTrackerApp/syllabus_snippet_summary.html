@@ -1,5 +1,5 @@
 {% if group.show_in_hierarchy %}
-{% include "SyllabusTrackerApp/group_header_snippet.html" with group=group %}
+{% include "SyllabusTrackerApp/group_header_snippet.html" with group=group depth=group.depth %}
 <div class="syllabus_section">
 {% endif %}
 {% for child in group.children %}
