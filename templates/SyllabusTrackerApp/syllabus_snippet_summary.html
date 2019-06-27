@@ -17,8 +17,8 @@
         <form action="/rate/" method="POST">
             {% csrf_token %}
             <tr>
-                <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
-                <td>{{ exc.description }}</td>
+                <td class="ex_description">{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
+                <td class="ex_description">{{ exc.description }}</td>
                 {% if rating == None %}
                 <td><input type="text" name="rating_average" width="10" value="No ratings received yet!"></input></td>
                 {% else %}
