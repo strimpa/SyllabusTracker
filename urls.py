@@ -1,7 +1,7 @@
 from django.urls import path, re_path, include, reverse_lazy
 from . import views, views_account, views_add_data
 from django.contrib.auth import views as auth_views
-from .class_views.syllabus import SyllabusView
+from .views_classbased.syllabus import SyllabusView
 
 #
 urlpatterns = [
