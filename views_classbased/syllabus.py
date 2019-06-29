@@ -13,66 +13,7 @@ from django.utils.safestring import mark_safe
 from ..models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
 from ..forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm
 from ..view_utils import *
-
-class DisplayLeaf():
-    def __init__(self, name, id, show_in_hierarchy, list_order_index, depth):
-        self.name = name
-        self.id = id
-        self.children = []
-        self.exercises = []
-        self.parent_leaf = None
-        self.show_in_hierarchy = show_in_hierarchy
-        self.list_order_index = list_order_index
-        self.depth = depth
-    
-    def __str__(self):
-        return "DisplayLeaf:"+self.name+": "+str(self.depth)
-
-def find_leaf(leaf_name, root):
-    if root.name == leaf_name:
-        return root
-    if hasattr(root, "children"):
-        for child in root.children:
-            found = find_leaf(leaf_name, child)
-            if found != None:
-                return found
-    return None
-
-def print_hier(leaf, depth):
-    output = ""
-    for i in range(depth):
-        output += ("   ")
-    output += "'"+leaf.name+"'"
-    if hasattr(leaf, "depth"):
-        output += ", "+str(leaf.depth)
-    print(output)
-    if hasattr(leaf, "children"):
-        for c in leaf.children:
-            print_hier(c, depth+1)
-    if hasattr(leaf, "exercises"):
-        for c, r in leaf.exercises:
-            print_hier(c, depth+1)
-
-def find_or_create_leaf(group, group_root, root_depth):
-    display_leaf = find_leaf(group.name, group_root)
-    if display_leaf == None:
-        display_leaf = DisplayLeaf(group.name, group.id, group.show_in_hierarchy, group.list_order_index, root_depth)
-        if group.parent_group != None:
-            display_leaf.parent_leaf = find_or_create_leaf(group.parent_group, group_root, root_depth)
-            #only increase the depth if the leaf is shown in hierarchy
-            if display_leaf.parent_leaf.show_in_hierarchy:
-                display_leaf.depth = display_leaf.parent_leaf.depth+1
-        else:
-            display_leaf.parent_leaf = group_root
-
-    if not display_leaf in display_leaf.parent_leaf.children:
-        curr_index = 0
-        for c in display_leaf.parent_leaf.children:
-            if c.list_order_index>=curr_index:
-                break
-            curr_index+=1
-        display_leaf.parent_leaf.children.insert(curr_index, display_leaf)
-    return display_leaf
+from .DisplayLeaf import DisplayLeaf
 
 class ExerciseStudentSummary():
     def __init__(self, name):
@@ -176,7 +117,7 @@ class SyllabusView(View):
 #        end = time.time()
  #       print("time for group prefretch:"+str(end - start))
 
-        display_root = DisplayLeaf("Display root", 0, False, 0, 0)
+        display_root = DisplayLeaf("Display root", 0)
         depth = 0
         for ex in Exercise.objects.select_related().order_by("-list_order_index"):
             ex1 = time.time()
@@ -205,7 +146,7 @@ class SyllabusView(View):
                 current_root = display_root
                 for ex_group in ordered_groups:
                     # create copies for child groups
-                    group_leaf = find_or_create_leaf(ex_group, current_root, current_root.depth+1)
+                    group_leaf = DisplayLeaf.find_or_create_leaf(ex_group, current_root, current_root.depth+1)
                     current_root = group_leaf
                     append_exercise = ex_group == ordered_groups[-1]
                     if append_exercise:
@@ -217,7 +158,8 @@ class SyllabusView(View):
 #        end2 = time.time()
 #        print("time for exercise processing:"+str(end2 - end))
 
-#        print_hier(display_root, 0)
+        display_root.enumerate_hier(0,"", 0)
+#        display_root.print_hier(0)
                 
         context = {
             'title':"Syllabus",
@@ -227,6 +169,6 @@ class SyllabusView(View):
             'whose':whose,
             'selected_memberships':selected_memberships,
             'all_memberships':all_memberships,
-            'order':filter
+            'filter':filter
         }
         return render(request, 'SyllabusTrackerApp/syllabus.html', context)

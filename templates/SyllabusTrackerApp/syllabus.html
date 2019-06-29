@@ -5,7 +5,7 @@
 
     {% if is_summary %}
     <h1>Select jitsuka to review</h1>
-    <form action="{% url 'syllabus' order=order %}" >
+    <form action="{% url 'syllabus' filterfilter %}" >
     <select name="user_select_whose" multiple="multiple">
     {% for membership in all_memberships %}
         <option value="{{ membership.user.username }}"
