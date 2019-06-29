@@ -99,16 +99,11 @@ class SyllabusView(View):
         #prefetch leaves
 #        start = time.time()
         root_group_leaves = {}
-        former_root_groups = []
         for name in root_group_names:
             try:
                 group = ExerciseGroup.objects.select_related().get(name=name)
                 root_group = group.get_group_root()
-                if root_group in former_root_groups:
-                    messages.info(request, "Exercise Group "+name+" has the same root as the former passed group!")
-                    continue
                 root_group_leaves[name] = group.collect_leaves()
-                former_root_groups.append(root_group)
             except:
                 messages.info(request, "Exercise Group not found:"+name)
                 return redirect('/syllabus/')
@@ -129,28 +124,20 @@ class SyllabusView(View):
             
             # for each group this exercise is in, 
             this_groups = ex.groups.all()
-            ordered_groups = []
+            ordered_groups = {}
 #            print (str(ex))
+            #create the tree of sub groups
+            current_root = display_root
             for name in root_group_names:
                 leaves = root_group_leaves[name]
                 for group in ex.groups.all():
                     if group in leaves:
 #                        print("appending "+str(group))
-                        ordered_groups.append(group)
-
-#            ex2 = time.time()
-#            print("time 1:"+str(ex2 - ex1))
-
-            if len(ordered_groups) == len(root_group_names):
-                #create the tree of sub groups
-                current_root = display_root
-                for ex_group in ordered_groups:
-                    # create copies for child groups
-                    group_leaf = DisplayLeaf.find_or_create_leaf(ex_group, current_root, current_root.depth+1)
-                    current_root = group_leaf
-                    append_exercise = ex_group == ordered_groups[-1]
-                    if append_exercise:
-                        group_leaf.exercises.append((ex, rating))  
+                        group_leaf = DisplayLeaf.find_or_create_leaf(group, current_root, current_root.depth+1)
+                        current_root = group_leaf
+                        append_exercise = name == root_group_names[-1]
+                        if append_exercise:
+                            group_leaf.exercises.append((ex, rating))  
 #            ex3 = time.time()
 #            print("time 2:"+str(ex3 - ex2))
 
