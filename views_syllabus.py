@@ -1,5 +1,5 @@
 from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
-from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm
+from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -48,13 +48,13 @@ def edit_session(request, id=None):
        return membership
 
     session_form = SessionForm()
-    if kyu_form.is_valid():
-        kyu = Kyu(grade=kyu_form.cleaned_data['grade'], colour=kyu_form.cleaned_data['colour'])
-        kyu.save()
-    
-    KyuFormSet = formset_factory(KyuForm)
+    if id!=None:
+        session_instance = Sessiom.objects.get(id=id)
+        session_form = SessionForm(instance=session_instance)
+
+
     context = {
-        'existing_kyu_form':KyuFormSet(initial=Kyu.objects.all().values()),
-        'add_kyu_form':KyuForm()
+        'title':"Edit Session",
+        'session_form':session_form,
     }
-    return render(request, 'SyllabusTrackerApp/add_kyus.html', context)
+    return render(request, 'SyllabusTrackerApp/edit_sessions.html', context)
