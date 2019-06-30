@@ -16,7 +16,7 @@
             <li><a href="{% url 'syllabus' whose='my_club' %}">Summary</a></li>
             <li><a href="{% url 'exercise_editing' %}">Edit Exercises</a></li>
         </div>
-        <div class="menu_column">| <a href="{% url 'edit_session' %}">Add Session</a></div>
+        <div class="menu_column">| <a href="{% url 'sessions' %}">Sessions</a></div>
         {% else %}
         <div class="menu_column">| <a href="{% url 'syllabus' %}">Syllabus</a></div>
         {% endif %}

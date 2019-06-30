@@ -2,6 +2,12 @@
 
 {% block content %}
 <table>
-    {{ exercise_form.as_table }}
-</table>s
+    <h1>{{ Title }}</h1>
+    <a href="{% url 'edit_session' %}"><input type="button" value="Add Session" /></a>
+    {% for session in sessions %}
+    <ul>
+        <li><a href="{% url 'view_session' id=session.id %}">{{ session }}</a></li>
+    </ul>
+    {% endfor %}
+</table>
 {% endblock %}

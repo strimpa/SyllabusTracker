@@ -1,0 +1,24 @@
+{% extends "SyllabusTrackerApp/base_logged_in.html" %}
+
+{% block content %}
+    <h1>{{ Title }}</h1>
+    Session on {{ date }}{% if instructor %}, instructed by {{ instructor.full_name }}{% endif %}
+    
+    <h2>Attendants</h2>
+    {% for attendant in attendants %}
+    <ul>
+        <li><a href="{% url 'profile' username=attendant.username %}">{{ attendant.full_name }}</a></li>
+    </ul>
+    {% endfor %}
+    
+    <h2>Exercises</h2>
+    {% for ex in exercises %}
+    <ul>
+        <li><a href="{% url 'syllabus' filter=ex.name %}">{{ ex.name }}</a></li>
+    </ul>
+    {% endfor %}
+
+    {% if user.is_assistent_instructor_or_instructor %}
+    <a href="{% url 'edit_session' id=session_id %}"><input type="button" value="Edit Session" /></a>
+    {% endif %}
+{% endblock %}

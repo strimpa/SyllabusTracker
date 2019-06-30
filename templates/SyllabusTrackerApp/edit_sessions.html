@@ -1,11 +1,17 @@
 {% extends "SyllabusTrackerApp/base_logged_in.html" %}
 
 {% block content %}
-<form action="{% url 'change_session' %}">
+<form action="{% url 'do_edit_session' %}" method="POST">
+    {% csrf_token %}
     <table class="simple_table">
-        {{ add_kyu_form.as_table }}
+        {{ session_form.as_table }}
     </table>
     <input type="submit" />
     </form>
+    {% if session_form.id.value %}
+    <a href="{% url 'do_send_session_emails' session_id=session_id %}">
+        <input type="button" value="Send attendant emails" />
+    </a>
+    {% endif %}
 </p>
 {% endblock %}

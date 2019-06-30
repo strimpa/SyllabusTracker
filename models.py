@@ -59,7 +59,7 @@ class Jitsuka(AbstractUser):
        return self.username 
 
     def full_name(self):
-        return (self.first_name + " " + self.last_name)
+        return (self.first_name + " " + self.last_name + " (" + self.username + ")")
 
     def is_instructor(self):
         return self.groups.filter(name="Instructors").exists()
@@ -114,10 +114,11 @@ class Rating(models.Model):
         return (self.exercise.name + ":" + self.proficiency)
 
 class Session(models.Model):
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
     attendants = models.ManyToManyField(Jitsuka, related_name="attended_sessions")
     exercises = models.ManyToManyField(ExerciseGroup)
-    instructor = models.ForeignKey(Jitsuka, on_delete=models.SET_NULL, blank=True, null=True)
+    instructor = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
     
     def __str__(self):
-       return (self.date + " - " + self.instructor.full_name)
+       return (str(self.date) + " - " + self.instructor.full_name())

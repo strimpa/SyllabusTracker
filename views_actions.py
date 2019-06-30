@@ -1,5 +1,5 @@
 from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
-from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm
+from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -7,6 +7,8 @@ from .data_processing import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from .view_utils import *
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 @login_required
 def back_to_editing(request, notification, isError=False):
@@ -208,15 +210,59 @@ def do_edit_session(request):
     if isinstance(membership, HttpResponse):
        return membership
 
-    session_form = SessionForm(request.GET)
+    session_form = SessionForm(request.POST)
+    try:
+        if 'id' in request.POST:
+            session_id = request.POST['id']
+            session_instance = Session.objects.get(pk=session_id)
+            session_form = SessionForm(request.POST, instance=session_instance)
+    except:
+        pass
+
     if session_form.is_valid():
-        kyu = Kyu(grade=kyu_form.cleaned_data['grade'], colour=kyu_form.cleaned_data['colour'])
-        kyu.save()
+        instance = session_form.save()
+        if instance!=None:
+            messages.info(request, "Session successfully edited!")
+    else:
+        error = "not valid:"
+        for err in session_form.errors:
+            error += err
+        messages.error(request, error)
     
-    KyuFormSet = formset_factory(KyuForm)
-    context = {
-        'existing_kyu_form':KyuFormSet(initial=Kyu.objects.all().values()),
-        'add_kyu_form':KyuForm()
-    }
-    return render(request, 'SyllabusTrackerApp/add_kyus.html', context)
+    return redirect('/sessions/')
+
+@login_required
+@permission_required('SyllabusTrackerApp.change_session', raise_exception=True)
+def do_send_session_emails(request, session_id=None):
+    membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
+
+    try:
+        session_instance = Session.objects.get(pk=session_id)
+        for template_values in session_instance.attendants.values():
+            try:
+                template_values['instructor'] = session_instance.instructor
+                if 'HTTP_HOST' in request.META: 
+                    template_values['domain'] = request.META['HTTP_HOST'] 
+                else:
+                    template_values['domain'] = 'localhost'
+                template_values['session'] = session_instance
+                msg_plain = render_to_string('session_email.txt', template_values)
+                msg_html = render_to_string('session_email.html', template_values)
+
+                send_mail(
+                    '[SyllabusTracker] Session review',
+                    msg_plain,
+                    None,
+                    [template_values['email']],
+                    html_message=msg_html,
+                )
+            except:
+                messages.error(request, "Problem with email for "+str(template_values['username']))
+        messages.info(request, "Emails successfully sent!")
+    except:
+        messages.error(request, "Couldn't send emails!")
+
+    return redirect('edit_session', id=session_id)
 

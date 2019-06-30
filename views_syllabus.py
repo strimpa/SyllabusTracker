@@ -1,5 +1,6 @@
-from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
-from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm
+from datetime import date, datetime
+from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup, Jitsuka
+from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm, SessionFormReadOnly
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -36,25 +37,59 @@ def exercise_editing(request, successful_add=False):
 
 @login_required
 def sessions(request):
-    check_membership(request.user)
+    membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
-    return HttpResponse("Showing the sessions table")
+    context = {
+        'title':"Sessions",
+        "sessions":Session.objects.all(),
+    }
+    return render(request, 'SyllabusTrackerApp/sessions.html', context)
 
 @login_required
-@permission_required('SyllabusTrackerApp.add_session', raise_exception=True)
+def view_session(request, id=None):
+    membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
+
+    session_instance = None
+    try:
+        session_instance = Session.objects.get(id=id)
+    except:
+        messages.error(request, "Session object not found!")
+        return redirect('/sessions/')
+
+    context = {
+        'title':"View Session",
+        'attendants':session_instance.attendants.all(),
+        'exercises':session_instance.exercises.all(),
+        'date':session_instance.date,
+        'instructor':session_instance.instructor,
+        'session_id':session_instance.id
+    }
+    return render(request, 'SyllabusTrackerApp/view_session.html', context)
+
+@login_required
+@permission_required('SyllabusTrackerApp.change_session')
 def edit_session(request, id=None):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
 
-    session_form = SessionForm()
+    session_form = SessionForm(initial={'date':datetime.now()})
     if id!=None:
-        session_instance = Sessiom.objects.get(id=id)
-        session_form = SessionForm(instance=session_instance)
+        try:
+            session_instance = Session.objects.get(id=id)
+            session_form = SessionForm(instance=session_instance)
+        except:
+            messages.info(request, "Session object not found, creating a new Session!")
 
+    session_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors')
 
     context = {
         'title':"Edit Session",
+        'session_id':id,
         'session_form':session_form,
     }
     return render(request, 'SyllabusTrackerApp/edit_sessions.html', context)

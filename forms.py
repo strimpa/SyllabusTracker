@@ -75,3 +75,17 @@ class SessionForm(ModelForm):
     class Meta:
         model = Session
         fields = '__all__'
+    id = forms.IntegerField(widget=forms.HiddenInput, required=False)
+
+class ReadOnlyFormMixin(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ReadOnlyFormMixin, self).__init__(*args, **kwargs)
+        for key in self.fields.keys():
+            self.fields[key].disabled = True
+
+    def save(self, *args, **kwargs):
+        # do not do anything
+        pass
+
+class SessionFormReadOnly(ReadOnlyFormMixin, SessionForm):
+    pass
