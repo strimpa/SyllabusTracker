@@ -1,5 +1,5 @@
 from django.urls import path, re_path, include, reverse_lazy
-from . import views, views_account, views_add_data
+from . import views, views_account, views_syllabus, views_actions
 from django.contrib.auth import views as auth_views
 from .views_classbased.syllabus import SyllabusView
 
@@ -46,17 +46,18 @@ urlpatterns = [
     path('register_confirm/<name>/<id>', views_account.register_confirm, name='register_confirm'),
     path('forgot_password/', views_account.forgot_password, name='forgot_password'),
     path('user_home/', views.home, name='user_home'),
+
     re_path(r'^syllabus/(?:filter-(?P<filter>[\w ,/%\d]+)/)?(?:whose-(?P<whose>[\w\d,]*)/)?$', SyllabusView.as_view(), name='syllabus'),
-#    path('syllabus/<whose>/', SyllabusView.as_view(), name='syllabus_summary'),
-    path('add_exercise/', views_add_data.add_exercise, name='add_exercise'),
-    path('add_exercises/', views_add_data.add_exercises, name='add_exercises'),
-    path('add_exercise_group/', views_add_data.add_exercise_group, name='add_exercise_group'),
-    path('edit_exercises/', views_add_data.edit_exercises, name='edit_exercises'),
-    path('rate/', views_add_data.rate, name='rate'),
-    path('edit_exercises_groups/', views_add_data.edit_exercises_groups, name='edit_exercises_groups'),
-    path('exercise_editing/', views.exercise_editing, name='exercise_editing'),
-    path('add_kyus/', views_add_data.add_kyus, name='add_kyus'),
-    re_path(r'^edit_session/((?P<id>\d+)/)?$', views_add_data.edit_session, name='edit_session'),
+
+    path('add_exercise/', views_actions.do_add_exercise, name='add_exercise'),
+    path('add_exercises/', views_actions.do_add_exercises, name='add_exercises'),
+    path('add_exercise_group/', views_actions.do_add_exercise_group, name='add_exercise_group'),
+    path('edit_exercises/', views_actions.do_edit_exercises, name='edit_exercises'),
+    path('rate/', views_actions.do_rate, name='rate'),
+    path('edit_exercises_groups/', views_actions.do_edit_exercises_groups, name='edit_exercises_groups'),
+    
+    path('exercise_editing/', views_syllabus.exercise_editing, name='exercise_editing'),
+    re_path(r'^edit_session/((?P<id>\d+)/)?$', views_syllabus.edit_session, name='edit_session'),
 
 #    path('accounts/', include('django.contrib.auth.urls')),
 ]   

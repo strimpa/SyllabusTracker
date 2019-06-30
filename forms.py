@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup)
+from .models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup, Session)
 
 MAX_USERNAME_LENGTH = 100
 
@@ -71,3 +71,7 @@ class ExerciseGroupForm(ModelForm):
         #fields = '__all__'
         exclude = ['exercises']
 
+class SessionForm(ModelForm):
+    class Meta:
+        model = Session
+        fields = '__all__'

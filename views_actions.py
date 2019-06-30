@@ -17,7 +17,7 @@ def back_to_editing(request, notification, isError=False):
     return redirect('/exercise_editing/')
 
 @login_required
-def rate(request):
+def do_rate(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
@@ -45,7 +45,7 @@ def rate(request):
 
 @login_required
 @permission_required('SyllabusTrackerApp.change_exercise', raise_exception=True)
-def edit_exercises(request):
+def do_edit_exercises(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
         return membership
@@ -63,18 +63,16 @@ def edit_exercises(request):
                 obj.save()
             for obj in ex_edit_form.deleted_objects:
                 obj.delete()
-            return back_to_editing(request, 'Successfully edited!')
         else:
             error = "not valid:"
             for err in ex_edit_form.errors:
                 error += err.as_text()
             return back_to_editing(request, error, isError=True)
-    
-    return HttpResponseRedirect('/exercise_editing/') # Redirect after POST
+    return back_to_editing(request, 'Successfully edited!')
 
 @login_required
 @permission_required('SyllabusTrackerApp.add_exercise', raise_exception=True)
-def add_exercise(request):
+def do_add_exercise(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
@@ -98,7 +96,7 @@ def add_exercise(request):
 
 @login_required
 @permission_required('SyllabusTrackerApp.add_exercise', raise_exception=True)
-def add_exercises(request):
+def do_add_exercises(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
@@ -127,7 +125,7 @@ def add_exercises(request):
 
 @login_required
 @permission_required('SyllabusTrackerApp.change_exercisegroup', raise_exception=True)
-def edit_exercises_groups(request):
+def do_edit_exercises_groups(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
@@ -161,7 +159,7 @@ def edit_exercises_groups(request):
 
 @login_required
 @permission_required('SyllabusTrackerApp.add_exercisegroup', raise_exception=True)
-def add_exercise_group(request):
+def do_add_exercise_group(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
@@ -186,7 +184,7 @@ def add_exercise_group(request):
 
 @login_required
 @permission_required('SyllabusTrackerApp.change_kyu', raise_exception=True)
-def add_kyus(request):
+def do_add_kyus(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
@@ -204,14 +202,14 @@ def add_kyus(request):
     return render(request, 'SyllabusTrackerApp/add_kyus.html', context)
 
 @login_required
-@permission_required('SyllabusTrackerApp.add_session', raise_exception=True)
-def edit_session(request):
+@permission_required('SyllabusTrackerApp.change_session', raise_exception=True)
+def do_edit_session(request):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
 
-    kyu_form = KyuForm(request.GET)
-    if kyu_form.is_valid():
+    session_form = SessionForm(request.GET)
+    if session_form.is_valid():
         kyu = Kyu(grade=kyu_form.cleaned_data['grade'], colour=kyu_form.cleaned_data['colour'])
         kyu.save()
     
@@ -221,3 +219,4 @@ def edit_session(request):
         'add_kyu_form':KyuForm()
     }
     return render(request, 'SyllabusTrackerApp/add_kyus.html', context)
+
