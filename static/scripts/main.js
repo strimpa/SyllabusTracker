@@ -14,7 +14,7 @@ require.config({
 });
 
 $ = require(
-	['jquery', 'jqueryui', 'picker'], function($, conn, ui, picker)
+	['jquery', 'jqueryui'], function($, conn, ui)
 {
 	///////////////////////////////////////////////////////////////////////
 	// globals
@@ -40,10 +40,14 @@ $ = require(
 
 	$.ajaxSetup();
 
-	// Setup of searchables
-    $("select[multiple='']").picker({
-		search:true
-	})
+	require(
+		['picker'], function(picker)
+	{
+		// Setup of searchables
+		$("select[multiple='']").picker({
+			search:true
+		})
+	});
 //	$("span.pc-trigger").text("Search ...")
 
 
