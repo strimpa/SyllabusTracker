@@ -1,4 +1,4 @@
-﻿
+
 
 require.config({
 	baseUrl: '/static/scripts/',
@@ -9,19 +9,19 @@ require.config({
 		sylvester:'lib/sylvester',
 		jCookie:'lib/jquery.cookie',
 		underscore:'lib/underscore-min',
-		tagit:'lib/tag-it.min'
+        picker:'lib/jquery-plugins/picker.min'
 	}
 });
 
 $ = require(
-	['jquery', 'jqueryui'], function($, conn, ui)
+	['jquery', 'jqueryui', 'picker'], function($, conn, ui, picker)
 {
 	///////////////////////////////////////////////////////////////////////
 	// globals
 	///////////////////////////////////////////////////////////////////////
 	// constants
 	var max_depth = 1;
-	var csrftoken = $.cookie('csrftoken');
+	//var csrftoken = $.cookie('csrftoken');
 	// jquery extensions
 	$.exists = function(selector){return ($(selector).length > 0);}
 
@@ -39,6 +39,13 @@ $ = require(
 	}
 
 	$.ajaxSetup();
+
+	// Setup of searchables
+    $("select").picker({
+		search:true
+	})
+	$("span.pc-trigger").text("Search ...")
+
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Form watermark logic

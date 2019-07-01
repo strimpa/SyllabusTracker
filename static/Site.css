@@ -458,3 +458,13 @@ div#title {
 .tri-state {
     width: 6em;
 }
+
+/* jQuery ooverrides
+-------------------------------------------------------------*/
+
+.picker .pc-element
+{
+    display: block;
+    margin-bottom: 0px;
+    width:100%;
+}
