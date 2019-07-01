@@ -6,7 +6,7 @@
     {% if is_summary %}
     <h1>Select jitsuka to review</h1>
     <form action="{% url 'syllabus' filterfilter %}" >
-    <select name="user_select_whose" multiple="multiple">
+    <select name="user_select_whose" multiple="">
     {% for membership in all_memberships %}
         <option value="{{ membership.user.username }}"
         {% if membership in selected_memberships %}
