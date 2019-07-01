@@ -12,10 +12,10 @@
 	<body>
 	    <div class="page">
 	        <header>
+				{% block login_display %}{% endblock %}
 	            <div id="title">
 	                <a href="/"><img width="250px" src="{% static 'images/logo.png' %}"></a>
 				</div>
-				{% block login_display %}{% endblock %}
 	            <br style="clear:both;" />
 	        </header>
 			<section id="main">
