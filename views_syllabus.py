@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup, Jitsuka
 from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm, SessionFormReadOnly
+from django.core.paginator import Paginator
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -22,15 +23,29 @@ def exercise_editing(request, successful_add=False):
 
     add_ex_form = ExerciseForm()
     exercise_csv_form = UploadFileForm()
-    ex_edit_form = ExerciseFormSet(initial=Exercise.objects.all().values())
+
+    exercise_paginator = Paginator(Exercise.objects.all(), 5)
+    ex_edit_forms = []
+    for page_index in exercise_paginator.page_range:
+        page = exercise_paginator.page(page_index)
+        print(str(page.object_list))
+        ex_edit_forms.append(ExerciseFormSet(initial=page.object_list))
+
+    exerciseGroup_paginator = Paginator(all_groups, 5)
+    exGroup_edit_forms = []
+    for page_index in exerciseGroup_paginator.page_range:
+        page = exerciseGroup_paginator.page(page_index)
+        print(str(page.object_list))
+        exGroup_edit_forms.append(ExerciseGroupFormSet(initial=page.object_list))
+
     context = {
         'title':"Exercise Editing",
-        'exercise_formset':ex_edit_form,
+        'ex_edit_forms':ex_edit_forms,
         'all_groups':all_groups,
         'add_ex_form':add_ex_form,
         'successful_add':successful_add,
         'exercise_csv_form':exercise_csv_form,
-        'exercise_group_formset':ExerciseGroupFormSet(initial=all_groups.values()),
+        'exGroup_edit_forms':exGroup_edit_forms,
         'add_ex_group_form':ExerciseGroupForm()
     }
     return render(request, 'SyllabusTrackerApp/exercise_editing.html', context)
