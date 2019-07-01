@@ -41,10 +41,10 @@ $ = require(
 	$.ajaxSetup();
 
 	// Setup of searchables
-    $("select").picker({
+    $("select[multiple='']").picker({
 		search:true
 	})
-	$("span.pc-trigger").text("Search ...")
+//	$("span.pc-trigger").text("Search ...")
 
 
 	///////////////////////////////////////////////////////////////////////////////////
