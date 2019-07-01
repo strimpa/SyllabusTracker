@@ -364,6 +364,10 @@ td.rating input {
 {
     width: 120px;
 }
+
+table.syllabus input[type="text"] {
+    width: 100px;
+}
 /* Rating  
 ----------------------------------------------------------*/
 .seen
