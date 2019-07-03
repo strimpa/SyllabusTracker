@@ -48,8 +48,16 @@ $ = require(
 			search:true
 		})
 	});
-//	$("span.pc-trigger").text("Search ...")
 
+	$(".hover_icon").mouseover(function() {
+		var formerPicUrl = $( this ).attr("src");
+		var formerPic = formerPicUrl.split("/").pop().split(".")[0];
+		$( this ).attr("src", "/static/images/"+formerPic+"_over.png")
+	}).mouseout(function() {
+		var formerPicUrl = $( this ).attr("src");
+		var formerPic = formerPicUrl.split("/").pop().split("_over")[0];
+		$( this ).attr("src", "/static/images/"+formerPic+".png")
+	});
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Form watermark logic

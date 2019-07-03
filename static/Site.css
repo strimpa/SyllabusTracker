@@ -25,6 +25,7 @@ body {
 a:link 
 {
     text-decoration: none;
+    color:#510202;
 }
 
 a:visited 
@@ -221,6 +222,12 @@ footer,
 {
     border:0px solid black;
     padding-left: 0px;
+}
+
+img.filter_button
+{
+    margin-bottom: -5;
+    width: 20px;
 }
 
 .group_header_0

@@ -1,5 +1,5 @@
 {% extends "SyllabusTrackerApp/base.html" %}
-
+{% load static %}
 {% block title %} {{ title }}&euro; {% endblock %}
 
 {% block login_display %}
@@ -9,16 +9,12 @@
 {% block navi %}
 <nav>
     <ul id="menu">
-        <div class="menu_column"><a href="/">Home</a></div>
-        {% if user.is_assistent_instructor_or_instructor %} 
-        <div class="menu_column">| Syllabus <br />
-            <li><a href="{% url 'syllabus' %}">My Rating</a></li>
-            <li><a href="{% url 'syllabus' whose='my_club' %}">Summary</a></li>
-            <li><a href="{% url 'exercise_editing' %}">Edit Exercises</a></li>
-        </div>
-        <div class="menu_column">| <a href="{% url 'sessions' %}">Sessions</a></div>
-        {% else %}
-        <div class="menu_column">| <a href="{% url 'syllabus' %}">Syllabus</a></div>
+        <a href="/"><img src="{% static 'images/home.png' %}" class="hover_icon" title="Home" /></a>
+        <a href="{% url 'syllabus' %}"><img src="{% static 'images/syllabus.png' %}" class="hover_icon" title="Syllabus" /></a>
+        <a href="{% url 'syllabus' whose='my_club' %}"><img src="{% static 'images/summary.png' %}" class="hover_icon" title="Summary" /></a>
+        <a href="{% url 'sessions' %}"><img src="{% static 'images/sessions.png' %}" class="hover_icon" title="Sessions" /></a>
+        {% if user.is_assistent_instructor_or_instructor %}
+        <a href="{% url 'exercise_editing' %}"><img src="{% static 'images/syllabus_editing.png' %}" class="hover_icon" title="Exercise Editing" /></a>
         {% endif %}
     </ul>
 </nav>
