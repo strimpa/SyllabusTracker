@@ -29,14 +29,14 @@ def exercise_editing(request, successful_add=False):
     for page_index in exercise_paginator.page_range:
         page = exercise_paginator.page(page_index)
         print(str(page.object_list))
-        ex_edit_forms.append(ExerciseFormSet(queryset=page.object_list))
+        ex_edit_forms.append(ExerciseFormSet(queryset=page.object_list.all()))
 
     exerciseGroup_paginator = Paginator(all_groups, 10)
     exGroup_edit_forms = []
     for page_index in exerciseGroup_paginator.page_range:
         page = exerciseGroup_paginator.page(page_index)
         print(str(page.object_list))
-        exGroup_edit_forms.append(ExerciseGroupFormSet(queryset=page.object_list))
+        exGroup_edit_forms.append(ExerciseGroupFormSet(queryset=page.object_list.all()))
 
     context = {
         'title':"Exercise Editing",
