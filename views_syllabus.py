@@ -24,29 +24,32 @@ def exercise_editing(request, successful_add=False):
     add_ex_form = ExerciseForm()
     exercise_csv_form = UploadFileForm()
 
+    exercise_page = 1
+    if request.method=="GET" and 'exercise_page' in request.GET:
+        exercise_page = request.GET['exercise_page']
     exercise_paginator = Paginator(Exercise.objects.all(), 10)
-    ex_edit_forms = []
-    for page_index in exercise_paginator.page_range:
-        page = exercise_paginator.page(page_index)
-        print(str(page.object_list))
-        ex_edit_forms.append(ExerciseFormSet(queryset=page.object_list.all()))
+    page = exercise_paginator.page(exercise_page)
+    print(str(page.object_list))
+    ex_edit_form = ExerciseFormSet(queryset=page.object_list)
 
     exerciseGroup_paginator = Paginator(all_groups, 10)
-    exGroup_edit_forms = []
-    for page_index in exerciseGroup_paginator.page_range:
-        page = exerciseGroup_paginator.page(page_index)
-        print(str(page.object_list))
-        exGroup_edit_forms.append(ExerciseGroupFormSet(queryset=page.object_list.all()))
+    exercise_group_page = 1
+    if request.method=="GET" and 'exercise_group_page' in request.GET:
+        exercise_group_page = request.GET['exercise_group_page']
+    page = exerciseGroup_paginator.page(exercise_group_page)
+    print(str(page.object_list))
+    exGroup_edit_form = ExerciseGroupFormSet(queryset=page.object_list)
 
     context = {
         'title':"Exercise Editing",
-        'ex_edit_forms':ex_edit_forms,
-        'all_groups':all_groups,
+        'ex_edit_form':ex_edit_form,
         'add_ex_form':add_ex_form,
         'successful_add':successful_add,
         'exercise_csv_form':exercise_csv_form,
-        'exGroup_edit_forms':exGroup_edit_forms,
-        'add_ex_group_form':ExerciseGroupForm()
+        'exGroup_edit_form':exGroup_edit_form,
+        'add_ex_group_form':ExerciseGroupForm(),
+        'exercise_page':exercise_page,
+        'exercise_group_page':exercise_group_page
     }
     return render(request, 'SyllabusTrackerApp/exercise_editing.html', context)
 

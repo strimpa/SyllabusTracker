@@ -1,5 +1,4 @@
 <h2>{{ title }}</h2>
-{% for formset in formsets %}
 <form action="/{{target}}/" method="POST">
     {% csrf_token %}
     {{ formset.management_form }}
@@ -23,4 +22,4 @@
     </table>
     <button type="submit">Submit</button>
 </form>
-{% endfor %}
+{% include "SyllabusTrackerApp/paginator_control_snippet.html" with paginator_var=paginator_var paginator_value=paginator_value %}
