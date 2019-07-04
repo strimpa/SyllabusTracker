@@ -24,21 +24,34 @@ def exercise_editing(request, successful_add=False):
     add_ex_form = ExerciseForm()
     exercise_csv_form = UploadFileForm()
 
-    exercise_page = 1
+    exercise_page_num = 1
     if request.method=="GET" and 'exercise_page' in request.GET:
-        exercise_page = request.GET['exercise_page']
-    exercise_paginator = Paginator(Exercise.objects.all(), 10)
-    page = exercise_paginator.page(exercise_page)
-    print(str(page.object_list))
-    ex_edit_form = ExerciseFormSet(queryset=page.object_list)
+        exercise_page_num = request.GET['exercise_page']
+
+    all_exercises = Exercise.objects.all()
+    exercise_paginator = Paginator(all_exercises, 10)
+    try:  
+        exercise_page = exercise_paginator.page(exercise_page_num)
+    except PageNotAnInteger:  
+        exercise_page = exercise_paginator.page(1)
+    except EmptyPage:  
+        exercise_page = exercise_paginator.page(exercise_paginator.num_pages)  
+    ex_query = all_exercises.filter(id__in=[ex.id for ex in exercise_page])
+    ex_edit_form = ExerciseFormSet(queryset=ex_query)
 
     exerciseGroup_paginator = Paginator(all_groups, 10)
-    exercise_group_page = 1
+    exercise_group_page_num = 1
     if request.method=="GET" and 'exercise_group_page' in request.GET:
-        exercise_group_page = request.GET['exercise_group_page']
-    page = exerciseGroup_paginator.page(exercise_group_page)
-    print(str(page.object_list))
-    exGroup_edit_form = ExerciseGroupFormSet(queryset=page.object_list)
+        exercise_group_page_num = request.GET['exercise_group_page']
+
+    try:  
+        exercise_group_page = exerciseGroup_paginator.page(exercise_group_page_num)
+    except PageNotAnInteger:  
+        exercise_group_page = exerciseGroup_paginator.page(1)
+    except EmptyPage:  
+        exercise_group_page = exerciseGroup_paginator.page(exerciseGroup_paginator.num_pages)  
+    ex_group_query = all_groups.filter(id__in=[ex.id for ex in exercise_group_page])
+    exGroup_edit_form = ExerciseGroupFormSet(queryset=ex_group_query)
 
     context = {
         'title':"Exercise Editing",

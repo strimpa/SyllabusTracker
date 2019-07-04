@@ -1,31 +1,17 @@
-<!-- <div class="paginator_controls">
-    <form action="{% url 'exercise_editing' %}" method="GET">
-        <input type="hidden" name="{{paginator_var}}" value="{{paginator_value-1}}" />
-        <input type="submit" value="<" />
-    </form>
-    <form action="{% url 'exercise_editing' %}" method="GET">
-        <input type="text" name="paginator_page_or_search" value="{{paginator_value}}" />
-    </form>
-    <form action="{% url 'exercise_editing' %}" method="GET">
-        <input type="hidden" name="{{paginator_var}}" value="{{paginator_value+1}}" />
-        <input type="submit" value=">" />
-    </form>
-</div>
--->
 <div class="pagination">
         <span class="step-links">
-            {% if contacts.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ contacts.previous_page_number }}">previous</a>
+            {% if page.has_previous %}
+                <a href="?{{ paginator_var }}=1">&laquo; first</a>
+                <a href="?{{ paginator_var }}={{ page.previous_page_number }}">previous</a>
             {% endif %}
     
             <span class="current">
-                Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                Page {{ page.number }} of {{ page.paginator.num_pages }}.
             </span>
     
-            {% if contacts.has_next %}
-                <a href="?page={{ contacts.next_page_number }}">next</a>
-                <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
+            {% if page.has_next %}
+                <a href="?{{ paginator_var }}={{ page.next_page_number }}">next</a>
+                <a href="?{{ paginator_var }}={{ page.paginator.num_pages }}">last &raquo;</a>
             {% endif %}
         </span>
     </div>

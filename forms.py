@@ -68,8 +68,11 @@ class KyuForm(ModelForm):
 class ExerciseGroupForm(ModelForm):
     class Meta:
         model = ExerciseGroup
-        #fields = '__all__'
         exclude = ['exercises']
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+        # for access in template
+        self.exclude = ['exercises']
 
 class SessionForm(ModelForm):
     class Meta:
