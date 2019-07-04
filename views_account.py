@@ -177,24 +177,24 @@ def profile(request, username=None):
     theUser = request.user
     membership_form = MembershipForm(initial={'user_id':theUser.id})
     found_membership = False
+    can_edit = request.user.is_assistent_instructor_or_instructor()
 
     try:
-        '''
-        if (None!=username) and \
+        if (can_edit and
+            None!=username) and \
             "me"!=username and \
             (None!=username and username!=request.user.username):
                 theUser = Jitsuka.objects.get(username=username)
                 tisMe = False
  
-        if tisMe:
-        '''
-        membership = Membership.objects.get(user = request.user)
+        membership = Membership.objects.get(user = theUser)
         membership_form = MembershipForm(instance = membership, initial={
             'membership_id':membership.id,
             'user_id':theUser.id, 
             'insurance_expiry':membership.insurance_expiry_date
             })
         membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
+        membership_form.fields['insurance_expiry'].disabled = not can_edit
         found_membership = True
     except ObjectDoesNotExist:
         pass
