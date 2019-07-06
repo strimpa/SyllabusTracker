@@ -140,36 +140,46 @@ def register_confirm(request, name, id):
         
 @login_required
 def user_update(request):
-    existing_user = Jitsuka.objects.get(username=request.POST['username'])
-    profile_form = ProfileForm(request.POST, instance=existing_user)
-    if(profile_form.is_valid()):
-        profile_form.save()
-        messages.info(request, "User data successfully updated!")
-    else:
-        for value in profile_form.errors.items():
-            messages.error(request, value)
-
-    return redirect('/profile/')
+    forward_username = ""
+    try:
+        existing_user = Jitsuka.objects.get(username=request.POST['username'])
+        if existing_user!=request.user:
+            forward_username = existing_user.username
+        profile_form = ProfileForm(request.POST, instance=existing_user)
+        if(profile_form.is_valid()):
+            profile_form.save()
+            messages.info(request, "User data successfully updated!")
+        else:
+            for value in profile_form.errors.items():
+                messages.error(request, value)
+    except:
+        messages.error(request, "Error while updating user")
+    return redirect('/profile/'+forward_username)
 
 @login_required
 def membership_update(request):
+    forward_username = ""
     membership_form = MembershipForm(request.POST, request.FILES)
     if 'membership_id' in request.POST and request.POST['membership_id'] != '':
         membership = Membership.objects.get(id=request.POST['membership_id'])
         membership_form = MembershipForm(request.POST, request.FILES, instance=membership)
 
-    # This alwyays needs to be forwarded
-    the_user = Jitsuka.objects.get(id=request.POST['user_id'])
-    if(membership_form.is_valid()):
-        instance = membership_form.save()
-        instance.user = the_user
-        instance.save()
-        messages.info(request, "Membership data successfully updated!")
-    else:
-        for value in membership_form.errors.items():
-            messages.error(request, value)
-
-    return redirect('/profile/')
+    try:
+        # This alwyays needs to be forwarded
+        the_user = Jitsuka.objects.get(id=request.POST['user_id'])
+        if the_user!=request.user:
+            forward_username = the_user.username
+        if(membership_form.is_valid()):
+            instance = membership_form.save()
+            instance.user = the_user
+            instance.save()
+            messages.info(request, "Membership data successfully updated!")
+        else:
+            for value in membership_form.errors.items():
+                messages.error(request, value)
+    except:
+        messages.error(request, "Error while updating memberhsip")
+    return redirect('/profile/'+forward_username)
 
 @login_required
 def profile(request, username=None):
@@ -194,7 +204,7 @@ def profile(request, username=None):
             'insurance_expiry':membership.insurance_expiry_date
             })
         membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
-        membership_form.fields['insurance_expiry'].disabled = not can_edit
+        membership_form.fields['insurance_expiry_date'].disabled = not can_edit
         found_membership = True
     except ObjectDoesNotExist:
         pass

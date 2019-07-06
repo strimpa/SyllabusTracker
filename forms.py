@@ -52,10 +52,9 @@ class ExerciseEditForm(forms.ModelForm):
 class MembershipForm(ModelForm):
     class Meta:
         model = Membership
-        exclude = ['user', 'ratings', 'leaving_date', 'insurance_expiry_date']
+        exclude = ['user', 'ratings', 'leaving_date']
     membership_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
     user_id = forms.IntegerField(widget=forms.HiddenInput)
-    insurance_expiry = forms.DateField(disabled=True, required=False)
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
