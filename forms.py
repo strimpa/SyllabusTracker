@@ -48,6 +48,14 @@ class ExerciseEditForm(forms.ModelForm):
     class Meta:
         model = Exercise
         fields = '__all__'
+    groups = forms.ModelMultipleChoiceField(
+            queryset=ExerciseGroup.objects.all(),
+            required=False
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(forms.ModelForm, self).__init__(*args, **kwargs)
+        self.fields['groups'].initial = self.instance.groups.all()
 
 class MembershipForm(ModelForm):
     class Meta:

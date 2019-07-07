@@ -17,7 +17,7 @@ class Exercise(models.Model):
 # An association between exercises
 class ExerciseGroup(models.Model):
     name = models.CharField(max_length=200)
-    description = models.CharField(max_length=1024)
+    description = models.CharField(max_length=1024, blank=True)
     exercises = models.ManyToManyField(Exercise, blank=True, related_name="groups")
     parent_group = models.ForeignKey("ExerciseGroup", on_delete=models.SET_NULL, blank=True, null=True, related_name="child_groups")
     show_in_hierarchy = models.BooleanField(default=True)

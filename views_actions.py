@@ -24,10 +24,13 @@ def do_rate(request):
     if isinstance(membership, HttpResponse):
        return membership
 
+    anchor = ""
     #processing incoming rating
     if request.method == "POST":
         data = request.POST
         group_id = data['exercise_group_id']
+        if 'next' in data:
+            anchor = "#"+data['next']
         for field in data:
             if 'comment_' in field:
                 ex_id = field.split('_')[1]
@@ -42,7 +45,7 @@ def do_rate(request):
         membership.ratings.add(rating)
         membership.save()
 
-    return HttpResponseRedirect('/syllabus/') # Redirect after POST
+    return HttpResponseRedirect('/syllabus/'+anchor) # Redirect after POST
 
 
 @login_required
@@ -61,7 +64,11 @@ def do_edit_exercises(request):
         if ex_edit_form.is_valid():
             instances = ex_edit_form.save(commit=False)
             for obj in instances:
-                messages.info(obj.name+" parent group:"+str(obj.parent_group))
+                for form in ex_edit_form.forms:
+                    if form.cleaned_data['id'] == obj:
+#                        print("description:"+obj.description)
+                        obj.groups.set(form.cleaned_data['groups'], clear=True)
+                print("description:"+obj.description)
                 obj.save()
             for obj in ex_edit_form.deleted_objects:
                 obj.delete()

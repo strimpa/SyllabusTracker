@@ -42,7 +42,7 @@ class DisplayLeaf():
         self.chapter += chapter_string
         # don't enumerate display root
         if depth>0 and self.show_in_hierarchy:
-            if depth>1:
+            if len(chapter_string)>0:
                 self.chapter += "."
             self.chapter += str(chapter)
 

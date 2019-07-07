@@ -10,6 +10,7 @@
     <form action="{% url 'rate' %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="exercise_group_id" value="{{ group.id }}"></input></td>
+        <input type="hidden" name="next" value="{{ group.chapter }}"></input></td>
         <table class="syllabus"> 
         <tr>
             <th>Name</th>

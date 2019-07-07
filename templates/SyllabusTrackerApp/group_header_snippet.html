@@ -1,7 +1,7 @@
 {% load static %}
 <div class="group_header_{{depth}}">
-<h{{group.depth}}>{{ group.chapter }} {{ group.name }} 
-    {% if group.description != "" %} 
+<h{{group.depth}}><a name="{{ group.chapter }}">{{ group.chapter }}: {{ group.name }}</a>
+    {% if group.description != "" %} - 
         ({{ group.description }})
     {% endif %}
     <a href="{% url 'syllabus' filter=group.name whose=whose %}"><img class="filter_button" src="{% static 'images/filter.png' %}" class="hover_icon" title="Filter to this group" /></a>
