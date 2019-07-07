@@ -9,7 +9,8 @@ require.config({
 		sylvester:'lib/sylvester',
 		jCookie:'lib/jquery.cookie',
 		underscore:'lib/underscore-min',
-        picker:'lib/jquery-plugins/picker.min'
+		picker:'lib/jquery-plugins/picker.min',
+		timepicker:'lib/jquery-plugins/jquery-ui-timepicker-addon'
 	}
 });
 
@@ -57,6 +58,19 @@ $ = require(
 		var formerPicUrl = $( this ).attr("src");
 		var formerPic = formerPicUrl.split("/").pop().split("_over")[0];
 		$( this ).attr("src", "/static/images/"+formerPic+".png")
+	});
+
+	$("#id_insurance_expiry_date").datepicker()
+	require(['timepicker'], function(timepicker){
+		$("#id_date").datetimepicker(
+			//$.timepicker.regional['us']
+			{
+				dateFormat: 'yy-mm-dd', 
+				timeFormat: 'HH:mm:ss',
+				showTimezone: false,
+				showSeconds:false
+			}
+		)
 	});
 
 	///////////////////////////////////////////////////////////////////////////////////
