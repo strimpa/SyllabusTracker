@@ -17,6 +17,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .view_utils import *
 from django.urls import reverse
+from django.template.loader import render_to_string
 
 def login_request(request):
 
@@ -91,9 +92,24 @@ def register(request):
         reg.save()
 
         from django.core.mail import send_mail
-        target_url = reverse('register_confirm', kwargs={'name':the_user.username, 'id':reg_id})
-        msg = "<html><body>Click on this link to confirm you membership:<a href=\""+target_url+"\">"+target_url+"</a></body></html>"
-        send_mail('SyllabusTracker: Confirm your registration', msg, 'dont_reply@SyllabusTracker.club', [the_user.email])
+        target_url = request.META['HTTP_HOST']
+        target_url += reverse('register_confirm', kwargs={'name':the_user.username, 'id':reg_id})
+
+        template_values = {
+            'name':the_user.first_name,
+            'target_url':target_url,
+            'email':the_user.email
+        }        
+        msg_plain = render_to_string('registration_email.txt', template_values)
+        msg_html = render_to_string('registration_email.html', template_values)
+        send_mail(
+            '[SyllabusTracker] Registration confirmation',
+            msg_plain,
+            None,
+            [template_values['email']],
+            html_message=msg_html,
+        )
+
         messages.info(request, "Check your email '"+the_user.email+"' for your activation link!")
         return HttpResponseRedirect("/")
 

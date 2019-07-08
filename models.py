@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 # A trainable unit
 class Exercise(models.Model):
     name = models.CharField(max_length=200)
-    description = models.CharField(max_length=1024)
+    description = models.CharField(max_length=1024, blank=True)
     pic = models.ImageField(height_field=1000, width_field=1000, max_length=256, null=True, blank=True)
     list_order_index = models.IntegerField(default=0)
     

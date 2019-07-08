@@ -6,7 +6,9 @@
             {% endif %}
     
             <span class="current">
-                Page {{ page.number }} of {{ page.paginator.num_pages }}.
+                <form method="GET">
+                Page <input type="text" name="{{ paginator_var }}" value="{{ page.number }}" /> of {{ page.paginator.num_pages }} <input type="submit" value="Go" />
+                </form>
             </span>
     
             {% if page.has_next %}

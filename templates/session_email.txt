@@ -1,5 +1,5 @@
 Hi {{ first_name }},
-Please review the exercises from a session you recently attended: 
+Please review the exercises from a session you recently attended:\n
 <a href="{{ domain }}{% url 'view_session' id=session.id %}">{{ session }}</a><br />
 Best regards,
 {{ instructor.full_name }} and the SyllabusTacker team 
