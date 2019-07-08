@@ -18,6 +18,7 @@ from django.contrib.auth.decorators import login_required
 from .view_utils import *
 from django.urls import reverse
 from django.template.loader import render_to_string
+from django.contrib.auth.models import Group
 
 def login_request(request):
 
@@ -189,6 +190,25 @@ def membership_update(request):
             instance = membership_form.save()
             instance.user = the_user
             instance.save()
+
+            try:
+                instructor_group = Group.objects.get(name='Instructors')
+                if membership_form.cleaned_data['is_instructor']:
+                    instructor_group.user_set.add(the_user)
+                else:
+                    instructor_group.user_set.remove(the_user)
+            except:
+                pass
+
+            try:
+                assistent_instructor_group = Group.objects.get(name='Assistent Instructors') 
+                if membership_form.cleaned_data['is_assistent_instructor']:
+                    assistent_instructor_group.user_set.add(the_user)
+                else:
+                    assistent_instructor_group.user_set.remove(the_user)
+            except:
+                pass
+
             messages.info(request, "Membership data successfully updated!")
         else:
             for value in membership_form.errors.items():
@@ -212,18 +232,37 @@ def profile(request, username=None):
             (None!=username and username!=request.user.username):
                 theUser = Jitsuka.objects.get(username=username)
                 tisMe = False
- 
+    except:
+        messages.error(request, "User with name '"+username+"' does not exist!")
+
+    is_instructor = False
+    is_assistent_instructor = False
+    try:
+        is_instructor = Group.objects.get(name='Instructors').user_set.filter(id = theUser.id).exists()
+        is_assistent_instructor = Group.objects.get(name='Assistent Instructors').user_set.filter(id = theUser.id).exists()
+    except:
+        pass
+
+    try:
         membership = Membership.objects.get(user = theUser)
+        found_membership = True
         membership_form = MembershipForm(instance = membership, initial={
             'membership_id':membership.id,
             'user_id':theUser.id, 
-            'insurance_expiry':membership.insurance_expiry_date
+            'insurance_expiry':membership.insurance_expiry_date,
+            'is_instructor':is_instructor,
+            'is_assistent_instructor':is_assistent_instructor
             })
+    except:
+        pass
+
+    try:
         membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
-        membership_form.fields['insurance_expiry_date'].disabled = not can_edit
-        found_membership = True
     except ObjectDoesNotExist:
         pass
+    membership_form.fields['insurance_expiry_date'].disabled = not can_edit
+    membership_form.fields['is_instructor'].disabled = not can_edit
+    membership_form.fields['is_assistent_instructor'].disabled = not can_edit
  
     profile_form = ProfileForm(instance=theUser, initial={'username' : theUser.username})
     return render(request, "SyllabusTrackerApp/profile.html", {

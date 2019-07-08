@@ -82,7 +82,10 @@ class Membership(models.Model):
     insurance_expiry_date = models.DateField(auto_now_add=False, null=True, blank=True)
     
     def __str__(self):
-       return (str(self.user.username) + ":" + str(self.memberID))
+        val = str(self.memberID)
+        if self.user!=None:
+            val += " - "+self.user.username
+        return val
 
 class RegistrationRequest(models.Model):
     user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)

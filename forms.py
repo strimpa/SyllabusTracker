@@ -63,6 +63,8 @@ class MembershipForm(ModelForm):
         exclude = ['user', 'ratings', 'leaving_date']
     membership_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
     user_id = forms.IntegerField(widget=forms.HiddenInput)
+    is_instructor = forms.BooleanField(required=False)
+    is_assistent_instructor = forms.BooleanField(required=False)
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
