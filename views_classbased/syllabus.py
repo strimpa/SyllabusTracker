@@ -73,7 +73,7 @@ class SyllabusView(View):
         if 'user_select_whose' in request.GET:
             whose = ','.join(request.GET.getlist('user_select_whose'))
             
-        is_summary =  whose != None and request.user.is_assistent_instructor_or_instructor()
+        is_summary =  whose != None
         selected_memberships = [membership]
         all_memberships = []
         if is_summary:

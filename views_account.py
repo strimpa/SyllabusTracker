@@ -243,6 +243,7 @@ def profile(request, username=None):
     except:
         pass
 
+    membership = None
     try:
         membership = Membership.objects.get(user = theUser)
         found_membership = True

@@ -25,8 +25,10 @@
 						{% block navi %}{% endblock %}
 				</div>
 				<div id="content" class="contentColours">
-					{% block notification %}{% endblock %}
-					{% block content %}{% endblock %}
+                    <div id="contentStretch">
+                        {% block notification %}{% endblock %}
+                        {% block content %}{% endblock %}
+                    </div>
 				</div>
 			</section>
 	        <footer class="headerfooter">
