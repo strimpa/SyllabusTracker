@@ -11,12 +11,12 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 @login_required
-def back_to_editing(request, notification, isError=False):
+def back_to_editing(request, notification, current_page_string="", isError=False):
     if isError:
         messages.error(request, notification)
     else:
         messages.info(request, notification)
-    return redirect('/exercise_editing/')
+    return redirect('/exercise_editing/'+current_page_string)
 
 @login_required
 def do_rate(request):
@@ -31,6 +31,7 @@ def do_rate(request):
         group_id = data['exercise_group_id']
         if 'next' in data:
             anchor = "#"+data['next']
+
         for field in data:
             if 'comment_' in field:
                 ex_id = field.split('_')[1]
@@ -55,9 +56,13 @@ def do_edit_exercises(request):
     if isinstance(membership, HttpResponse):
         return membership
 
+    current_page = 0
     if request.method == 'POST':
         data = request.POST
         successful_add = None
+
+        if 'current_page' in data:
+            current_page = data['current_page']
 
         ExerciseFormSet = modelformset_factory(Exercise, form=ExerciseEditForm, can_delete=True, exclude=())
         ex_edit_form = ExerciseFormSet(data)
@@ -77,7 +82,11 @@ def do_edit_exercises(request):
             for err in ex_edit_form.errors:
                 error += err.as_text()
             return back_to_editing(request, error, isError=True)
-    return back_to_editing(request, 'Successfully edited!')
+
+    current_page_string = ""
+    if current_page!=0:
+        current_page_string = "?exercise_page="+str(current_page)
+    return back_to_editing(request, 'Successfully edited!', current_page_string=current_page_string)
 
 @login_required
 @permission_required('SyllabusTrackerApp.add_exercise', raise_exception=True)
@@ -139,21 +148,19 @@ def do_edit_exercises_groups(request):
     if isinstance(membership, HttpResponse):
        return membership
 
+    current_page = 0
     if request.method == 'POST':
         data = request.POST
         successful_add = None
 
-        ExerciseGroupFormSet = modelformset_factory(ExerciseGroup, form=ExerciseEditForm, can_delete=True, exclude=())
+        if 'current_page' in data:
+            current_page = data['current_page']
+
+        ExerciseGroupFormSet = modelformset_factory(ExerciseGroup, form=ExerciseGroupForm, can_delete=True, exclude=())
         ex_edit_form = ExerciseGroupFormSet(data)
         if ex_edit_form.is_valid():
             instances = ex_edit_form.save(commit=False)
-            print("instances changed:"+str(len(instances)))
             for obj in instances:
-                for form in ex_edit_form.forms:
-                    if form.cleaned_data['id'] == obj:
-#                        print("description:"+obj.description)
-                        obj.exercises.set(form.cleaned_data['exercises'], clear=True)
-                print("description:"+obj.description)
                 obj.save()
 
             for obj in ex_edit_form.deleted_objects:
@@ -164,7 +171,10 @@ def do_edit_exercises_groups(request):
                 error += err.as_text()
             return back_to_editing(request, error, isError=True)
 
-    return back_to_editing(request, 'Successfully edited!')
+    current_page_string = ""
+    if current_page!=0:
+        current_page_string = "?exercise_group_page="+str(current_page)
+    return back_to_editing(request, 'Successfully edited!', current_page_string=current_page_string)
 
 @login_required
 @permission_required('SyllabusTrackerApp.add_exercisegroup', raise_exception=True)

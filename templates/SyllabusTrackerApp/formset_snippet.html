@@ -1,6 +1,7 @@
 <h2>{{ title }}</h2>
 <form action="/{{target}}/" method="POST">
     {% csrf_token %}
+    <input type="hidden" name="current_page" value="{{ page.number }}" />
     {{ formset.management_form }}
     <table class="simple_table">
         {% for form in formset %}

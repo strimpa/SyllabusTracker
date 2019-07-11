@@ -73,7 +73,7 @@ class Jitsuka(AbstractUser):
 class Membership(models.Model):
     user = models.ForeignKey(Jitsuka, null=True, on_delete=models.CASCADE, related_name="membership")
     memberID = models.IntegerField()
-    pic = models.ImageField(height_field=1000, width_field=1000, max_length=256, null=True, blank=True)
+    pic = models.ImageField(null=True, blank=True)
     kyu = models.ForeignKey(Kyu, on_delete=models.SET_NULL, blank=True, null=True)
     club = models.ForeignKey(Club, on_delete=models.SET_NULL, blank=True, null=True)
     instructor = models.ForeignKey('Jitsuka', models.SET_NULL, blank=True, null=True, related_name="student")

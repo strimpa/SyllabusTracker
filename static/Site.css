@@ -188,6 +188,11 @@ header h1, #header h1 {
     -moz-border-radius: 5px 0 0 5px;
 }
 
+#contentStretch
+{
+    max-width:600px;
+}
+
 .contentColours
 {
     background: #f0f8f6 url(/static/images/samurai_tinted_blue.jpg) no-repeat fixed;
@@ -224,9 +229,13 @@ footer,
     padding-left: 0px;
 }
 
+.group_toolbar
+{
+    float:right;
+}
+
 img.filter_button
 {
-    margin-bottom: -5;
     width: 20px;
 }
 
@@ -354,6 +363,11 @@ table th {
     color:#544;
 }
 
+table.syllabus
+{
+    width:100%;
+}
+
 table.syllabus td
 {
     border-width: 0px;
@@ -369,7 +383,7 @@ td.rating input {
 }
 .ex_description
 {
-    width: 120px;
+   /* width: 120px; */
 }
 
 table.syllabus input[type="text"] {
@@ -474,4 +488,7 @@ div#title {
     display: block;
     margin-bottom: 0px;
     width:100%;
+    padding:0px;
+    margin:0px;
+    z-index: auto;
 }
