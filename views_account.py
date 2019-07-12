@@ -244,18 +244,18 @@ def profile(request, username=None):
         pass
 
     membership = None
-    try:
-        membership = Membership.objects.get(user = theUser)
-        found_membership = True
-        membership_form = MembershipForm(instance = membership, initial={
-            'membership_id':membership.id,
-            'user_id':theUser.id, 
-            'insurance_expiry':membership.insurance_expiry_date,
-            'is_instructor':is_instructor,
-            'is_assistent_instructor':is_assistent_instructor
-            })
-    except:
-        pass
+    #try:
+    membership = Membership.objects.get(user = theUser)
+    found_membership = True
+    membership_form = MembershipForm(instance = membership, initial={
+        'membership_id':membership.id,
+        'user_id':theUser.id, 
+        'insurance_expiry':membership.insurance_expiry_date,
+        'is_instructor':is_instructor,
+        'is_assistent_instructor':is_assistent_instructor
+        })
+#    except:
+#        pass
 
     try:
         membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)

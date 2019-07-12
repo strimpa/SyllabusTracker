@@ -13,7 +13,10 @@
 		{% if not found_membership %}
 			<div clas="warning">No membership data has been found - Fill in your details before continuing!</div>
 		{% endif %}
-		<form action="{% url 'membership_update' %}" method="POST">
+		{% if membership_form.fields.pic %}
+			<img src="{{ membership_form.fields.pic }}" />
+		{% endif %}
+		<form action="{% url 'membership_update' %}" enctype="multipart/form-data" method="POST">
 			{% csrf_token %}
 			<table>
 			{{ membership_form.as_table }}

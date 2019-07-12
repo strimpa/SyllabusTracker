@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from .models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup, Session)
+from .widgets import PictureWidget
 
 MAX_USERNAME_LENGTH = 100
 
