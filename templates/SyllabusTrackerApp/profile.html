@@ -2,27 +2,35 @@
 
 {% block content %}
 	<div id="userProfile" class="innerContentBorder">
-		<form action="{% url 'user_update' %}" method="POST">
-		{% csrf_token %}
-		<table>
-		{{ login_form.as_table }}
-		</table>
-		<input type="submit" value="Update" />
-		</form>
+        <fieldset>
+            <legend>User Details</legend>
+            <form action="{% url 'user_update' %}" method="POST">
+            {% csrf_token %}
+            <table>
+            {{ login_form.as_table }}
+            </table>
+            <input type="submit" value="Update" />
+            </form>
+            <a href="{% url 'password_change' %}"><input type="button" value="Reset Password" /> </a>
+        </fieldset>
 		<p />
-		{% if not found_membership %}
-			<div clas="warning">No membership data has been found - Fill in your details before continuing!</div>
-		{% endif %}
-		{% if membership_form.fields.pic %}
-			<img src="{{ membership_form.fields.pic }}" />
-		{% endif %}
-		<form action="{% url 'membership_update' %}" enctype="multipart/form-data" method="POST">
-			{% csrf_token %}
-			<table>
-			{{ membership_form.as_table }}
-			</table>
-			<input type="submit" value="Update" />
-		</form>
+
+        <fieldset>
+            <legend>Profile</legend>
+            {% if not found_membership %}
+                <div clas="error">No membership data has been found - Fill in your details before continuing!</div>
+            {% endif %}
+            {% if membership_form.fields.pic %}
+                <img src="{{ membership_form.fields.pic }}" />
+            {% endif %}
+            <form action="{% url 'membership_update' %}" enctype="multipart/form-data" method="POST">
+                {% csrf_token %}
+                <table>
+                {{ membership_form.as_table }}
+                </table>
+                <input type="submit" value="Update" />
+            </form>
+        </fieldset>
 	</div>
 	<p />
 {% endblock %}
