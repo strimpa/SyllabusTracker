@@ -73,6 +73,8 @@ $ = require(
 		)
 	});
 
+	$(".rating").click(function(){this.children[0].checked = true});
+
 	///////////////////////////////////////////////////////////////////////////////////
 	// Form watermark logic
 

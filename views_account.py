@@ -272,5 +272,6 @@ def profile(request, username=None):
         'membership_form':membership_form,
         'login_form':profile_form,
         'title': ("Profile of "+theUser.username),
-        'found_membership':found_membership
+        'found_membership':found_membership,
+        'profile_pic':membership.pic
         })

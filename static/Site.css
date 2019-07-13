@@ -268,6 +268,13 @@ img.filter_button
     margin-left:60px;
 }
 
+#profile_pic
+{
+    border: 1px solid black;
+    margin: 10px;
+    max-width: 300px;
+}
+
 /* TAB MENU   
 ----------------------------------------------------------*/
 .menu_column 
@@ -383,11 +390,11 @@ td.rating input {
 }
 .ex_description
 {
-   /* width: 120px; */
+   width: 25%;
 }
 
 table.syllabus input[type="text"] {
-    width: 100px;
+    width: 100%;
 }
 /* Rating  
 ----------------------------------------------------------*/
