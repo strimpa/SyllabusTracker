@@ -90,11 +90,17 @@ class SyllabusView(View):
         ratings_by_exercise = self.get_ratings(membership, is_summary, selected_memberships)
         groups = ExerciseGroup.objects.all()
         root_group_names = ['Kyu', 'Waza']
+
         filter = None
         if 'filter' in kwargs and kwargs['filter']!=None:
-            filter = kwargs['filter']
-            filter = unquote(filter)
-            root_group_names = filter.split(',')
+            if kwargs['filter']!='all':
+                filter = kwargs['filter']
+                filter = unquote(filter)
+                root_group_names = filter.split(',')
+        #default to user's kyu, if available
+        elif membership.kyu != None:
+            root_group_names[0] = membership.kyu.colour
+            print ("root_group_names:"+str(root_group_names))
             
         #prefetch leaves
 #        start = time.time()
@@ -106,8 +112,7 @@ class SyllabusView(View):
                 root_group_leaves[name] = group.collect_leaves()
             except:
                 messages.info(request, "Exercise Group not found:"+name)
-                return redirect('/syllabus/')
-                pass
+                return redirect('/syllabus/filter-all')
 
 #        end = time.time()
  #       print("time for group prefretch:"+str(end - start))
