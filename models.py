@@ -40,6 +40,12 @@ class ExerciseGroup(models.Model):
             these_leaves += child.collect_leaves()
         return these_leaves
 
+    def get_children(self):
+        children = [self]
+        for child in list(self.child_groups.all()):
+            children += child.get_children()
+        return children
+
 class Kyu(models.Model):
     grade = models.IntegerField()
     colour = models.CharField(max_length=60)

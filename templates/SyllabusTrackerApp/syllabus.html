@@ -1,11 +1,31 @@
 {% extends "SyllabusTrackerApp/base_logged_in.html" %}
 
+{% load st_tags %}
+
 {% block content %}
 {% if display_root %}
 
+    <div id="filter_settings">
+    <h1>Filter</h1>
+    <form action="{% url 'syllabus' %}" >
+    {% for fg_root_name,fg_list in all_group_groups.items %}
+    <select name="filter" multiple="">
+    {% for fg in fg_list %}
+        <option value="{{ fg.name }}"
+        {% if fg.name in selected_group_groups|hash:fg_root_name %}
+            selected="true"
+        {% endif %}
+        >{{ fg.name }}</option>
+    {% endfor %}
+    </select>
+    <br style="clear: both" />
+    {% endfor %}
+    <input type="submit" />
+    </form>
+
     {% if is_summary %}
     <h1>Select jitsuka to review</h1>
-    <form action="{% url 'syllabus' filterfilter %}" >
+    <form action="{% url 'syllabus' %}" >
     <select name="user_select_whose" multiple="">
     {% for membership in all_memberships %}
         <option value="{{ membership.user.username }}"
@@ -18,11 +38,10 @@
     <br style="clear: both" />
     <input type="submit" />
     </form>
-    {% endif %}
-
-    {% if is_summary %}
+    </div>
     {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=display_root depth=depth whose=whose %}
     {% else %}
+    </div>
     {% include "SyllabusTrackerApp/syllabus_snippet.html" with group=display_root depth=depth whose=whose %}
     {% endif %}	
 {% else %}

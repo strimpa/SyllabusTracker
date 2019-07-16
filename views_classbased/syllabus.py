@@ -64,15 +64,20 @@ class SyllabusView(View):
         membership = check_membership(request.user)           
         if isinstance(membership, HttpResponse):
             return membership
-        
+
+        if 'user_select_whose' in request.GET:
+            whose = ','.join(request.GET.getlist('user_select_whose'))
+            return redirect('syllabus', whose=whose)
+            
+        if 'filter' in request.GET:
+            filter = ','.join(request.GET.getlist('filter'))
+            return redirect('syllabus', filter=filter)
+            
         #analyse for participating ratings
         whose = None
         if 'whose' in kwargs and kwargs['whose']!="" and kwargs['whose']!="None":
             whose = kwargs['whose']
 
-        if 'user_select_whose' in request.GET:
-            whose = ','.join(request.GET.getlist('user_select_whose'))
-            
         is_summary =  whose != None
         selected_memberships = [membership]
         all_memberships = []
@@ -99,14 +104,20 @@ class SyllabusView(View):
         #prefetch leaves
 #        start = time.time()
         group_leaves = {} # All end points to attach an exercise to
-        group_groups = {} # Grouping of exercise groups that are optional to have an exercise to attach to, i.e. the algorithm shouldn't stop until searching all groups of this group_group
+        selected_group_groups = {} # Grouping of exercise groups that are optional to have an exercise to attach to, i.e. the algorithm shouldn't stop until searching all groups of this group_group
+        all_group_groups = {} # Grouping of exercise groups that are optional to have an exercise to attach to, i.e. the algorithm shouldn't stop until searching all groups of this group_group
         for name in group_names:
             try:
                 group = ExerciseGroup.objects.select_related().get(name=name)
                 root_group = group.get_group_root()
-                if root_group not in group_groups:
-                    group_groups[root_group] = []
-                group_groups[root_group].append(name)
+
+                if root_group.name not in selected_group_groups:
+                    selected_group_groups[root_group.name] = []
+                selected_group_groups[root_group.name].append(name)
+
+                if root_group.name not in all_group_groups:
+                    all_group_groups[root_group.name] = root_group.get_children()
+
                 group_leaves[name] = group.collect_leaves()
             except:
                 messages.info(request, "Exercise Group not found:"+name)
@@ -133,8 +144,8 @@ class SyllabusView(View):
             #create the tree of sub groups
             current_root = display_root
             all_groups_in_filter = True
-            for group_group_root in group_groups:
-                for name in group_groups[group_group_root]:
+            for group_group_root in selected_group_groups:
+                for name in selected_group_groups[group_group_root]:
                     leaves = group_leaves[name]
                     for group in ex.groups.all():
                         if group in leaves:
@@ -167,6 +178,8 @@ class SyllabusView(View):
             'whose':whose,
             'selected_memberships':selected_memberships,
             'all_memberships':all_memberships,
+            'selected_group_groups':selected_group_groups,
+            'all_group_groups':all_group_groups,
             'filter':filter
         }
         return render(request, 'SyllabusTrackerApp/syllabus.html', context)
