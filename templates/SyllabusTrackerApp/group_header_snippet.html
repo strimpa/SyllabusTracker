@@ -4,7 +4,7 @@
     {% if group.description != "" %} - 
         ({{ group.description }})
     {% endif %}
-    <div class="group_toolbar"><a href="{% url 'syllabus' filter=group.name whose=whose %}"><img class="filter_button" src="{% static 'images/filter.png' %}" class="hover_icon" title="Filter to this group" /></a></div>
+    <div class="group_toolbar"><a href="{% url 'syllabus' filter=group.name whose=whose %}"><img class="filter_button" src="{% static 'images/filter.gif' %}" class="hover_icon" title="Filter to this group" /></a></div>
     </h{{group.depth}}>
 <!-- | <a class="add_to_filter" id="{{group.name}}">Add to filter chain</a>-->
 </div>

@@ -102,11 +102,14 @@ class SyllabusView(View):
             group_names = filter.split(',')
         #default to user's kyu, if available
         elif membership.kyu != None:
-            group_names[0] = membership.kyu.colour
-            print ("root_group_names:"+str(group_names))
+            theKyu = membership.kyu
+            try:
+                theKyu = Kyu.objects.get(grade=theKyu.grade+1)
+            except:
+                pass
+            group_names[0] = theKyu.colour
             
-        #prefetch leaves
-#        start = time.time()
+        # Prefetch leaves
         group_leaves = {} # All end points to attach an exercise to
         selected_group_groups = {} # Grouping of exercise groups that are optional to have an exercise to attach to, i.e. the algorithm shouldn't stop until searching all groups of this group_group
         all_group_groups = {} # Grouping of exercise groups that are optional to have an exercise to attach to, i.e. the algorithm shouldn't stop until searching all groups of this group_group
@@ -127,9 +130,6 @@ class SyllabusView(View):
                 messages.info(request, "Exercise Group not found:"+name)
                 return redirect('/syllabus/filter-all')
 
-#        end = time.time()
- #       print("time for group prefretch:"+str(end - start))
-
         display_root = DisplayLeaf("Display root", 0)
         depth = 0
         for ex in Exercise.objects.select_related().order_by("-list_order_index"):
@@ -143,7 +143,6 @@ class SyllabusView(View):
             # for each group this exercise is in, 
             this_groups = ex.groups.all()
             ordered_groups = {}
-#            print (str(ex))
             #create the tree of sub groups
             current_root = display_root
             all_groups_in_filter = True
@@ -152,7 +151,6 @@ class SyllabusView(View):
                     leaves = group_leaves[name]
                     for group in ex.groups.all():
                         if group in leaves:
-    #                        print("appending "+str(group))
                             group_leaf = DisplayLeaf.find_or_create_leaf(group, current_root, current_root.depth+1)
                             current_root = group_leaf
                             append_exercise = name == group_names[-1]
@@ -162,13 +160,6 @@ class SyllabusView(View):
                 #Break to next exercise if the first group in the exercise has not been found in any root group defined in filter
                 if current_root == display_root:
                     break
-
-#            ex3 = time.time()
-#            print("time 2:"+str(ex3 - ex2))
-
-
-#        end2 = time.time()
-#        print("time for exercise processing:"+str(end2 - end))
 
         display_root.enumerate_hier(0,"", 0)
 #        display_root.print_hier(0)

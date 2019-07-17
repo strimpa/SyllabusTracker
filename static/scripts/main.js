@@ -53,11 +53,11 @@ $ = require(
 	$(".hover_icon").mouseover(function() {
 		var formerPicUrl = $( this ).attr("src");
 		var formerPic = formerPicUrl.split("/").pop().split(".")[0];
-		$( this ).attr("src", "/static/images/"+formerPic+"_over.png")
+		$( this ).attr("src", "/static/images/"+formerPic+"_over.gif")
 	}).mouseout(function() {
 		var formerPicUrl = $( this ).attr("src");
 		var formerPic = formerPicUrl.split("/").pop().split("_over")[0];
-		$( this ).attr("src", "/static/images/"+formerPic+".png")
+		$( this ).attr("src", "/static/images/"+formerPic+".gif")
 	});
 
 	$("#id_insurance_expiry_date").datepicker()
@@ -74,6 +74,16 @@ $ = require(
 	});
 
 	$(".rating").click(function(){this.children[0].checked = true});
+
+	$("#filter_settings").accordion({
+		collapsible:true,
+		active:false,
+		heightStyle:"content"
+	});
+	$("#filter_settings").click(function(){
+		console.debug($(this));
+		$(this).accordion( "refresh" );
+	});
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Form watermark logic

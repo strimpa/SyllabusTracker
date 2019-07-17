@@ -275,6 +275,11 @@ img.filter_button
     max-width: 300px;
 }
 
+#filter_settings
+{
+    display: inline-block;
+}
+
 /* TAB MENU   
 ----------------------------------------------------------*/
 .menu_column 
@@ -332,7 +337,8 @@ select {
 }
 
 input[type="submit"] {
-    font-size: 0.8em;
+    font-size: 1em;
+    float:right;
 }
 
 .fieldWrapper
@@ -498,4 +504,9 @@ div#title {
     padding:0px;
     margin:0px;
     z-index: auto;
+}
+
+.ui-accordion .ui-accordion-content
+{
+    overflow: visible;
 }

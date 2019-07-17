@@ -9,12 +9,12 @@
 {% block navi %}
 <nav>
     <ul id="menu">
-        <a href="/"><img src="{% static 'images/home.png' %}" class="hover_icon" title="Home" /></a>
-        <a href="{% url 'syllabus' %}"><img src="{% static 'images/syllabus.png' %}" class="hover_icon" title="Syllabus" /></a>
-        <a href="{% url 'syllabus' whose='my_club' %}"><img src="{% static 'images/summary.png' %}" class="hover_icon" title="Summary" /></a>
-        <a href="{% url 'sessions' %}"><img src="{% static 'images/sessions.png' %}" class="hover_icon" title="Sessions" /></a>
+        <a href="/"><img src="{% static 'images/home.gif' %}" class="hover_icon" title="Home" /></a>
+        <a href="{% url 'syllabus' %}"><img src="{% static 'images/syllabus.gif' %}" class="hover_icon" title="Syllabus" /></a>
+        <a href="{% url 'syllabus' whose='my_club' %}"><img src="{% static 'images/summary.gif' %}" class="hover_icon" title="Summary" /></a>
+        <a href="{% url 'sessions' %}"><img src="{% static 'images/sessions.gif' %}" class="hover_icon" title="Sessions" /></a>
         {% if user.is_assistent_instructor_or_instructor %}
-        <a href="{% url 'exercise_editing' %}"><img src="{% static 'images/syllabus_editing.png' %}" class="hover_icon" title="Exercise Editing" /></a>
+        <a href="{% url 'exercise_editing' %}"><img src="{% static 'images/syllabus_editing.gif' %}" class="hover_icon" title="Exercise Editing" /></a>
         {% endif %}
     </ul>
 </nav>
