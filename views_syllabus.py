@@ -29,7 +29,7 @@ def exercise_editing(request, successful_add=False):
         exercise_page_num = request.GET['exercise_page']
 
     all_exercises = Exercise.objects.all()
-    exercise_paginator = Paginator(all_exercises, 10)
+    exercise_paginator = Paginator(all_exercises, 30)
     try:  
         exercise_page = exercise_paginator.page(exercise_page_num)
     except PageNotAnInteger:  

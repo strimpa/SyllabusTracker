@@ -93,8 +93,19 @@ class SyllabusView(View):
     
         #find groups per order
         ratings_by_exercise = self.get_ratings(membership, is_summary, selected_memberships)
-        groups = ExerciseGroup.objects.all()
+        groups = ExerciseGroup.objects.select_related().order_by("list_order_index")
         group_names = ['Kyu', 'Waza']
+
+        # Always load these two for filtering
+        all_group_groups = {} # Grouping of exercise groups that are optional to have an exercise to attach to, i.e. the algorithm shouldn't stop until searching all groups of this group_group
+        for name in group_names:
+            group = groups.get(name=name)
+            root_group = group.get_group_root()
+
+            if root_group.name not in all_group_groups:
+                all_group_groups[root_group.name] = root_group.get_children()
+
+        # replace actually used ones with the incoming user selection
         filter = None
         if 'filter' in kwargs and kwargs['filter']!=None:
             filter = kwargs['filter']
@@ -112,18 +123,14 @@ class SyllabusView(View):
         # Prefetch leaves
         group_leaves = {} # All end points to attach an exercise to
         selected_group_groups = {} # Grouping of exercise groups that are optional to have an exercise to attach to, i.e. the algorithm shouldn't stop until searching all groups of this group_group
-        all_group_groups = {} # Grouping of exercise groups that are optional to have an exercise to attach to, i.e. the algorithm shouldn't stop until searching all groups of this group_group
         for name in group_names:
             try:
-                group = ExerciseGroup.objects.select_related().get(name=name)
+                group = groups.get(name=name)
                 root_group = group.get_group_root()
 
                 if root_group.name not in selected_group_groups:
                     selected_group_groups[root_group.name] = []
                 selected_group_groups[root_group.name].append(name)
-
-                if root_group.name not in all_group_groups:
-                    all_group_groups[root_group.name] = root_group.get_children()
 
                 group_leaves[name] = group.collect_leaves()
             except:
@@ -132,7 +139,7 @@ class SyllabusView(View):
 
         display_root = DisplayLeaf("Display root", 0)
         depth = 0
-        for ex in Exercise.objects.select_related().order_by("-list_order_index"):
+        for ex in Exercise.objects.select_related().order_by("list_order_index"):
             ex1 = time.time()
             rating = None
             try:

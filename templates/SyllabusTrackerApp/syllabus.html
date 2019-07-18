@@ -15,7 +15,7 @@
         {% if fg.name in selected_group_groups|hash:fg_root_name %}
             selected="true"
         {% endif %}
-        >{{ fg.name }}</option>
+        >{{ fg.indented_name }}</option>
     {% endfor %}
     </select>
     <br style="clear: both" />
@@ -39,9 +39,11 @@
     <input type="submit" />
     </form>
     </div>
+    <p />
     {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=display_root depth=depth whose=whose %}
     {% else %}
     </div>
+    <p />
     {% include "SyllabusTrackerApp/syllabus_snippet.html" with group=display_root depth=depth whose=whose %}
     {% endif %}	
 {% else %}

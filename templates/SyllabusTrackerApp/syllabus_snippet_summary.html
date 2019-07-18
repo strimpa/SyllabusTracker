@@ -2,9 +2,6 @@
 {% include "SyllabusTrackerApp/group_header_snippet.html" with group=group depth=group.depth %}
 <div class="syllabus_section">
 {% endif %}
-{% for child in group.children %}
-    {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=child whose=whose %}
-{% endfor %}
 {% if group.show_in_hierarchy %}
     {% if group.exercises|length > 0 %}
         <table class="syllabus"> 
@@ -41,3 +38,6 @@
     {% endif %}
     </div>
 {% endif %}
+{% for child in group.children %}
+    {% include "SyllabusTrackerApp/syllabus_snippet_summary.html" with group=child whose=whose %}
+{% endfor %}

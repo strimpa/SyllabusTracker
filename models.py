@@ -26,11 +26,27 @@ class ExerciseGroup(models.Model):
     def __str__(self):
        return self.name
 
+    def indented_name(self):
+        depth = self.depth()
+        ret = ""
+        for i in range(0,depth):
+            ret += "&nbsp;&nbsp;"
+        ret += self.name
+        return ret
+
     def get_group_root(self):
         if None != self.parent_group:
             return self.parent_group.get_group_root()
         else:
             return self
+
+    def depth(self):
+        depth = 0
+        curr_parent = self.parent_group
+        while None != curr_parent:
+            depth += 1
+            curr_parent = curr_parent.parent_group
+        return depth
 
     def collect_leaves(self):
         these_leaves = []

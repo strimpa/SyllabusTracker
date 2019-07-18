@@ -75,7 +75,7 @@ class DisplayLeaf():
         if not display_leaf in display_leaf.parent_leaf.children:
             curr_index = 0
             for c in display_leaf.parent_leaf.children:
-                if c.list_order_index>=curr_index:
+                if c.list_order_index>=display_leaf.list_order_index:
                     break
                 curr_index+=1
             display_leaf.parent_leaf.children.insert(curr_index, display_leaf)
