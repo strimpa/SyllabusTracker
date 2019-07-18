@@ -278,6 +278,8 @@ img.filter_button
 #filter_settings
 {
     display: inline-block;
+    width: 100%;
+    max-width: 600px;
 }
 
 /* TAB MENU   
@@ -495,7 +497,15 @@ div#title {
 
 /* jQuery ooverrides
 -------------------------------------------------------------*/
-
+.picker
+{
+    display: block;
+}
+.picker .pc-select
+{
+    max-width:none;
+    display: block;
+}
 .picker .pc-element
 {
     display: block;

@@ -20,13 +20,14 @@
     </select>
     <br style="clear: both" />
     {% endfor %}
+    <input type="hidden" name="whose" value="{{ whose }}" />
     <input type="submit" />
     </form>
 
     {% if is_summary %}
     <h1>Select jitsuka to review</h1>
     <form action="{% url 'syllabus' %}" >
-    <select name="user_select_whose" multiple="">
+    <select name="whose" multiple="">
     {% for membership in all_memberships %}
         <option value="{{ membership.user.username }}"
         {% if membership in selected_memberships %}
@@ -36,6 +37,7 @@
     {% endfor %}
     </select>
     <br style="clear: both" />
+    <input type="hidden" name="filter" value="{{ filter }}" />
     <input type="submit" />
     </form>
     </div>

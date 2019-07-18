@@ -65,18 +65,25 @@ class SyllabusView(View):
         if isinstance(membership, HttpResponse):
             return membership
 
-        if 'user_select_whose' in request.GET:
-            whose = ','.join(request.GET.getlist('user_select_whose'))
-            return redirect('syllabus', whose=whose)
+        do_redirect = False
+        whose = None
+        if 'whose' in request.GET:
+            whose = ','.join(request.GET.getlist('whose'))
+            do_redirect = True
+        #analyse for participating ratings
+        elif 'whose' in kwargs and kwargs['whose']!="" and kwargs['whose']!="None":
+            whose = kwargs['whose']
             
+        filter = None
         if 'filter' in request.GET:
             filter = ','.join(request.GET.getlist('filter'))
-            return redirect('syllabus', filter=filter)
-            
-        #analyse for participating ratings
-        whose = None
-        if 'whose' in kwargs and kwargs['whose']!="" and kwargs['whose']!="None":
-            whose = kwargs['whose']
+            do_redirect = True
+        elif 'filter' in kwargs and kwargs['filter']!=None and kwargs['filter']!="None":
+            filter = kwargs['filter']
+            filter = unquote(filter)
+
+        if do_redirect:
+            return redirect('syllabus', whose=whose, filter=filter)
 
         is_summary =  whose != None
         selected_memberships = [membership]
@@ -106,10 +113,7 @@ class SyllabusView(View):
                 all_group_groups[root_group.name] = root_group.get_children()
 
         # replace actually used ones with the incoming user selection
-        filter = None
-        if 'filter' in kwargs and kwargs['filter']!=None:
-            filter = kwargs['filter']
-            filter = unquote(filter)
+        if filter != None:
             group_names = filter.split(',')
         #default to user's kyu, if available
         elif membership.kyu != None:
@@ -135,7 +139,7 @@ class SyllabusView(View):
                 group_leaves[name] = group.collect_leaves()
             except:
                 messages.info(request, "Exercise Group not found:"+name)
-                return redirect('/syllabus/filter-all')
+                return redirect('/syllabus/filter-None')
 
         display_root = DisplayLeaf("Display root", 0)
         depth = 0
