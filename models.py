@@ -32,6 +32,8 @@ class ExerciseGroup(models.Model):
         for i in range(0,depth):
             ret += "&nbsp;&nbsp;"
         ret += self.name
+        if self.description!=None and self.description != "":
+            ret += " - " + self.description
         return ret
 
     def get_group_root(self):
@@ -108,6 +110,24 @@ class Membership(models.Model):
         if self.user!=None:
             val += " - "+self.user.username
         return val
+        
+'''
+# Defines a term that is bound to end, for fee payment
+# These are defined globally per club
+class TimeLapse(models.Model):
+    name = models.CharField(max_length=64)
+    description = models.CharField(max_length=256, null=True, blank=True)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="fee_definitions")
+
+# List of fee expiry time lapse instances below
+class Fees(models.Model):
+    member = models.ForeignKey(Membership, on_delete=models.CASCADE, related_name="fees")
+
+# instance of a lapsing time per user
+class FeeExpiry(models.Model):
+    fee_expiry_date = models.DateField(auto_now_add=False, null=True, blank=True)
+    fee_group = models.ForeignKey(Fees, on_delete=models.CASCADE)
+'''
 
 class RegistrationRequest(models.Model):
     user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
@@ -147,3 +167,23 @@ class Session(models.Model):
     
     def __str__(self):
        return (str(self.date) + " - " + self.instructor.full_name())
+
+'''
+class Notification(models.Model):
+    SEVERITY = (
+        ('I', 'info'),
+        ('A', 'attention'),
+        ('U', 'urgent')
+    )
+    user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
+    notification_date = models.DateField(auto_now_add=True)
+    text = models.CharField(max_length=256)
+    link = models.URLField(max_length=256)
+    severity = models.CharField(max_length=1, choices=PROFICIENCY_LEVEL, null=True)
+
+class AppSettings(models.Model):
+    user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
+    send_session_mail = models.BooleanField(default=True)
+    send_fee_reminders = models.BooleanField(default=True)
+    ratingsare_public = models.BooleanField(default=True)
+'''

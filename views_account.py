@@ -1,6 +1,7 @@
 import json
 import string
 import uuid
+import subprocess
 from datetime import date, datetime
 
 from django.shortcuts import render_to_response, render
@@ -244,18 +245,18 @@ def profile(request, username=None):
         pass
 
     membership = None
-    #try:
-    membership = Membership.objects.get(user = theUser)
-    found_membership = True
-    membership_form = MembershipForm(instance = membership, initial={
-        'membership_id':membership.id,
-        'user_id':theUser.id, 
-        'insurance_expiry':membership.insurance_expiry_date,
-        'is_instructor':is_instructor,
-        'is_assistent_instructor':is_assistent_instructor
+    try:
+        membership = Membership.objects.get(user = theUser)
+        found_membership = True
+        membership_form = MembershipForm(instance = membership, initial={
+            'membership_id':membership.id,
+            'user_id':theUser.id, 
+            'insurance_expiry':membership.insurance_expiry_date,
+            'is_instructor':is_instructor,
+            'is_assistent_instructor':is_assistent_instructor
         })
-#    except:
-#        pass
+    except:
+        pass
 
     try:
         membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
@@ -266,12 +267,28 @@ def profile(request, username=None):
     membership_form.fields['is_assistent_instructor'].disabled = not can_edit
  
     profile_form = ProfileForm(instance=theUser, initial={'username' : theUser.username})
-    return render(request, "SyllabusTrackerApp/profile.html", {
+    args = {
         'user_controller':Jitsuka.objects,
         'tisMe':tisMe,
         'membership_form':membership_form,
         'login_form':profile_form,
         'title': ("Profile of "+theUser.username),
-        'found_membership':found_membership,
-        'profile_pic':membership.pic
-        })
+        'found_membership':found_membership
+        }
+    if membership!=None:
+        args['profile_pic'] = membership.pic
+
+    return render(request, "SyllabusTrackerApp/profile.html", args)
+
+
+@login_required
+def restart(request):
+    this_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    bashCommand = "touch "+this_dir+"/../tmp/restart.txt"
+    process = subprocess.Run(bashCommand, shell=True, check=True)
+    output, error = process.communicate()
+    if output != None:
+        messages.info(request, output)
+    if error != None:
+        messages.error(request, error)
+    return redirect('syllabus')

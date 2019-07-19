@@ -57,7 +57,9 @@ urlpatterns = [
     path('edit_exercises_groups/', views_actions.do_edit_exercises_groups, name='edit_exercises_groups'),
     path('do_edit_session/', views_actions.do_edit_session, name='do_edit_session'),
     path('do_send_session_emails/<session_id>', views_actions.do_send_session_emails, name='do_send_session_emails'),
-    
+
+    path('restart/', views_account.restart, name='restart'),
+
     path('exercise_editing/', views_syllabus.exercise_editing, name='exercise_editing'),
     path('sessions/', views_syllabus.sessions, name='sessions'),
     path('view_session/<id>', views_syllabus.view_session, name='view_session'),
