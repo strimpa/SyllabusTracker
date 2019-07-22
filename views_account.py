@@ -1,3 +1,4 @@
+import os
 import json
 import string
 import uuid
@@ -285,10 +286,7 @@ def profile(request, username=None):
 def restart(request):
     this_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     bashCommand = "touch "+this_dir+"/../tmp/restart.txt"
-    process = subprocess.Run(bashCommand, shell=True, check=True)
-    output, error = process.communicate()
-    if output != None:
-        messages.info(request, output)
-    if error != None:
-        messages.error(request, error)
+    complete_process = subprocess.run(bashCommand, shell=True, check=True)
+    if complete_process.returncode != 0:
+        messages.error(request, "Error while restarting")
     return redirect('syllabus')

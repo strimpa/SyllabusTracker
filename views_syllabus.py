@@ -116,7 +116,7 @@ def edit_session(request, id=None):
         except:
             messages.info(request, "Session object not found, creating a new Session!")
 
-    session_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors')
+    session_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name__in=['Instructors', 'Assistent Instructors'])
 
     context = {
         'title':"Edit Session",
