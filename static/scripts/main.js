@@ -45,7 +45,7 @@ $ = require(
 		['picker'], function(picker)
 	{
 		// Setup of searchables
-		$("select[multiple='']").picker({
+		$("select[multiple]").picker({
 			search:true
 		})
 	});

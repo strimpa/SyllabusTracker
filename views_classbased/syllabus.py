@@ -139,6 +139,7 @@ class SyllabusView(View):
                 group_leaves[name] = group.collect_leaves()
             except:
                 messages.info(request, "Exercise Group not found:"+name)
+                print ("*** Exercise Group not found:"+name+"!")
                 return redirect('/syllabus/filter-None')
 
         display_root = DisplayLeaf("Display root", 0)
