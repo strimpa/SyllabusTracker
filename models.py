@@ -111,7 +111,6 @@ class Membership(models.Model):
             val += " - "+self.user.username
         return val
         
-'''
 # Defines a term that is bound to end, for fee payment
 # These are defined globally per club
 class TimeLapse(models.Model):
@@ -127,7 +126,6 @@ class Fees(models.Model):
 class FeeExpiry(models.Model):
     fee_expiry_date = models.DateField(auto_now_add=False, null=True, blank=True)
     fee_group = models.ForeignKey(Fees, on_delete=models.CASCADE)
-'''
 
 class RegistrationRequest(models.Model):
     user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
@@ -168,9 +166,8 @@ class Session(models.Model):
     def __str__(self):
        return (str(self.date) + " - " + self.instructor.full_name())
 
-'''
 class Notification(models.Model):
-    SEVERITY = (
+    SEVERITY_LEVEL = (
         ('I', 'info'),
         ('A', 'attention'),
         ('U', 'urgent')
@@ -179,11 +176,10 @@ class Notification(models.Model):
     notification_date = models.DateField(auto_now_add=True)
     text = models.CharField(max_length=256)
     link = models.URLField(max_length=256)
-    severity = models.CharField(max_length=1, choices=PROFICIENCY_LEVEL, null=True)
+    severity = models.CharField(max_length=1, choices=SEVERITY_LEVEL, null=True)
 
 class AppSettings(models.Model):
     user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
     send_session_mail = models.BooleanField(default=True)
     send_fee_reminders = models.BooleanField(default=True)
-    ratingsare_public = models.BooleanField(default=True)
-'''
+    ratings_are_public = models.BooleanField(default=True)

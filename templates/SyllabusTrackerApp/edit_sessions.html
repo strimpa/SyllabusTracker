@@ -8,10 +8,5 @@
     </table>
     <input type="submit" />
     </form>
-    {% if session_form.id.value %}
-    <a href="{% url 'do_send_session_emails' session_id=session_id %}">
-        <input type="button" value="Send attendant emails" />
-    </a>
-    {% endif %}
 </p>
 {% endblock %}

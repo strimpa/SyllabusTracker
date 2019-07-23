@@ -11,6 +11,7 @@ urlpatterns = [
     re_path(r'^profile/(?:(?P<username>[\w\d]+)/)?$', views_account.profile, name='profile'),
     path('user_update/', views_account.user_update, name='user_update'),
     path('membership_update/', views_account.membership_update, name='membership_update'),
+    path('settings_update/', views_account.settings_update, name='settings_update'),
     path('register/', views_account.register, name='register'),
     path(
         'password_change/',
@@ -56,7 +57,6 @@ urlpatterns = [
     path('rate/', views_actions.do_rate, name='rate'),
     path('edit_exercises_groups/', views_actions.do_edit_exercises_groups, name='edit_exercises_groups'),
     path('do_edit_session/', views_actions.do_edit_session, name='do_edit_session'),
-    path('do_send_session_emails/<session_id>', views_actions.do_send_session_emails, name='do_send_session_emails'),
 
     path('restart/', views_account.restart, name='restart'),
 

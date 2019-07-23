@@ -1,5 +1,5 @@
 from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
-from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm
+from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm, SettingsForm
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -220,37 +220,7 @@ def do_add_kyus(request):
     }
     return render(request, 'SyllabusTrackerApp/add_kyus.html', context)
 
-@login_required
-@permission_required('SyllabusTrackerApp.change_session', raise_exception=True)
-def do_edit_session(request):
-    membership = check_membership(request.user)
-    if isinstance(membership, HttpResponse):
-       return membership
-
-    session_form = SessionForm(request.POST)
-    try:
-        if 'id' in request.POST:
-            session_id = request.POST['id']
-            session_instance = Session.objects.get(pk=session_id)
-            session_form = SessionForm(request.POST, instance=session_instance)
-    except:
-        pass
-
-    if session_form.is_valid():
-        instance = session_form.save()
-        if instance!=None:
-            messages.info(request, "Session successfully edited!")
-    else:
-        error = "not valid:"
-        for err in session_form.errors:
-            error += err
-        messages.error(request, error)
-    
-    return redirect('/sessions/')
-
-@login_required
-@permission_required('SyllabusTrackerApp.change_session', raise_exception=True)
-def do_send_session_emails(request, session_id=None):
+def send_session_emails(request, session_id):
     membership = check_membership(request.user)
     if isinstance(membership, HttpResponse):
        return membership
@@ -281,5 +251,35 @@ def do_send_session_emails(request, session_id=None):
     except:
         messages.error(request, "Couldn't send emails!")
 
-    return redirect('edit_session', id=session_id)
+@login_required
+@permission_required('SyllabusTrackerApp.change_session', raise_exception=True)
+def do_edit_session(request):
+    membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
+
+    session_form = SessionForm(request.POST)
+    try:
+        if 'id' in request.POST:
+            session_id = request.POST['id']
+            session_instance = Session.objects.get(pk=session_id)
+            session_form = SessionForm(request.POST, instance=session_instance)
+            
+        if 'send_attendents_emails' in request.POST:
+            send_session_emails(request, session_id)
+    except:
+        pass
+
+    if session_form.is_valid():
+        instance = session_form.save()
+        if instance!=None:
+            messages.info(request, "Session successfully edited!")
+    else:
+        error = "not valid:"
+        for err in session_form.errors:
+            error += err
+        messages.error(request, error)
+    
+    return redirect('/sessions/')
+
 

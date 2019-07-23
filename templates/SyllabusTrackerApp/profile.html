@@ -31,6 +31,17 @@
                 <input type="submit" value="Update" />
             </form>
         </fieldset>
-	</div>
+
+        <fieldset>
+            <legend>Settings</legend>
+            <form action="{% url 'settings_update' %}" method="POST">
+                {% csrf_token %}
+                <table>
+                {{ settings_form.as_table }}
+                </table>
+                <input type="submit" value="Update" />
+            </form>
+        </fieldset>
+    </div>
 	<p />
 {% endblock %}

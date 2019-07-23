@@ -6,8 +6,8 @@ import subprocess
 from datetime import date, datetime
 
 from django.shortcuts import render_to_response, render
-from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest
-from SyllabusTrackerApp.forms import ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm
+from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest, AppSettings
+from SyllabusTrackerApp.forms import ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm, SettingsForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse
@@ -176,6 +176,27 @@ def user_update(request):
     return redirect('/profile/'+forward_username)
 
 @login_required
+def settings_update(request):
+    forward_username = ""
+    try:
+        existing_user = Jitsuka.objects.get(pk=request.POST['user_id'])
+        if existing_user!=request.user:
+            forward_username = existing_user.username
+
+        existing_settings = AppSettings.objects.get(pk=request.POST['settings_id'])
+        settings_form = SettingsForm(request.POST, instance=existing_settings)
+        if(settings_form.is_valid()):
+            settings_form.save()
+            messages.info(request, "Settings successfully updated!")
+        else:
+            for value in settings_form.errors.items():
+                messages.error(request, value)
+    except:
+        messages.error(request, "Error while updating settings")
+    return redirect('/profile/'+forward_username)
+
+
+@login_required
 def membership_update(request):
     forward_username = ""
     membership_form = MembershipForm(request.POST, request.FILES)
@@ -245,6 +266,16 @@ def profile(request, username=None):
     except:
         pass
 
+    settings = None
+    try:
+        settings = AppSettings.objects.get(user=theUser)
+    except ObjectDoesNotExist:
+        settings = AppSettings.objects.create(user=theUser)
+    settings_form = SettingsForm(instance=settings, initial={
+        'user_id':theUser.id, 
+        'settings_id':settings.id
+        })
+
     membership = None
     try:
         membership = Membership.objects.get(user = theUser)
@@ -274,7 +305,8 @@ def profile(request, username=None):
         'membership_form':membership_form,
         'login_form':profile_form,
         'title': ("Profile of "+theUser.username),
-        'found_membership':found_membership
+        'found_membership':found_membership,
+        'settings_form':settings_form
         }
     if membership!=None:
         args['profile_pic'] = membership.pic

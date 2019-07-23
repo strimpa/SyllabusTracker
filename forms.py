@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm, ModelMultipleChoiceField
-from .models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup, Session)
+from .models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup, Session, AppSettings)
 from .widgets import PictureWidget
 
 MAX_USERNAME_LENGTH = 100
@@ -11,6 +11,10 @@ MAX_USERNAME_LENGTH = 100
 class ExerciseModelChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return obj.indented_name()
+
+class JitsukaModelChoiceField(ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return obj.full_name()
 
 ###########################################
 # Formm usages
@@ -99,7 +103,9 @@ class SessionForm(ModelForm):
         model = Session
         fields = '__all__'
     id = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    attendants = JitsukaModelChoiceField(queryset=Jitsuka.objects.all())
     exercises = ExerciseModelChoiceField(queryset=ExerciseGroup.objects.all())
+    send_attendents_emails = forms.BooleanField(required=False)
 
 class ReadOnlyFormMixin(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -113,3 +119,10 @@ class ReadOnlyFormMixin(ModelForm):
 
 class SessionFormReadOnly(ReadOnlyFormMixin, SessionForm):
     pass
+
+class SettingsForm(ModelForm):
+    class Meta:
+        model = AppSettings
+        exclude = ['user']
+    settings_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    user_id = forms.IntegerField(widget=forms.HiddenInput)
