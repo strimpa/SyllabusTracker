@@ -228,13 +228,9 @@ def send_session_emails(request, session_id):
     try:
         session_instance = Session.objects.get(pk=session_id)
         for atendee in session_instance.attendants.all():
-            try:
-                settings = AppSettings.objects.get(user=atendee)
-                if not settings.send_session_mail:
-                    messages.info(request, "User "+str(atendee)+" opted out of receiving session email.")
-                    continue
-            except ObjectDoesNotExist:
-                pass
+            if not check_setting(atendee, 'send_session_mail'):
+                messages.info(request, "User "+str(atendee)+" opted out of receiving session email.")
+                continue
 
             template_values = atendee.__dict__
             try:

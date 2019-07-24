@@ -29,8 +29,10 @@ class SyllabusView(View):
         ratings_by_exercise = {}
         if is_summary:
             all_ratings = Rating.objects.select_related().filter(rater__in = memberships)
-#            print("all_ratings:"+str(len(all_ratings)))
             for r in all_ratings:
+                if not check_setting(r.rater.user, 'ratings_are_public'):
+                    continue
+
                 if r.exercise != None:
                     # Initialise exercise summary
                     if r.exercise.name not in ratings_by_exercise:
