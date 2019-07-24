@@ -1,4 +1,4 @@
-from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
+from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup, AppSettings
 from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm, SettingsForm
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
@@ -227,7 +227,16 @@ def send_session_emails(request, session_id):
 
     try:
         session_instance = Session.objects.get(pk=session_id)
-        for template_values in session_instance.attendants.values():
+        for atendee in session_instance.attendants.all():
+            try:
+                settings = AppSettings.objects.get(user=atendee)
+                if not settings.send_session_mail:
+                    messages.info(request, "User "+str(atendee)+" opted out of receiving session email.")
+                    continue
+            except ObjectDoesNotExist:
+                pass
+
+            template_values = atendee.__dict__
             try:
                 template_values['instructor'] = session_instance.instructor
                 if 'HTTP_HOST' in request.META: 
@@ -259,27 +268,29 @@ def do_edit_session(request):
        return membership
 
     session_form = SessionForm(request.POST)
+    session_id = -1
     try:
         if 'id' in request.POST:
             session_id = request.POST['id']
             session_instance = Session.objects.get(pk=session_id)
             session_form = SessionForm(request.POST, instance=session_instance)
-            
-        if 'send_attendents_emails' in request.POST:
-            send_session_emails(request, session_id)
     except:
         pass
 
     if session_form.is_valid():
         instance = session_form.save()
         if instance!=None:
+            session_id = instance.id
             messages.info(request, "Session successfully edited!")
     else:
         error = "not valid:"
         for err in session_form.errors:
             error += err
         messages.error(request, error)
-    
+
+    if session_id != -1 and 'send_attendents_emails' in request.POST:
+        send_session_emails(request, session_id)
+
     return redirect('/sessions/')
 
 

@@ -5,6 +5,11 @@
 {% block content %}
 {% if display_root %}
 
+    <p>
+    This page is filtered to your grade, if you have configured one in your profile - adjust the filter below to extend or filter down the view.<br />
+    Rate how you see your own ability of performing an exercise. This is not to test you, but to give feedback on what needs revision during training. 
+    If you don't like your rating to be visible by others, adjust the settings in your profile.
+    </p>
     <div id="filter_settings">
     <h1>Filter</h1>
     <form action="{% url 'syllabus' %}" >
