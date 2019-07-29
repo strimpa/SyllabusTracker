@@ -32,6 +32,7 @@
             </form>
         </fieldset>
 
+        {% if fee_terms %}
         <fieldset>
             <legend>Fees</legend>
             <form action="{% url 'fee_update' %}" method="POST">
@@ -41,13 +42,16 @@
                     {% for fee in fee_terms %}
                     <tr>
                         <th><label for="fee_{{ fee.fee_definition.name }}">{{ fee.fee_definition.name }}: </label></th>
-                        <td><input id="fee_{{ fee.fee_definition.name }}" name="fee_id_{{ fee.id }}" class="fee_expiry" type="text" value="{{ fee.fee_expiry_date }}" /></td>
+                        <td><input id="fee_{{ fee.fee_definition.name }}" {% if not can_edit %}disabled{% endif %} name="fee_id_{{ fee.id }}" class="fee_expiry" type="text" value="{{ fee.fee_expiry_date }}" /></td>
                     </tr>
                     {% endfor %}
                 </table>
+                {% if can_edit %}
                 <input type="submit" value="Update" />
+                {% endif %}
             </form>
         </fieldset>
+        {% endif %}
 
         <fieldset>
             <legend>Settings</legend>

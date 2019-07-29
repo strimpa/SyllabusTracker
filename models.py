@@ -100,7 +100,6 @@ class Membership(models.Model):
     pic = models.ImageField(max_length=256, null=True, blank=True, upload_to='images/profile/')
     kyu = models.ForeignKey(Kyu, on_delete=models.SET_NULL, blank=True, null=True)
     club = models.ForeignKey(Club, on_delete=models.SET_NULL, blank=True, null=True)
-    instructor = models.ForeignKey('Jitsuka', models.SET_NULL, blank=True, null=True, related_name="student")
     sign_up_date = models.DateField(auto_now_add=True)
     leaving_date = models.DateField(auto_now_add=False, null=True, blank=True)
     

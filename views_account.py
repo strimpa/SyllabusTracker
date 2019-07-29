@@ -278,15 +278,17 @@ def profile(request, username=None):
     found_membership = False
     can_edit = request.user.is_assistent_instructor_or_instructor()
 
-    try:
-        if (can_edit and
-            None!=username) and \
-            "me"!=username and \
-            (None!=username and username!=request.user.username):
-                theUser = Jitsuka.objects.get(username=username)
-                tisMe = False
-    except:
-        messages.error(request, "User with name '"+username+"' does not exist!")
+    if (None!=username) and \
+        "me"!=username and \
+        (None!=username and username!=request.user.username):
+            if can_edit:
+                try:
+                    theUser = Jitsuka.objects.get(username=username)
+                    tisMe = False
+                except:
+                    messages.error(request, "User with name '"+username+"' does not exist!")
+            else:
+                return redirect("profile")
 
     is_instructor = False
     is_assistent_instructor = False
@@ -319,27 +321,27 @@ def profile(request, username=None):
     except:
         pass
 
-    try:
-        membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
-    except ObjectDoesNotExist:
-        pass
     membership_form.fields['is_instructor'].disabled = not can_edit
     membership_form.fields['is_assistent_instructor'].disabled = not can_edit
 
-    fee_types = membership.club.fee_definitions.all()
-    for fee_type in fee_types:
-        fee_expiry_instance = None
+    fee_terms = None
+    if found_membership and membership.club != None:
+        fee_types = membership.club.fee_definitions.all()
+        for fee_type in fee_types:
+            fee_expiry_instance = None
 
-        #Find fee in existing user fee array
-        for fee_user_expiry in membership.fees.all():
-            if fee_user_expiry.fee_definition == fee_type:
-                fee_expiry_instance = fee_user_expiry
-                break
+            #Find fee in existing user fee array
+            for fee_user_expiry in membership.fees.all():
+                if fee_user_expiry.fee_definition == fee_type:
+                    fee_expiry_instance = fee_user_expiry
+                    break
 
-        #Otherwise add the fuck out of it
-        if fee_expiry_instance == None:
-            fee_expiry_instance = FeeExpiry.objects.create(fee_definition=fee_type,fee_group=membership)
-            fee_expiry_instance.save()
+            #Otherwise add the fuck out of it
+            if fee_expiry_instance == None:
+                fee_expiry_instance = FeeExpiry.objects.create(fee_definition=fee_type,fee_group=membership)
+                fee_expiry_instance.save()
+        
+        fee_terms = membership.fees.all()
 
     profile_form = ProfileForm(instance=theUser, initial={'username' : theUser.username})
     args = {
@@ -350,7 +352,7 @@ def profile(request, username=None):
         'title': ("Profile of "+theUser.username),
         'found_membership':found_membership,
         'settings_form':settings_form,
-        'fee_terms':membership.fees.all(),
+        'fee_terms':fee_terms,
         'can_edit':can_edit,
         }
     if membership!=None:
