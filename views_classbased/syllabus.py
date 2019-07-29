@@ -28,7 +28,7 @@ class SyllabusView(View):
     def get_ratings(self, membership, is_summary, memberships):
         ratings_by_exercise = {}
         if is_summary:
-            all_ratings = Rating.objects.select_related().filter(rater__in = memberships)
+            all_ratings = Rating.objects.select_related().filter(rater__in = memberships).order_by("-rate_date")
             for r in all_ratings:
                 if not check_setting(r.rater.user, 'ratings_are_public'):
                     continue
