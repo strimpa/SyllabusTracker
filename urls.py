@@ -49,7 +49,7 @@ urlpatterns = [
     path('forgot_password/', views_account.forgot_password, name='forgot_password'),
     path('user_home/', views.home, name='user_home'),
 
-    re_path(r'^syllabus/(?:filter-(?P<filter>[\w ,/%\d]+)/)?(?:whose-(?P<whose>[\w\d,]*)/)?$', SyllabusView.as_view(), name='syllabus'),
+    re_path(r'^syllabus/(?:filter-(?P<filter>[\w ,/%\d]+)/)?(?:whose-(?P<whose>[\w\d,@\.]+)/)?$', SyllabusView.as_view(), name='syllabus'),
 
     path('add_exercise/', views_actions.do_add_exercise, name='add_exercise'),
     path('add_exercises/', views_actions.do_add_exercises, name='add_exercises'),
