@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm, ModelMultipleChoiceField
-from .models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup, Session, AppSettings)
+from .models import (Jitsuka, Exercise, Membership, Kyu, ExerciseGroup, Session, AppSettings, FeeExpiry)
 from .widgets import PictureWidget
 
 MAX_USERNAME_LENGTH = 100
@@ -126,3 +126,8 @@ class SettingsForm(ModelForm):
         exclude = ['user']
     settings_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
     user_id = forms.IntegerField(widget=forms.HiddenInput)
+
+class FeeExpiryForm(ModelForm):
+    class Meta:
+        model = FeeExpiry
+        fields = '__all__'

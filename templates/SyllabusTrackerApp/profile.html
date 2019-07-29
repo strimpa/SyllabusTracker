@@ -33,6 +33,23 @@
         </fieldset>
 
         <fieldset>
+            <legend>Fees</legend>
+            <form action="{% url 'fee_update' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="username" value="{{ username }}" />
+                <table class="simple_table">
+                    {% for fee in fee_terms %}
+                    <tr>
+                        <th><label for="fee_{{ fee.fee_definition.name }}">{{ fee.fee_definition.name }}: </label></th>
+                        <td><input id="fee_{{ fee.fee_definition.name }}" name="fee_id_{{ fee.id }}" class="fee_expiry" type="text" value="{{ fee.fee_expiry_date }}" /></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <input type="submit" value="Update" />
+            </form>
+        </fieldset>
+
+        <fieldset>
             <legend>Settings</legend>
             <form action="{% url 'settings_update' %}" method="POST">
                 {% csrf_token %}

@@ -1,13 +1,11 @@
 import os
 import json
 import string
+import re
 import uuid
 import subprocess
 from datetime import date, datetime
 
-from django.shortcuts import render_to_response, render
-from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest, AppSettings
-from SyllabusTrackerApp.forms import ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm, SettingsForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse
@@ -16,10 +14,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .view_utils import *
 from django.urls import reverse
+from django.forms import formset_factory, modelformset_factory
 from django.template.loader import render_to_string
 from django.contrib.auth.models import Group
+
+from django.shortcuts import render_to_response, render
+from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest, AppSettings, FeeExpiry, FeeDefinition
+from SyllabusTrackerApp.forms import ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm, SettingsForm, FeeExpiryForm
+from .view_utils import *
 
 def login_request(request):
 
@@ -236,7 +239,35 @@ def membership_update(request):
             for value in membership_form.errors.items():
                 messages.error(request, value)
     except:
-        messages.error(request, "Error while updating memberhsip")
+        messages.error(request, "Error while updating membership")
+    return redirect('/profile/'+forward_username)
+
+@login_required
+def fee_update(request):
+    forward_username = ""
+    try:
+        username = request.POST['username']
+        existing_user = Jitsuka.objects.get(username=request.POST['username'])
+        if existing_user!=request.user:
+            forward_username = existing_user.username
+    except:
+        messages.error(request, "Couldn't find user "+str(username))
+    
+    # For every fee
+    for input_var_name in request.POST:
+        if "fee_id_" in input_var_name:
+            id_match = re.search("[\d]+$", input_var_name)
+            time_value = request.POST[input_var_name]
+            if time_value == 'None':
+                continue
+            try:
+                expiry_id = id_match.group(0)
+                fee_instance = FeeExpiry.objects.get(pk=expiry_id)
+                fee_instance.fee_expiry_date = datetime.strptime(time_value, '%b %d, %Y').date()
+                fee_instance.save()
+                messages.info(request, "Successfully updated fee expiry for id "+str(expiry_id))
+            except:
+                messages.error(request, "Problem updating fee expiry date for "+input_var_name)
     return redirect('/profile/'+forward_username)
 
 @login_required
@@ -282,7 +313,6 @@ def profile(request, username=None):
         membership_form = MembershipForm(instance = membership, initial={
             'membership_id':membership.id,
             'user_id':theUser.id, 
-            'insurance_expiry':membership.insurance_expiry_date,
             'is_instructor':is_instructor,
             'is_assistent_instructor':is_assistent_instructor
         })
@@ -293,19 +323,35 @@ def profile(request, username=None):
         membership_form.fields['instructor'].queryset = Jitsuka.objects.filter(groups__name='Instructors').exclude(membership=membership)
     except ObjectDoesNotExist:
         pass
-    membership_form.fields['insurance_expiry_date'].disabled = not can_edit
     membership_form.fields['is_instructor'].disabled = not can_edit
     membership_form.fields['is_assistent_instructor'].disabled = not can_edit
- 
+
+    fee_types = membership.club.fee_definitions.all()
+    for fee_type in fee_types:
+        fee_expiry_instance = None
+
+        #Find fee in existing user fee array
+        for fee_user_expiry in membership.fees.all():
+            if fee_user_expiry.fee_definition == fee_type:
+                fee_expiry_instance = fee_user_expiry
+                break
+
+        #Otherwise add the fuck out of it
+        if fee_expiry_instance == None:
+            fee_expiry_instance = FeeExpiry.objects.create(fee_definition=fee_type,fee_group=membership)
+            fee_expiry_instance.save()
+
     profile_form = ProfileForm(instance=theUser, initial={'username' : theUser.username})
     args = {
-        'user_controller':Jitsuka.objects,
+        'username':theUser.username,
         'tisMe':tisMe,
         'membership_form':membership_form,
         'login_form':profile_form,
         'title': ("Profile of "+theUser.username),
         'found_membership':found_membership,
-        'settings_form':settings_form
+        'settings_form':settings_form,
+        'fee_terms':membership.fees.all(),
+        'can_edit':can_edit,
         }
     if membership!=None:
         args['profile_pic'] = membership.pic

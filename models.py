@@ -103,29 +103,28 @@ class Membership(models.Model):
     instructor = models.ForeignKey('Jitsuka', models.SET_NULL, blank=True, null=True, related_name="student")
     sign_up_date = models.DateField(auto_now_add=True)
     leaving_date = models.DateField(auto_now_add=False, null=True, blank=True)
-    insurance_expiry_date = models.DateField(auto_now_add=False, null=True, blank=True)
     
     def __str__(self):
         val = str(self.memberID)
         if self.user!=None:
             val += " - "+self.user.username
         return val
-        
+
 # Defines a term that is bound to end, for fee payment
 # These are defined globally per club
-class TimeLapse(models.Model):
+class FeeDefinition(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256, null=True, blank=True)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="fee_definitions")
 
-# List of fee expiry time lapse instances below
-class Fees(models.Model):
-    member = models.ForeignKey(Membership, on_delete=models.CASCADE, related_name="fees")
+    def __str__(self):
+        return self.name
 
 # instance of a lapsing time per user
 class FeeExpiry(models.Model):
+    fee_definition = models.ForeignKey(FeeDefinition, on_delete=models.CASCADE)
     fee_expiry_date = models.DateField(auto_now_add=False, null=True, blank=True)
-    fee_group = models.ForeignKey(Fees, on_delete=models.CASCADE)
+    fee_group = models.ForeignKey(Membership, on_delete=models.CASCADE, related_name="fees")
 
 class RegistrationRequest(models.Model):
     user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
@@ -180,6 +179,6 @@ class Notification(models.Model):
 
 class AppSettings(models.Model):
     user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
-    send_session_mail = models.BooleanField(default=True)
-    send_fee_reminders = models.BooleanField(default=True)
+    receive_session_mail = models.BooleanField(default=True)
+    receive_fee_reminders = models.BooleanField(default=True)
     ratings_are_public = models.BooleanField(default=True)

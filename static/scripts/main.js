@@ -60,7 +60,9 @@ $ = require(
 		$( this ).attr("src", "/static/images/"+formerPic+".gif")
 	});
 
-	$("#id_insurance_expiry_date").datepicker()
+	$(".fee_expiry").datepicker({
+		dateFormat: "M dd, yy"
+	  })
 	require(['timepicker'], function(timepicker){
 		$("#id_date").datetimepicker(
 			//$.timepicker.regional['us']
