@@ -1,6 +1,4 @@
-from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
-from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm
-from django.forms import formset_factory, modelformset_factory
+from .models import Membership, Notification
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required 
@@ -15,7 +13,6 @@ def index(request):
     return render(request, 'SyllabusTrackerApp/index.html', 
         {
             'title':"Start",
-            'login_form':LoginForm(),
             'target_url':next
         })
 
@@ -25,10 +22,10 @@ def home(request):
     if isinstance(membership, HttpResponse):
        return membership
 
-    latest_session_list = Session.objects.all()[:5]
+    notifications = Notification.objects.filter(user=request.user)
+
     context = {
         'title':"Home",
-        'latest_session_list': latest_session_list,
-        'login_form':LoginForm()
+        'notifications':notifications
     }
     return render(request, 'SyllabusTrackerApp/home.html', context)

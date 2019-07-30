@@ -20,7 +20,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth.models import Group
 
 from django.shortcuts import render_to_response, render
-from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest, AppSettings, FeeExpiry, FeeDefinition
+from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest, AppSettings, FeeExpiry, FeeDefinition, Notification
 from SyllabusTrackerApp.forms import ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm, SettingsForm, FeeExpiryForm
 from .view_utils import *
 
@@ -360,6 +360,10 @@ def profile(request, username=None):
 
     return render(request, "SyllabusTrackerApp/profile.html", args)
 
+@login_required
+def clear_notifications(request):
+    Notification.objects.filter(user=request.user).delete()
+    return redirect('user_home')
 
 @login_required
 def restart(request):

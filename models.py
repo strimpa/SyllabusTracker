@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 
 # A trainable unit
@@ -162,7 +163,14 @@ class Session(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     
     def __str__(self):
-       return (str(self.date) + " - " + self.instructor.full_name())
+        return (str(self.date) + " - " + self.instructor.full_name())
+
+    def save(self, *args, **kwargs):
+        text = "You've been tagged in a session from '"+str(self.date.date())+"', or the session has been altered."
+        link = reverse('view_session', kwargs={'id': self.id})
+        for user in self.attendants.all():
+            notification = Notification.objects.create(user=user, text=text, link=link)
+        super(Session, self).save(*args, **kwargs)
 
 class Notification(models.Model):
     SEVERITY_LEVEL = (
@@ -173,7 +181,7 @@ class Notification(models.Model):
     user = models.ForeignKey(Jitsuka, on_delete=models.CASCADE)
     notification_date = models.DateField(auto_now_add=True)
     text = models.CharField(max_length=256)
-    link = models.URLField(max_length=256)
+    link = models.URLField(max_length=256, null=True)
     severity = models.CharField(max_length=1, choices=SEVERITY_LEVEL, null=True)
 
 class AppSettings(models.Model):

@@ -65,4 +65,6 @@ urlpatterns = [
     path('sessions/', views_syllabus.sessions, name='sessions'),
     path('view_session/<id>', views_syllabus.view_session, name='view_session'),
     re_path(r'^edit_session/(?:(?P<id>\d+)/)?$', views_syllabus.edit_session, name='edit_session'),
+
+    path('clear_notifications', views_account.clear_notifications, name='clear_notifications'),
 ]   
