@@ -1,4 +1,5 @@
 from .models import Membership, Notification
+from .forms import LoginForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required 
@@ -13,6 +14,7 @@ def index(request):
     return render(request, 'SyllabusTrackerApp/index.html', 
         {
             'title':"Start",
+            'login_form':LoginForm(),
             'target_url':next
         })
 
