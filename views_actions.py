@@ -228,7 +228,7 @@ def send_session_emails(request, session_id):
     try:
         session_instance = Session.objects.get(pk=session_id)
         for atendee in session_instance.attendants.all():
-            if not check_setting(atendee, 'send_session_mail'):
+            if not check_setting(atendee, 'receive_session_mail'):
                 messages.info(request, "User "+str(atendee)+" opted out of receiving session email.")
                 continue
 
