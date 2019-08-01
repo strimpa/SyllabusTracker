@@ -51,6 +51,12 @@ class RegisterForm(ModelForm):
             user.save()
         return user
 
+class JitsukaForm(ModelForm):
+    class Meta:
+        model = Jitsuka
+        exclude = ['last_login', 'user_permissions', 'is_superuser', 'is_active', 'is_staff']
+    
+
 class ImageForm(forms.Form):
     pic = forms.ImageField()
 

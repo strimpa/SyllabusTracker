@@ -1,0 +1,27 @@
+{% extends "SyllabusTrackerApp/base_logged_in.html" %}
+
+{% block content %}
+
+    <h1>{{ Title }}</h1>
+
+    <fieldset>
+        <label>All Users</label>
+    {% for user in all_users %}
+    <ul>
+        <li><a href="{% url 'profile' username=user.username %}">{{ user.full_name }}</a></li>
+    </ul>
+    {% endfor %}
+    </fieldset>
+
+    <fieldset>
+        <label>Add User</label>
+        <form action="{% url 'add_user' %}" method="POST">
+        {% csrf_token %}
+        <table>
+            {{ user_form.as_table }}
+        </table>
+        <input type="submit" value="Add" />
+        </form>
+    </fieldset>
+
+{% endblock %}

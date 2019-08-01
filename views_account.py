@@ -13,7 +13,7 @@ from django.contrib.auth.forms import SetPasswordForm, UserChangeForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.forms import formset_factory, modelformset_factory
 from django.template.loader import render_to_string
@@ -21,7 +21,7 @@ from django.contrib.auth.models import Group
 
 from django.shortcuts import render_to_response, render
 from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest, AppSettings, FeeExpiry, FeeDefinition, Notification
-from SyllabusTrackerApp.forms import ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm, SettingsForm, FeeExpiryForm
+from SyllabusTrackerApp.forms import ImageForm, ProfileForm, RegisterForm, LoginForm, MembershipForm, SettingsForm, FeeExpiryForm, JitsukaForm
 from .view_utils import *
 
 def login_request(request):
@@ -359,6 +359,16 @@ def profile(request, username=None):
         args['profile_pic'] = membership.pic
 
     return render(request, "SyllabusTrackerApp/profile.html", args)
+
+@login_required
+@permission_required('SyllabusTrackerApp.change_jitsuka', raise_exception=True)
+def view_users(request):
+    all_users = Jitsuka.objects.all()
+    
+    return render(request, "SyllabusTrackerApp/view_users.html", {
+        'all_users':all_users,
+        'user_form':JitsukaForm(),
+    })
 
 @login_required
 def clear_notifications(request):

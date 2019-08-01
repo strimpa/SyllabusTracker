@@ -118,7 +118,7 @@ def edit_session(request, id=None):
 
     all_jitsuka  = Jitsuka.objects.all()
     session_form.fields['instructor'].queryset = all_jitsuka.filter(groups__name__in=['Instructors', 'Assistent Instructors'])
-    session_form.fields['attendants'].queryset = all_jitsuka.filter(membership__club = membership.club)
+    session_form.fields['attendants'].queryset = all_jitsuka.filter(is_active=True)
 
     context = {
         'title':"Edit Session",

@@ -1,5 +1,5 @@
 from .models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup, AppSettings
-from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm, SettingsForm
+from .forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm, SessionForm, SettingsForm, JitsukaForm
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -289,4 +289,19 @@ def do_edit_session(request):
 
     return redirect('/sessions/')
 
+@login_required
+@permission_required('SyllabusTrackerApp.change_jitsuka', raise_exception=True)
+def add_user(request):
+    membership = check_membership(request.user)
+    if isinstance(membership, HttpResponse):
+       return membership
 
+    user_form = JitsukaForm(request.POST)
+    if user_form.is_valid():
+        user_form.save()
+    else:
+        for err in user_form.errors:
+            msg = err+":"+str(user_form.errors[err])
+            messages.error(request, msg)
+    
+    return redirect('/view_users/')

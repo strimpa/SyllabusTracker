@@ -8,7 +8,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('logout/', views_account.logout_request, name='logout'),
     path('login/', views_account.login_request, name='login'),
-    re_path(r'^profile/(?:(?P<username>[\w\d]+)/)?$', views_account.profile, name='profile'),
+    re_path(r'^profile/(?:(?P<username>[\w\d@\.]+)/)?$', views_account.profile, name='profile'),
     path('user_update/', views_account.user_update, name='user_update'),
     path('membership_update/', views_account.membership_update, name='membership_update'),
     path('settings_update/', views_account.settings_update, name='settings_update'),
@@ -47,6 +47,10 @@ urlpatterns = [
 
     path('register_confirm/<name>/<id>', views_account.register_confirm, name='register_confirm'),
     path('forgot_password/', views_account.forgot_password, name='forgot_password'),
+
+    path('view_users/', views_account.view_users, name='view_users'),
+    path('add_user/', views_actions.add_user, name='add_user'),
+
     path('user_home/', views.home, name='user_home'),
 
     re_path(r'^syllabus/(?:filter-(?P<filter>[\w ,/%\d]+)/)?(?:whose-(?P<whose>[\w\d,@\.]+)/)?$', SyllabusView.as_view(), name='syllabus'),
