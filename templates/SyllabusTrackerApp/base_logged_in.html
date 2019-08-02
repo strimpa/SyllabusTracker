@@ -15,6 +15,7 @@
         <a href="{% url 'sessions' %}"><img src="{% static 'images/sessions.gif' %}" class="hover_icon" title="Sessions" /></a>
         {% if user.is_assistent_instructor_or_instructor %}
         <a href="{% url 'exercise_editing' %}"><img src="{% static 'images/syllabus_editing.gif' %}" class="hover_icon" title="Exercise Editing" /></a>
+        <a href="{% url 'view_users' %}"><img src="{% static 'images/users.gif' %}" class="hover_icon" title="View Users" /></a>
         {% endif %}
     </ul>
 </nav>
