@@ -274,7 +274,6 @@ def fee_update(request):
 def profile(request, username=None):
     tisMe = True
     theUser = request.user
-    membership_form = MembershipForm(initial={'user_id':theUser.id})
     found_membership = False
     can_edit = request.user.is_assistent_instructor_or_instructor()
 
@@ -309,6 +308,7 @@ def profile(request, username=None):
         })
 
     membership = None
+    membership_form = MembershipForm(initial={'user_id':theUser.id})
     try:
         membership = Membership.objects.get(user = theUser)
         found_membership = True
