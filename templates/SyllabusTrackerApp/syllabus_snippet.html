@@ -13,7 +13,17 @@
             <th>Name</th>
             <th>Description</th>
             <th>Comment</th>
-            <th colspan="4">Rating</th>
+            <th class="
+                {% if group.average >= 3 %}
+                    proficient
+                {% elif group.average >= 2 %}
+                    understood
+                {% elif group.average >= 1 %}
+                    attempted
+                {% else %}
+                    seen
+                {% endif %}
+            " colspan="4">Rating</th>
         </tr>
         {% for exc, rating in group.exercises %}
             <tr>
