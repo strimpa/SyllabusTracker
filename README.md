@@ -4,12 +4,14 @@ The logic is done as a server-side web-application with minimal client side logi
 Written with the beautiful [Django framework](https://www.djangoproject.com/)
 
 [Website linking to this repository](http://www.SyllabusTracker.club)
+
 mail@SyllabusTracker.club
+
 Main contributor: [Strimpa](https://github.com/strimpa)
 
 ## What does this do?
-- Various options to upload a syllabus with n-to-n grouping of exercises
-- Syllabus display can be filtered and links contain filters and ankers
+- Upload a syllabus with n-to-n grouping of exercises
+- Syllabus display can be filtered - URLs contain filters and ankers
 - Sessions can be stored with attendees and exercise groups to be revised by users
 - Self-rating of exercise proficiency
 - Instructors can then see summaries of that data to decide on training contents
