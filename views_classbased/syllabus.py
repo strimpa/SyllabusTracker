@@ -146,8 +146,22 @@ class SyllabusView(View):
 
         display_root = DisplayLeaf("Display root", 0)
         depth = 0
-        for ex in Exercise.objects.select_related().order_by("list_order_index"):
-            ex1 = time.time()
+        exercises = Exercise.objects.select_related().order_by("list_order_index")
+
+        
+        rating_values_by_exercise = {}
+        if is_summary:
+            rating_values_by_exercise = {x:ratings_by_exercise[x].rating_average for x in ratings_by_exercise }
+        else:
+            rating_values_by_exercise = {x:ratings_by_exercise[x].proficiency for x in ratings_by_exercise }
+        
+        for x in exercises:
+            if not x.name in rating_values_by_exercise:
+                rating_values_by_exercise[x.name] = -1
+
+        exercises = sorted(exercises, key=lambda ex: rating_values_by_exercise[ex.name])
+
+        for ex in exercises:
             rating = None
             try:
                 rating = ratings_by_exercise[ex.name]
