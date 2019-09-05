@@ -13,15 +13,7 @@ from django.utils.safestring import mark_safe
 from ..models import Exercise, Session, Rating, Membership, Kyu, ExerciseGroup
 from ..forms import LoginForm, ExerciseForm, ExerciseEditForm, UploadFileForm, KyuForm, ExerciseGroupForm
 from ..view_utils import *
-from .DisplayLeaf import DisplayLeaf
-
-class ExerciseStudentSummary():
-    def __init__(self, name):
-        self.name = name
-        self.students_ratings = {}
-        self.rating_average = 0
-    def __str__(self):
-        return self.name+"average:"+str(self.rating_average)
+from .DisplayLeaf import DisplayLeaf, ExerciseStudentSummary
 
 class SyllabusView(View):
 

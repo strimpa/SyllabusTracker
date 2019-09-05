@@ -18,6 +18,7 @@ from django.urls import reverse
 from django.forms import formset_factory, modelformset_factory
 from django.template.loader import render_to_string
 from django.contrib.auth.models import Group
+from django.db.models import F
 
 from django.shortcuts import render_to_response, render
 from SyllabusTrackerApp.models import Jitsuka, Membership, Kyu, RegistrationRequest, AppSettings, FeeExpiry, FeeDefinition, Notification
@@ -43,7 +44,7 @@ def login_request(request):
             authenticated_user = authenticate(username=username, password=password)
             if authenticated_user is None:
                 # no user with that name
-                warning_text = "Wrong password."
+                warning_text = "Wrong password or user isn't active yet."
                 return render(request, "SyllabusTrackerApp/deadend.html", {
                                 'login_form':LoginForm(),
                                 'warning_text':warning_text
@@ -86,11 +87,10 @@ def register(request):
     if request.method == "POST":
         register_form = RegisterForm(request.POST, request.FILES)
     if register_form.is_valid():
-        the_user = Jitsuka.objects.create_user(
-            register_form.cleaned_data['username'], 
-            register_form.cleaned_data['email'])
-        register_form = RegisterForm(request.POST, request.FILES, instance=the_user)
-        register_form.save()
+        register_form = RegisterForm(request.POST, request.FILES)
+        the_user = register_form.save()
+        the_user.is_active = False
+        the_user.save()
 
         reg_id = uuid.uuid4()
         reg = RegistrationRequest(user=the_user, guid=reg_id)
@@ -274,7 +274,6 @@ def fee_update(request):
 def profile(request, username=None):
     tisMe = True
     theUser = request.user
-    membership_form = MembershipForm(initial={'user_id':theUser.id})
     found_membership = False
     can_edit = request.user.is_assistent_instructor_or_instructor()
 
@@ -309,6 +308,7 @@ def profile(request, username=None):
         })
 
     membership = None
+    membership_form = MembershipForm(initial={'user_id':theUser.id})
     try:
         membership = Membership.objects.get(user = theUser)
         found_membership = True
@@ -363,7 +363,7 @@ def profile(request, username=None):
 @login_required
 @permission_required('SyllabusTrackerApp.change_jitsuka', raise_exception=True)
 def view_users(request):
-    all_users = Jitsuka.objects.all()
+    all_users = Jitsuka.objects.order_by(F("membership__kyu__grade").desc(nulls_last=True)).annotate(colour=F("membership__kyu__colour"))
     
     return render(request, "SyllabusTrackerApp/view_users.html", {
         'all_users':all_users,

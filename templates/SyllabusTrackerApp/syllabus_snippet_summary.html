@@ -8,28 +8,38 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Average rating</th>
+            <th style="width:100px" class="
+                {% if group.average >= 3 %}
+                    proficient
+                {% elif group.average >= 2 %}
+                    understood
+                {% elif group.average >= 1 %}
+                    attempted
+                {% else %}
+                    seen
+                {% endif %}
+            ">Average rating</th>
         </tr>
         {% for exc, rating in group.exercises %}
         <form action="/rate/" method="POST">
             {% csrf_token %}
             <tr>
-                <td class="ex_description">{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
-                <td class="ex_description">{{ exc.description }}</td>
+                <td>{{ exc.name }} <input type="hidden" name="exercise_name" value="{{ exc.name }}"></input></td>
+                <td>{{ exc.description }}</td>
                 {% if rating == None %}
-                <td><input type="text" name="rating_average" width="10" value="No ratings received yet!"></input></td>
+                <td style="width:100px">No ratings received yet!</td>
                 {% else %}
-                <td><input type="text" class="
+                <td style="width:100px"><input type="text" class="
                     {% if rating.rating_average >= 3 %}
-                    proficient summary_average
+                    proficient
                     {% elif rating.rating_average >= 2 %}
                     understood
                     {% elif rating.rating_average >= 1 %}
                     attempted
                     {% else %}
-                    seen summary_average
+                    seen
                     {% endif %}
-                    "name="rating_average" width="10" value="{{ rating.rating_average }}" title="{% for user, user_rating in rating.students_ratings.items %}{{ user }}:{{ user_rating}} | {% endfor %}"></input></td>
+                    "name="rating_average" width="10" value="" title="{{ rating.rating_average }}={% for user, user_rating in rating.students_ratings.items %}{{ user }}:{{ user_rating}} | {% endfor %}" disabled></input></td>
                 {% endif %}
             </tr>
         </form>

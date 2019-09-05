@@ -7,7 +7,7 @@
     <fieldset>
         <legend>All Users</legend>
         {% for user in all_users %}
-        <ul>
+        <ul style="background-color:{{ user.colour }};margin:0px">
             <li><a href="{% url 'profile' username=user.username %}">{{ user.full_name }}</a></li>
         </ul>
         {% endfor %}

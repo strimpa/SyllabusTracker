@@ -1,3 +1,16 @@
+from SyllabusTrackerApp.models import Rating
+
+def ColourFromAverage(average):
+    progress = (average / 3.0 * 255.0)
+    return ("rgb("+str(255 - progress)+","+str(progress)+",0)")
+
+class ExerciseStudentSummary():
+    def __init__(self, name):
+        self.name = name
+        self.students_ratings = {}
+        self.rating_average = 0
+    def __str__(self):
+        return self.name+"average:"+str(self.rating_average)
 
 class DisplayLeaf():
     def __init__(self, name, depth, group=None):
@@ -11,6 +24,8 @@ class DisplayLeaf():
         self.chapter = ""
         self.depth = depth
         self.description = "None"
+        self.average = 0.0
+        self.colour = "blue"
         if group!=None:
             self.name = group.name
             self.id = group.id
@@ -50,6 +65,18 @@ class DisplayLeaf():
         for c in self.children:
             c.enumerate_hier(depth+1, self.chapter, child_chapter_index)
             child_chapter_index += 1
+
+        num_ratings = 0
+        for ex, rating in self.exercises:
+            if rating:
+                if isinstance(rating, ExerciseStudentSummary):
+                    self.average += rating.rating_average
+                else:
+                    self.average += Rating.PROFICIENCY_TOKENS.index(rating.proficiency)
+                num_ratings += 1
+        if num_ratings>0:
+            self.average /= num_ratings
+            self.colour = ColourFromAverage(self.average)
 
     def find_leaf(self, leaf_name):
         if self.name == leaf_name:

@@ -95,11 +95,6 @@ section {
 /*    text-align: left; */
 }
 
-.summary_average
-{
-    color: #f0f8f6;
-}
-
 /* HEADINGS   
 ----------------------------------------------------------*/
 h1, h2, h3, h4, h5, h6 {
@@ -412,6 +407,7 @@ table.syllabus input[type="text"] {
 .seen
 {
     background-color: red;
+    color: #f0f8f6;
 }
 .attempted
 {
@@ -424,6 +420,7 @@ table.syllabus input[type="text"] {
 .proficient
 {
     background-color: green;
+    color: #f0f8f6;
 }
 
 /* MISC  

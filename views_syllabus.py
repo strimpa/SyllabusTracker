@@ -74,7 +74,7 @@ def sessions(request):
 
     context = {
         'title':"Sessions",
-        "sessions":Session.objects.all(),
+        "sessions":Session.objects.all().order_by("-date"),
     }
     return render(request, 'SyllabusTrackerApp/sessions.html', context)
 

@@ -163,7 +163,7 @@ class Session(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     
     def __str__(self):
-        return (str(self.date) + " - " + self.instructor.full_name())
+        return (str(self.date.date()) + " - " + self.instructor.full_name())
 
     def save(self, *args, **kwargs):
         super(Session, self).save(*args, **kwargs)
